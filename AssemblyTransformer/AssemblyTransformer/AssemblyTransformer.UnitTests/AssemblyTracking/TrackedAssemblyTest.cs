@@ -1,11 +1,11 @@
 // Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
 // All rights reserved.
 //
-using System;
+using AssemblyTransformer.AssemblyTracking;
 using Mono.Cecil;
 using NUnit.Framework;
 
-namespace AssemblyTransformer.UnitTests
+namespace AssemblyTransformer.UnitTests.AssemblyTracking
 {
   [TestFixture]
   public class TrackedAssemblyTest

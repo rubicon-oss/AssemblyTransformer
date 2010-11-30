@@ -2,10 +2,11 @@
 // All rights reserved.
 //
 using System;
+using AssemblyTransformer.AssemblyTracking;
 using Mono.Cecil;
 using NUnit.Framework;
 
-namespace AssemblyTransformer.UnitTests
+namespace AssemblyTransformer.UnitTests.AssemblyTracking
 {
   [TestFixture]
   public class AssemblyTrackerTest

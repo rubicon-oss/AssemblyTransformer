@@ -46,12 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Implementation\AssemblyNameReferenceExtensions.cs" />
-    <Compile Include="Implementation\AssemblyTracker.cs" />
-    <Compile Include="Interfaces\IAssemblyTracker.cs" />
+    <Compile Include="AssemblyNameReferenceExtensions.cs" />
+    <Compile Include="AssemblyTracking\AssemblyTracker.cs" />
+    <Compile Include="IAssemblyTracker.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Implementation\TrackedAssembly.cs" />
+    <Compile Include="AssemblyTracking\TrackedAssembly.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

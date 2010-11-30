@@ -1,12 +1,11 @@
 // Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
 // All rights reserved.
 //
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Mono.Cecil;
 
-namespace AssemblyTransformer
+namespace AssemblyTransformer.AssemblyTracking
 {
   public class TrackedAssembly
   {
