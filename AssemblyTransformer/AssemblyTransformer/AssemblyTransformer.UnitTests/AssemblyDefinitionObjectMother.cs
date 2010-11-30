@@ -9,7 +9,18 @@ namespace AssemblyTransformer.UnitTests
   {
     public static AssemblyDefinition CreateAssemblyDefinition ()
     {
-      return AssemblyDefinition.CreateAssembly(new AssemblyNameDefinition("TestCase", null), "TestCase.dll", ModuleKind.Dll);
+      return CreateAssemblyDefinition ("TestCase");
     }
+
+    public static AssemblyDefinition CreateAssemblyDefinition (string name)
+    {
+      return CreateAssemblyDefinition (name, null);
+    }
+
+    public static AssemblyDefinition CreateAssemblyDefinition (string name, string culture)
+    {
+      return AssemblyDefinition.CreateAssembly (new AssemblyNameDefinition (name, null) { Culture = culture }, name + ".dll", ModuleKind.Dll); 
+    }
+
   }
 }

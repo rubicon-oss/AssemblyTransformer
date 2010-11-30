@@ -51,6 +51,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyDefinitionObjectMother.cs" />
+    <Compile Include="AssemblyNameReferenceExtensionTest.cs" />
+    <Compile Include="AssemblyNameReferenceObjectMother.cs" />
+    <Compile Include="AssemblyTrackerTest.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TrackedAssemblyTest.cs" />
