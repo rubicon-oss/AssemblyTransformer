@@ -53,6 +53,7 @@
     <Compile Include="AssemblyDefinitionObjectMother.cs" />
     <Compile Include="AssemblyNameReferenceExtensionTest.cs" />
     <Compile Include="AssemblyNameReferenceObjectMother.cs" />
+    <Compile Include="AssemblySigning\AssemblySignerTest.cs" />
     <Compile Include="AssemblyTracking\AssemblyTrackerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AssemblyTracking\TrackedAssemblyTest.cs" />

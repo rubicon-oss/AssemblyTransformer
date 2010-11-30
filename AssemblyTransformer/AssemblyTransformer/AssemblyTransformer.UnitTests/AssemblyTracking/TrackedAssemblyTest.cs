@@ -115,7 +115,5 @@ namespace AssemblyTransformer.UnitTests.AssemblyTracking
 
       Assert.That (assembly.IsModified, Is.False);
     }
-
-
   }
 }

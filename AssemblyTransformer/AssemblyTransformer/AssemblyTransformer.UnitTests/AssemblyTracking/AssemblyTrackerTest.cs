@@ -80,8 +80,6 @@ namespace AssemblyTransformer.UnitTests.AssemblyTracking
       Assert.That (result, Is.Null);
     }
 
-    
-
     [Test]
     public void IsModified_NotTracked ()
     {
