@@ -10,16 +10,30 @@ namespace AssemblyTransformer.UnitTests
   [TestFixture]
   public class AssemblyTrackerTest
   {
+    private AssemblyDefinition _assemblyDefinition1;
+    private AssemblyDefinition _assemblyDefinition2;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _assemblyDefinition1 = AssemblyDefinitionObjectMother.CreateAssemblyDefinition ("TestCase1");
+      _assemblyDefinition2 = AssemblyDefinitionObjectMother.CreateAssemblyDefinition ("TestCase2");
+    }
 
     [Test]
     public void Initialization ()
     {
-      AssemblyDefinition assembly = AssemblyDefinitionObjectMother.CreateAssemblyDefinition ("TestCase1");
-      AssemblyDefinition assembly2 = AssemblyDefinitionObjectMother.CreateAssemblyDefinition ("TestCase2");
-      
-      AssemblyTracker tracker = new AssemblyTracker(new [] {  assembly, assembly2});
+      AssemblyTracker tracker = new AssemblyTracker(new [] {  _assemblyDefinition1, _assemblyDefinition2});
+      Assert.That (tracker.GetAssemblies(), Is.EquivalentTo (new[] { _assemblyDefinition1, _assemblyDefinition2 }));
+    }
 
-      Assert.That (tracker.GetAssemblies(), Is.EquivalentTo (new[] { assembly, assembly2 }));
+    [Test]
+    public void Initialization_ReferenceNotTracked ()
+    {
+      _assemblyDefinition1.MainModule.AssemblyReferences.Add (_assemblyDefinition2.Name);
+      AssemblyTracker tracker = new AssemblyTracker (new[] { _assemblyDefinition1 });
+      
+      Assert.That (tracker.GetAssemblies (), Is.EquivalentTo (new[] { _assemblyDefinition1 }));
     }
 
     [Test]
@@ -43,7 +57,7 @@ namespace AssemblyTransformer.UnitTests
       var name = AssemblyNameReferenceObjectMother.CreateAssemblyNameReferenceWithCulture ("TestCase1", "de");
 
       AssemblyDefinition assembly = AssemblyDefinitionObjectMother.CreateAssemblyDefinition ("TestCase1", "de");
-      AssemblyDefinition assembly2 = AssemblyDefinitionObjectMother.CreateAssemblyDefinition ("TestCase1", "en");
+      AssemblyDefinition assembly2 = AssemblyDefinitionObjectMother.CreateAssemblyDefinition ("TestCase1");
       AssemblyTracker tracker = new AssemblyTracker (new[] { assembly, assembly2 });
 
       var result = tracker.GetAssemblyByReference (name);
@@ -57,7 +71,7 @@ namespace AssemblyTransformer.UnitTests
       var name = AssemblyNameReferenceObjectMother.CreateAssemblyNameReferenceWithCulture ("TestCase1", "de");
 
       AssemblyDefinition assembly = AssemblyDefinitionObjectMother.CreateAssemblyDefinition ("TestCase1");
-      AssemblyDefinition assembly2 = AssemblyDefinitionObjectMother.CreateAssemblyDefinition ("TestCase1", "en");
+      AssemblyDefinition assembly2 = AssemblyDefinitionObjectMother.CreateAssemblyDefinition ("TestCase2");
       AssemblyTracker tracker = new AssemblyTracker (new[] { assembly, assembly2 });
 
       var result = tracker.GetAssemblyByReference (name);
@@ -65,37 +79,96 @@ namespace AssemblyTransformer.UnitTests
       Assert.That (result, Is.Null);
     }
 
+    
+
+    [Test]
+    public void IsModified_NotTracked ()
+    {
+      AssemblyTracker tracker = new AssemblyTracker (new[] { _assemblyDefinition1 });
+
+      Assert.Throws<ArgumentException> (() => tracker.IsModified (_assemblyDefinition2));
+    }
+
+    [Test]
+    public void GetModifiedAssemblies ()
+    {
+      AssemblyTracker tracker = new AssemblyTracker (new[] { _assemblyDefinition1, _assemblyDefinition2 });
+      tracker.MarkModified (_assemblyDefinition1);
+
+      var result = tracker.GetModifiedAssemblies();
+      Assert.That (result, Is.EquivalentTo (new[] { _assemblyDefinition1 }));
+    }
+
     [Test]
     public void MarkModified ()
     {
-      AssemblyDefinition assembly = AssemblyDefinitionObjectMother.CreateAssemblyDefinition ("TestCase1");
-      AssemblyDefinition assembly2 = AssemblyDefinitionObjectMother.CreateAssemblyDefinition ("TestCase1", "en");
-      AssemblyTracker tracker = new AssemblyTracker (new[] { assembly, assembly2 });
+      AssemblyTracker tracker = new AssemblyTracker (new[] { _assemblyDefinition1, _assemblyDefinition2 });
 
-      tracker.MarkModified (assembly);
+      tracker.MarkModified (_assemblyDefinition1);
 
-      Assert.That (tracker.IsModified (assembly), Is.True);
-      Assert.That (tracker.IsModified (assembly2), Is.False);
+      Assert.That (tracker.IsModified (_assemblyDefinition1), Is.True);
+      Assert.That (tracker.IsModified (_assemblyDefinition2), Is.False);
     }
 
     [Test]
-    public void MarkModified_NotFound()
+    public void MarkModified_NotTracked()
     {
-      AssemblyDefinition assembly = AssemblyDefinitionObjectMother.CreateAssemblyDefinition ("TestCase1");
-      AssemblyDefinition assembly2 = AssemblyDefinitionObjectMother.CreateAssemblyDefinition ("TestCase1", "en");
-      AssemblyTracker tracker = new AssemblyTracker (new[] { assembly });
+      AssemblyTracker tracker = new AssemblyTracker (new[] { _assemblyDefinition1 });
 
-      Assert.Throws<ArgumentException> (() => tracker.MarkModified (assembly2));
+      Assert.Throws<ArgumentException> (() => tracker.MarkModified (_assemblyDefinition2));
     }
 
     [Test]
-    public void IsModified_NotFound ()
+    public void MarkUnmodified ()
     {
-      AssemblyDefinition assembly = AssemblyDefinitionObjectMother.CreateAssemblyDefinition ("TestCase1");
-      AssemblyDefinition assembly2 = AssemblyDefinitionObjectMother.CreateAssemblyDefinition ("TestCase1", "en");
-      AssemblyTracker tracker = new AssemblyTracker (new[] { assembly });
+      AssemblyTracker tracker = new AssemblyTracker (new[] { _assemblyDefinition1 });
+      tracker.MarkModified (_assemblyDefinition1);
+      Assert.That (tracker.IsModified (_assemblyDefinition1), Is.True);
 
-      Assert.Throws<ArgumentException> (() => tracker.IsModified (assembly2));
+      tracker.MarkUnmodified (_assemblyDefinition1);
+
+      Assert.That (tracker.IsModified (_assemblyDefinition1), Is.False);
+    }
+
+    [Test]
+    public void MarkUnodified_NotTracked ()
+    {
+      AssemblyTracker tracker = new AssemblyTracker (new[] { _assemblyDefinition1 });
+
+      Assert.Throws<ArgumentException> (() => tracker.MarkUnmodified (_assemblyDefinition2));
+    }
+
+    [Test]
+    public void GetReverseReferences ()
+    {
+      _assemblyDefinition1.MainModule.AssemblyReferences.Add (_assemblyDefinition2.Name);
+      AssemblyTracker tracker = new AssemblyTracker (new[] { _assemblyDefinition1, _assemblyDefinition2 });
+
+      var reverseReferences = tracker.GetReverseReferences (_assemblyDefinition2);
+
+      Assert.That (reverseReferences, Is.EquivalentTo (new [] {_assemblyDefinition1}));
+    }
+
+    [Test]
+    public void GetReverseReferences_NotTracked ()
+    {
+      AssemblyTracker tracker = new AssemblyTracker (new AssemblyDefinition[0]);
+
+      Assert.Throws<ArgumentException> (() => tracker.GetReverseReferences (_assemblyDefinition1));
+    }
+
+    [Test]
+    public void GetReverseReferences_MultiModuleAssembly ()
+    {
+      ModuleDefinition module = ModuleDefinition.CreateModule ("Module1", ModuleKind.NetModule);
+      module.AssemblyReferences.Add (_assemblyDefinition2.Name);
+      _assemblyDefinition1.Modules.Add (module);
+      
+      AssemblyTracker tracker = new AssemblyTracker (new[] { _assemblyDefinition1, _assemblyDefinition2 });
+
+      var reverseReferences = tracker.GetReverseReferences (_assemblyDefinition2);
+
+      Assert.That (reverseReferences, Is.EquivalentTo (new[] { _assemblyDefinition1 }));
     }
   }
 }
