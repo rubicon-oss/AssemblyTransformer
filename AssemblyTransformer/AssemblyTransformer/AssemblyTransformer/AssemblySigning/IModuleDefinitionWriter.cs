@@ -7,6 +7,6 @@ namespace AssemblyTransformer.AssemblySigning
 {
   public interface IModuleDefinitionWriter
   {
-    void WriteModule (ModuleDefinition moduleDefinition, WriterParameters parameters);
+    void WriteModule (ModuleDefinition moduleDefinition);
   }
 }
