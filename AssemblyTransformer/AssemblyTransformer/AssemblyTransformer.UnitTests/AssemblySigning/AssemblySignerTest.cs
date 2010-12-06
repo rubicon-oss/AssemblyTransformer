@@ -144,7 +144,7 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
     {
       _assemblyDefinition2.Name.PublicKeyToken = AssemblyNameReferenceObjectMother.PublicKeyToken2;
       // we use clone because otherwise the name would be set in place and the test would always work.
-      _assemblyDefinition1.MainModule.AssemblyReferences.Add (AssemblyNameReferenceObjectMother.Clone (_assemblyDefinition2.Name));
+      _assemblyDefinition1.MainModule.AssemblyReferences.Add (_assemblyDefinition2.Name.Clone());
 
       using (_writerMock.GetMockRepository().Ordered())
       {
@@ -173,8 +173,8 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
       _assemblyDefinition1.Name.PublicKeyToken = AssemblyNameReferenceObjectMother.PublicKeyToken1;
       _assemblyDefinition2.Name.PublicKeyToken = AssemblyNameReferenceObjectMother.PublicKeyToken2;
       // we use clone because otherwise the name would be set in place and the test would always work.
-      _assemblyDefinition1.MainModule.AssemblyReferences.Add (AssemblyNameReferenceObjectMother.Clone (_assemblyDefinition2.Name));
-      _assemblyDefinition2.MainModule.AssemblyReferences.Add (AssemblyNameReferenceObjectMother.Clone (_assemblyDefinition1.Name));
+      _assemblyDefinition1.MainModule.AssemblyReferences.Add (_assemblyDefinition2.Name.Clone());
+      _assemblyDefinition2.MainModule.AssemblyReferences.Add (_assemblyDefinition1.Name.Clone());
 
       using (_writerMock.GetMockRepository().Ordered())
       {
@@ -219,8 +219,8 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
       _assemblyDefinition1.Name.PublicKeyToken = AssemblyNameReferenceObjectMother.PublicKeyToken1;
       _assemblyDefinition2.Name.PublicKeyToken = AssemblyNameReferenceObjectMother.PublicKeyToken2;
       // we use clone because otherwise the name would be set in place and the test would always work.
-      _assemblyDefinition1.MainModule.AssemblyReferences.Add (AssemblyNameReferenceObjectMother.Clone (_assemblyDefinition2.Name));
-      _assemblyDefinition2.MainModule.AssemblyReferences.Add (AssemblyNameReferenceObjectMother.Clone (_assemblyDefinition1.Name));
+      _assemblyDefinition1.MainModule.AssemblyReferences.Add (_assemblyDefinition2.Name.Clone());
+      _assemblyDefinition2.MainModule.AssemblyReferences.Add (_assemblyDefinition1.Name.Clone());
 
       using (_writerMock.GetMockRepository().Ordered())
       {

@@ -41,21 +41,5 @@ namespace AssemblyTransformer.UnitTests
     {
       return new AssemblyNameReference (shortName, new Version (version));
     }
-
-    public static AssemblyNameReference Clone (AssemblyNameReference original)
-    {
-      return new AssemblyNameReference (original.Name, original.Version) 
-      {
-          Attributes = original.Attributes,
-          Culture = original.Culture,
-          Hash = original.Hash,
-          HashAlgorithm = original.HashAlgorithm,
-          IsRetargetable = original.IsRetargetable,
-          IsSideBySideCompatible = original.IsSideBySideCompatible,
-          MetadataToken = original.MetadataToken,
-          PublicKey = original.PublicKey,
-          PublicKeyToken = original.PublicKeyToken
-      };
-    }
   }
 }
