@@ -1,4 +1,5 @@
 using System;
+using Mono.Cecil;
 using NUnit.Framework;
 
 namespace AssemblyTransformer.UnitTests
@@ -80,6 +81,38 @@ namespace AssemblyTransformer.UnitTests
 
       Assert.That (referenceWithPublicKey.MatchesDefinition (definitionWithPublicKey), Is.False);
       Assert.That (referenceWithPublicKey.MatchesDefinition (definitionWithoutPublicKey), Is.False);
+    }
+
+    [Test]
+    public void Clone_WithAllSet ()
+    {
+      var referenceWithAllSet = AssemblyNameReferenceObjectMother.CreateAssemblyNameReference ("AllSet");
+      referenceWithAllSet.Culture = "de";
+      referenceWithAllSet.Hash = new byte[0];
+      referenceWithAllSet.HashAlgorithm = AssemblyHashAlgorithm.SHA1;
+      referenceWithAllSet.IsRetargetable = true;
+      referenceWithAllSet.IsSideBySideCompatible = true;
+      referenceWithAllSet.MetadataToken = new MetadataToken(TokenType.Module, 1);
+      referenceWithAllSet.PublicKey = AssemblyNameReferenceObjectMother.PublicKey1;
+      referenceWithAllSet.Version = new Version("2.0.0.0");
+      var copyReference = referenceWithAllSet.Clone();
+
+      AssemblyNameReferenceChecker.CheckNameReferences (referenceWithAllSet, copyReference);
+
+      Assert.That (copyReference.MetadataToken, Is.Not.SameAs (referenceWithAllSet.MetadataToken));
+      Assert.That (copyReference.PublicKey, Is.Not.SameAs (referenceWithAllSet.PublicKey));
+      Assert.That (copyReference.PublicKeyToken, Is.Not.SameAs (referenceWithAllSet.PublicKeyToken));
+      Assert.That (copyReference.Version, Is.Not.SameAs (referenceWithAllSet.Version));
+    }
+
+    [Test]
+    public void Clone_WithNoneSet ()
+    {
+      var referenceWithNoneSet = AssemblyNameReferenceObjectMother.CreateAssemblyNameReference ("NothingSet");
+      var copyReference = referenceWithNoneSet.Clone ();
+
+      AssemblyNameReferenceChecker.CheckNameReferences(referenceWithNoneSet, copyReference);
+      Assert.That (copyReference.MetadataToken, Is.Not.SameAs (referenceWithNoneSet.MetadataToken));
     }
   }
 }

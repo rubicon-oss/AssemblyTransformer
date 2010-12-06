@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyDefinitionObjectMother.cs" />
+    <Compile Include="AssemblyNameReferenceChecker.cs" />
     <Compile Include="AssemblyNameReferenceExtensionTest.cs" />
     <Compile Include="AssemblyNameReferenceObjectMother.cs" />
     <Compile Include="AssemblySigning\AssemblySignerTest.cs" />

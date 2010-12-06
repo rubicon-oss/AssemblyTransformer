@@ -1,6 +1,3 @@
-// Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
-// All rights reserved.
-//
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,77 +16,63 @@ namespace AssemblyTransformer.AssemblySigning
 
     public void SignAndSave (IAssemblyTracker tracker)
     {
-      foreach (var modifiedAssembly in tracker.GetModifiedAssemblies())
+      ICollection<AssemblyDefinition> assembliesToSave = new List<AssemblyDefinition> (tracker.GetModifiedAssemblies ());
+      while (assembliesToSave.Count != 0)
       {
-        SignAndSave (tracker, modifiedAssembly);
+        var modifiedAssembly = assembliesToSave.First();
+        SignAndSave (tracker, modifiedAssembly, assembliesToSave);
+        tracker.MarkUnmodified (modifiedAssembly);
       }
     }
 
-    private void SignAndSave (IAssemblyTracker tracker, AssemblyDefinition assembly)
+    private void SignAndSave (IAssemblyTracker tracker, AssemblyDefinition assembly, ICollection<AssemblyDefinition> assembliesToSave)
     {
-      if (!tracker.IsModified (assembly))
-        return;
+      // Remove this assembly from the list of assemblies to save before descending into recursive calls - this will avoid an endless loop with 
+      // circular references.
+      assembliesToSave.Remove (assembly);
 
-      tracker.MarkUnmodified (assembly);
-
+      // Save all referenced assemblies before saving this assembly. Note that the referenced assemblies will automatically update this assembly's
+      // references if they change their name while saving.
       foreach (var moduleDefinition in assembly.Modules)
       {
         foreach (var assemblyNameReference in moduleDefinition.AssemblyReferences)
         {
           var referencedAssembly = tracker.GetAssemblyByReference (assemblyNameReference);
-          if (referencedAssembly != null)
-            SignAndSave (tracker, referencedAssembly);
+          if (referencedAssembly != null && assembliesToSave.Contains (referencedAssembly))
+            SignAndSave (tracker, referencedAssembly, assembliesToSave);
         }
 
+        // If a referenced assembly changes this assembly's references, this assembly will be modified again. Mark unmodified before saving.
+        assembliesToSave.Remove (assembly);
+
+        // Keep track of original name of this assembly before saving the module. The writer might change the name.
+        var originalAssemblyName = assembly.Name.Clone();
         _writer.WriteModule (moduleDefinition);
 
-        // TODO: Update reverse references
+        // If the writer has changed the name of this assembly, all assemblies referencing this assembly must be updated. Because of the recursive
+        // call above, we can be sure that these assemblies will be saved after returning from this method: it is guaranteed that the referenced
+        // assemblies are saved before the referencing assemblies.
+        // The only case where this is not true is with circular references. In this case, the recursion will stop when the first assembly in the
+        // cycle is reached again (because it has been marked unmodified before the recursive step, and the recursion will end when an unmodified
+        // assembly is reached). In that case, it can be assumed that the other SignAndSave method will pick up the still-modified assemblies later.
+        if (!originalAssemblyName.MatchesDefinition (assembly.Name))
+        {
+          foreach (var assemblyDefinition in tracker.GetReverseReferences (assembly))
+          {
+            UpdateReferences (assemblyDefinition, originalAssemblyName, assembly.Name);
+            assembliesToSave.Add (assemblyDefinition);
+          }
+        }
       }
     }
 
-
-    //{
-    //  while (modified assemblies)
-    //  foreach (var modifiedAssembly in tracker.GetModifiedAssemblies())
-    //  {
-    //    SignAndSave (tracker, modifiedAssembly);
-    //  }
-    //}
-
-    //private void SignAndSave (IAssemblyTracker tracker, AssemblyDefinition modifiedAssembly)
-    //{
-    //  if (!tracker.IsModified (modifiedAssembly))
-    //    return;
-
-    // mark unmodified
-
-    //  foreach (var moduleDefinition in modifiedAssembly.Modules)
-    //  {
-    //    foreach (var nameReference in moduleDefinition.AssemblyReferences)
-    //    {
-    //      var referencedAssembly = tracker.GetAssemblyByReference (nameReference);
-    //      SignAndSave (tracker, referencedAssembly);
-    //    }
-    //  }
-
-    //  var oldName = AssemblyNameReference.Parse (modifiedAssembly.Name.FullName);
-    //  _writer.WriteModule (modifiedAssembly.Modules);
-    //  var newName = modifiedAssembly.Name;
-
-    //  if (keychanged)
-    //  foreach (var reverseReference in tracker.GetReverseReferences (modifiedAssembly))
-    //  {
-    //    UpdateReferences (reverseReference, oldName, newName);
-    //  }
-    //}
-
-    //private void UpdateReferences (AssemblyDefinition assemblyDefinition, AssemblyNameReference oldDefinition, AssemblyNameDefinition newDefinition)
-    //{
-    //b MarkModified
-    //  var nameReference = assemblyDefinition.Modules.SelectMany (m => m.AssemblyReferences)
-    //      .Select ((reference, i) => new { Index = i, Reference = reference })
-    //      .Single (tuple => tuple.Reference.MatchesDefinition (oldDefinition));
-    //  assemblyDefinition.MainModule.AssemblyReferences[nameReference.Index] = newDefinition;
-    //}
+    private void UpdateReferences (AssemblyDefinition assemblyDefinition, AssemblyNameReference oldDefinition, AssemblyNameDefinition newDefinition)
+    {
+      var nameReference = assemblyDefinition.Modules.SelectMany (m => m.AssemblyReferences)
+          .Select ((reference, i) => new { Index = i, Reference = reference })
+          .Single (tuple => tuple.Reference.MatchesDefinition (oldDefinition) || object.ReferenceEquals (tuple.Reference, newDefinition));
+      
+      assemblyDefinition.MainModule.AssemblyReferences[nameReference.Index] = newDefinition.Clone();
+    }
   }
 }
