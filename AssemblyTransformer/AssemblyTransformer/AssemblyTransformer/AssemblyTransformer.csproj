@@ -46,10 +46,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyMarking\AssemblyMarker.cs" />
+    <Compile Include="AssemblyMarking\MarkingStrategies\CustomMarkingAttributeStrategy.cs" />
+    <Compile Include="AssemblyMarking\MarkingStrategies\DefaultMarkingAttributeStrategy.cs" />
+    <Compile Include="AssemblyMarking\IMarkingAttributeStrategy.cs" />
+    <Compile Include="AssemblyMarking\MarkingStrategies\MarkingAttributeStrategy.cs" />
+    <Compile Include="AssemblyMarking\MarkingStrategies\NoneMarkingAttributeStrategy.cs" />
     <Compile Include="AssemblyNameReferenceExtensions.cs" />
     <Compile Include="AssemblySigning\AssemblySigner.cs" />
     <Compile Include="AssemblySigning\IModuleDefinitionWriter.cs" />
     <Compile Include="AssemblyTracking\AssemblyTracker.cs" />
+    <Compile Include="AssemblyWriting\ModuleWriter.cs" />
+    <Compile Include="IAssemblyMarker.cs" />
     <Compile Include="IAssemblyTracker.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
