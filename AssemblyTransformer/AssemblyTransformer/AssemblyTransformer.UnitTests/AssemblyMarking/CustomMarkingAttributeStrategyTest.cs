@@ -2,10 +2,12 @@
 // All rights reserved.
 //
 using System;
-using AssemblyTransformer.AssemblyMarking;
-using AssemblyTransformer.AssemblyMarking.MarkingStrategies;
+using System.Reflection;
 using AssemblyTransformer.AssemblySigning;
+using AssemblyTransformer.AssemblySigning.AssemblyWriting;
+using AssemblyTransformer.AssemblyTransformations.AssemblyMarking.MarkingStrategies;
 using Mono.Cecil;
+using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace AssemblyTransformer.UnitTests.AssemblyMarking
@@ -21,8 +23,19 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
     {
       _assemblyDefinition = AssemblyDefinitionObjectMother.CreateMultiModuleAssemblyDefinition ();
       _markerCustomMarkingStrategy = new CustomMarkingAttributeStrategy (
-          "CustomNonVirtualAttribute", "CustomNonVirtualAttribute"
+          "CustomNonVirtualAttribute", "CustomNonVirtualAttribute", ModuleDefinition.ReadModule ("CecilUser.exe")
         );
+    }
+
+    [TearDown]
+    public void TearDown ()
+    {
+      IModuleDefinitionWriter writer = new ModuleWriter (new FileSystem.FileSystem (), null, new List<StrongNameKeyPair> ());
+      foreach (var module in _assemblyDefinition.Modules)
+      {
+        Console.WriteLine ("###### " + module.Name);
+       // writer.WriteModule (_assemblyDefinition.MainModule, module);
+      }
     }
 
     [Test]
@@ -35,7 +48,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
       Assert.That (_assemblyDefinition.Modules.Count, Is.EqualTo (2));
       Assert.That (_assemblyDefinition.MainModule.Types.Count, Is.EqualTo (2));
 
-      _markerCustomMarkingStrategy.AddCustomAttribute (methodMain, attributeModule);
+      _markerCustomMarkingStrategy.AddCustomAttribute (methodMain, _assemblyDefinition);
 
       Assert.That (_assemblyDefinition.MainModule.Types.Count, Is.EqualTo (2));
       Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].CustomAttributes.Count, Is.EqualTo (1));
@@ -46,13 +59,6 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
 
       TypeReference attributeType = attributeModule.Types[1];
       Assert.That (attributeType.Scope.MetadataScopeType, Is.EqualTo (MetadataScopeType.ModuleDefinition));
-
-      IModuleDefinitionWriter writer = new AssemblyTransformer.AssemblyWriting.ModuleWriter ();
-      foreach (var module in _assemblyDefinition.Modules)
-      {
-        Console.WriteLine ("###### " + module.Name);
-        writer.WriteModule (module);
-      }
     }
 
     [Test]
@@ -65,7 +71,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
       Assert.That (_assemblyDefinition.Modules.Count, Is.EqualTo (2));
       Assert.That (_assemblyDefinition.MainModule.Types.Count, Is.EqualTo (2));
 
-      _markerCustomMarkingStrategy.AddCustomAttribute (secondModuleMethod, attributeModule);
+      _markerCustomMarkingStrategy.AddCustomAttribute (secondModuleMethod, _assemblyDefinition);
 
       Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].CustomAttributes.Count, Is.EqualTo (0));
 
@@ -77,15 +83,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
       TypeReference attributeType = attributeModule.Types[1];
       Assert.That (attributeType.Scope.MetadataScopeType, Is.EqualTo (MetadataScopeType.ModuleDefinition));
       Assert.That (_assemblyDefinition.Modules[1].ModuleReferences[0].MetadataScopeType, Is.EqualTo (MetadataScopeType.ModuleReference));
-      //Assert.That (attributeType.Scope.MetadataToken, Is.EqualTo (_assemblyDefinition.Modules[1].ModuleReferences[0].MetadataToken));
 
-
-      IModuleDefinitionWriter writer = new AssemblyTransformer.AssemblyWriting.ModuleWriter ();
-      foreach (var module in _assemblyDefinition.Modules)
-      {
-        Console.WriteLine ("###### " + module.Name);
-        writer.WriteModule (module);
-      }
     }
 
     [Test]
@@ -99,8 +97,8 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
       Assert.That (_assemblyDefinition.Modules.Count, Is.EqualTo (2));
       Assert.That (_assemblyDefinition.MainModule.Types.Count, Is.EqualTo (2));
 
-      _markerCustomMarkingStrategy.AddCustomAttribute (mainModuleMethod, attributeModule);
-      _markerCustomMarkingStrategy.AddCustomAttribute (secondModuleMethod, attributeModule);
+      _markerCustomMarkingStrategy.AddCustomAttribute (mainModuleMethod, _assemblyDefinition);
+      _markerCustomMarkingStrategy.AddCustomAttribute (secondModuleMethod, _assemblyDefinition);
 
       Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].CustomAttributes.Count, Is.EqualTo (1));
       Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].CustomAttributes[0].AttributeType.Name, Is.EqualTo ("CustomNonVirtualAttribute"));
@@ -114,22 +112,13 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
       Assert.That (attributeType.Scope.MetadataScopeType, Is.EqualTo (MetadataScopeType.ModuleDefinition));
       Assert.That (_assemblyDefinition.Modules[1].ModuleReferences[0].MetadataScopeType, Is.EqualTo (MetadataScopeType.ModuleReference));
 
-      //Assert.That (attributeType.Scope.MetadataToken, Is.EqualTo (_assemblyDefinition.Modules[1].ModuleReferences[0].MetadataToken));
-
-
-      IModuleDefinitionWriter writer = new AssemblyTransformer.AssemblyWriting.ModuleWriter ();
-      foreach (var module in _assemblyDefinition.Modules)
-      {
-        Console.WriteLine ("###### " + module.Name);
-        writer.WriteModule (module);
-      }
     }
 
     [Test]
     public void OverrideMethods_AttributeTypeNotFound_Exception ()
     {
       _markerCustomMarkingStrategy = new CustomMarkingAttributeStrategy (
-          "NotFoundAttribute", "NotFoundAttribute"
+          "NotFoundAttribute", "NotFoundAttribute", ModuleDefinition.ReadModule ("CecilUser.exe")
         );
       MethodDefinition methodMain = _assemblyDefinition.MainModule.Types[1].Methods[0];
       ModuleDefinition attributeModule = ModuleDefinition.ReadModule ("CecilUser.exe");
@@ -138,7 +127,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
       Assert.That (_assemblyDefinition.Modules.Count, Is.EqualTo (2));
       Assert.That (_assemblyDefinition.MainModule.Types.Count, Is.EqualTo (2));
 
-      Assert.Throws<ArgumentException> (() => _markerCustomMarkingStrategy.AddCustomAttribute (methodMain, attributeModule));
+      Assert.Throws<ArgumentException> (() => _markerCustomMarkingStrategy.AddCustomAttribute (methodMain, _assemblyDefinition));
     }
 
   }

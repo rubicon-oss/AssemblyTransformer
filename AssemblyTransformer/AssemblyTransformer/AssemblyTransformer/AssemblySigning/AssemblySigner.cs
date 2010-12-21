@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AssemblyTransformer.AssemblySigning.AssemblyWriting;
+using AssemblyTransformer.Extensions;
 using Mono.Cecil;
 
 namespace AssemblyTransformer.AssemblySigning
 {
-  public class AssemblySigner
+  public class AssemblySigner : IAssemblySigner
   {
     private readonly IModuleDefinitionWriter _writer;
 
@@ -47,7 +49,7 @@ namespace AssemblyTransformer.AssemblySigning
 
         // Keep track of original name of this assembly before saving the module. The writer might change the name.
         var originalAssemblyName = assembly.Name.Clone();
-        _writer.WriteModule (moduleDefinition);
+        _writer.WriteModule (assembly.MainModule, moduleDefinition);
 
         // If the writer has changed the name of this assembly, all assemblies referencing this assembly must be updated. Because of the recursive
         // call above, we can be sure that these assemblies will be saved after returning from this method: it is guaranteed that the referenced

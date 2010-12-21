@@ -3,9 +3,9 @@
 //
 using System;
 using System.Text.RegularExpressions;
-using AssemblyTransformer.AssemblyMarking;
-using AssemblyTransformer.AssemblySigning;
 using AssemblyTransformer.AssemblyTracking;
+using AssemblyTransformer.AssemblyTransformations.AssemblyMarking;
+using AssemblyTransformer.AssemblyTransformations.AssemblyMarking.MarkingStrategies;
 using Mono.Cecil;
 using NUnit.Framework;
 using Rhino.Mocks;
@@ -28,7 +28,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
       _assemblyDefinition = AssemblyDefinitionObjectMother.CreateMultiModuleAssemblyDefinition();
       _tracker = new AssemblyTracker (new [] { _assemblyDefinition });
       _markingAttributeStrategy = MockRepository.GenerateStub<IMarkingAttributeStrategy> ();
-      _marker = new AssemblyMarker (_markingAttributeStrategy);
+      _marker = new AssemblyMarker (_markingAttributeStrategy, new Regex ("(.*)"));
     }
 
     [Test]
@@ -37,7 +37,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
       Regex regex = new Regex ("(.*)");
       Assert.That (_tracker.IsModified (_assemblyDefinition), Is.False);
 
-      _marker.OverrideMethods (_tracker, regex);
+      _marker.Transform (_tracker);
 
       Assert.That (_tracker.IsModified (_assemblyDefinition), Is.True);
     }
@@ -45,10 +45,10 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
     [Test]
     public void OverrideMethods_DoesNotMarkModified ()
     {
-      Regex regex = new Regex ("xxxx");
+      _marker = new AssemblyMarker (_markingAttributeStrategy, new Regex ("xxxx"));
       Assert.That (_tracker.IsModified (_assemblyDefinition), Is.False);
 
-      _marker.OverrideMethods (_tracker, regex);
+      _marker.Transform (_tracker);
 
       Assert.That (_tracker.IsModified (_assemblyDefinition), Is.False);
     }
@@ -56,10 +56,9 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
     [Test]
     public void OverrideMethods_SetsMethodVirtual ()
     {
-      Regex regex = new Regex ("(.*)");
       Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].IsVirtual, Is.False);
 
-      _marker.OverrideMethods (_tracker, regex);
+      _marker.Transform (_tracker);
 
       Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].IsVirtual, Is.True);
     }
@@ -67,10 +66,10 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
     [Test]
     public void OverrideMethods_DoesNotSetMethodVirtual ()
     {
-      Regex regex = new Regex ("xxxx");
+      _marker = new AssemblyMarker (_markingAttributeStrategy, new Regex ("xxxx"));
       Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].IsVirtual, Is.False);
 
-      _marker.OverrideMethods (_tracker, regex);
+      _marker.Transform (_tracker);
 
       Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].IsVirtual, Is.False);
     }
@@ -78,43 +77,42 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
     [Test]
     public void OverrideMethods_BothMethodsMarked ()
     {
-      Regex regex = new Regex ("(.*)");
       MethodDefinition methodMain = _assemblyDefinition.MainModule.Types[1].Methods[0];
       MethodDefinition methodModule = _assemblyDefinition.Modules[1].Types[1].Methods[0];
 
-      _marker.OverrideMethods (_tracker, regex);
+      _marker.Transform (_tracker);
 
-      _markingAttributeStrategy.AssertWasCalled (s => s.AddCustomAttribute (methodMain, _assemblyDefinition.MainModule));
-      _markingAttributeStrategy.AssertWasCalled (s => s.AddCustomAttribute (methodModule, _assemblyDefinition.MainModule));
+      _markingAttributeStrategy.AssertWasCalled (s => s.AddCustomAttribute (methodMain, _assemblyDefinition));
+      _markingAttributeStrategy.AssertWasCalled (s => s.AddCustomAttribute (methodModule, _assemblyDefinition));
     }
 
     [Test]
     public void OverrideMethods_MainModule_MethodMarked()
     {
-      Regex regex = new Regex ("TestMethod");
+      _marker = new AssemblyMarker (_markingAttributeStrategy, new Regex ("TestMethod"));
       MethodDefinition methodMain = _assemblyDefinition.MainModule.Types[1].Methods[0];
 
       Assert.That (_assemblyDefinition.MainModule.Types[1].CustomAttributes, Is.Empty);
       Assert.That (_assemblyDefinition.Modules.Count, Is.EqualTo (2));
       Assert.That (_assemblyDefinition.MainModule.Types.Count, Is.EqualTo (2));
 
-      _marker.OverrideMethods (_tracker, regex);
+      _marker.Transform (_tracker);
 
-      _markingAttributeStrategy.AssertWasCalled (s => s.AddCustomAttribute (methodMain, _assemblyDefinition.MainModule));
+      _markingAttributeStrategy.AssertWasCalled (s => s.AddCustomAttribute (methodMain, _assemblyDefinition));
     }
 
     [Test]
     public void OverrideMethods_SecondaryModule_MethodMarked ()
     {
-      Regex regex = new Regex ("TestSecondMethod");
+      _marker = new AssemblyMarker (_markingAttributeStrategy, new Regex ("TestSecondMethod"));
       MethodDefinition methodModule = _assemblyDefinition.Modules[1].Types[1].Methods[0];
       Assert.That (_assemblyDefinition.MainModule.Types[1].CustomAttributes, Is.Empty);
       Assert.That (_assemblyDefinition.Modules.Count, Is.EqualTo (2));
       Assert.That (_assemblyDefinition.MainModule.Types.Count, Is.EqualTo (2));
 
-      _marker.OverrideMethods (_tracker, regex);
+      _marker.Transform (_tracker);
 
-      _markingAttributeStrategy.AssertWasCalled (s => s.AddCustomAttribute (methodModule, _assemblyDefinition.MainModule));
+      _markingAttributeStrategy.AssertWasCalled (s => s.AddCustomAttribute (methodModule, _assemblyDefinition));
     }
 
   }

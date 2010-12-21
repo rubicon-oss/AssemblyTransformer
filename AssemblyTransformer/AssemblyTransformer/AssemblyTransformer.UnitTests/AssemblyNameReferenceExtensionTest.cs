@@ -1,4 +1,5 @@
 using System;
+using AssemblyTransformer.Extensions;
 using Mono.Cecil;
 using NUnit.Framework;
 

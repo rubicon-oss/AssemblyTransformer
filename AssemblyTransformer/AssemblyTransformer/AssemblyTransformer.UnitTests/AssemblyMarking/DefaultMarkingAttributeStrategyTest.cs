@@ -2,9 +2,11 @@
 // All rights reserved.
 //
 using System;
-using AssemblyTransformer.AssemblyMarking;
-using AssemblyTransformer.AssemblyMarking.MarkingStrategies;
+using System.Collections.Generic;
+using System.Reflection;
 using AssemblyTransformer.AssemblySigning;
+using AssemblyTransformer.AssemblySigning.AssemblyWriting;
+using AssemblyTransformer.AssemblyTransformations.AssemblyMarking.MarkingStrategies;
 using Mono.Cecil;
 using NUnit.Framework;
 
@@ -23,6 +25,16 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
       _markerDefaultMarkingStrategy = new DefaultMarkingAttributeStrategy ("NonVirtualAttribute", "NonVirtualAttribute");
     }
 
+    [TearDown]
+    public void TearDown ()
+    {
+      IModuleDefinitionWriter writer = new ModuleWriter (new FileSystem.FileSystem(), null, new List<StrongNameKeyPair> ());
+      foreach (var module in _assemblyDefinition.Modules)
+      {
+        Console.WriteLine ("###### " + module.Name);
+        //writer.WriteModule (_assemblyDefinition.MainModule, module);
+      }
+    }
 
     [Test]
     public void OverrideMethods_MainModule_MethodMarked ()
@@ -33,26 +45,40 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
       Assert.That (_assemblyDefinition.Modules.Count, Is.EqualTo (2));
       Assert.That (_assemblyDefinition.MainModule.Types.Count, Is.EqualTo (2));
 
-      _markerDefaultMarkingStrategy.AddCustomAttribute (methodMain, methodMain.DeclaringType.Module);
+      _markerDefaultMarkingStrategy.AddCustomAttribute (methodMain, _assemblyDefinition);
 
+      // Main module was modified
       Assert.That (_assemblyDefinition.MainModule.Types.Count, Is.EqualTo (3));
       Assert.That (_assemblyDefinition.MainModule.Types[2].Name, Is.EqualTo ("NonVirtualAttribute"));
-      Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].CustomAttributes.Count, Is.EqualTo (1));
-      Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].CustomAttributes[0].AttributeType.Name, Is.EqualTo ("NonVirtualAttribute"));
+      Assert.That (methodMain.CustomAttributes.Count, Is.EqualTo (1));
+      Assert.That (methodMain.CustomAttributes[0].AttributeType.Name, Is.EqualTo ("NonVirtualAttribute"));
+      Assert.That (methodMain.CustomAttributes[0].AttributeType, Is.SameAs (_assemblyDefinition.MainModule.Types[2]));
 
+      // Second module was not touched
       Assert.That (_assemblyDefinition.Modules[1].ModuleReferences.Count, Is.EqualTo (0));
       Assert.That (_assemblyDefinition.Modules[1].Types[1].Methods[0].CustomAttributes.Count, Is.EqualTo (0));
 
       TypeReference attributeType = _assemblyDefinition.MainModule.Types[2];
       Assert.That (attributeType.Scope.MetadataScopeType, Is.EqualTo (MetadataScopeType.ModuleDefinition));
-
-      IModuleDefinitionWriter writer = new AssemblyTransformer.AssemblyWriting.ModuleWriter ();
-      foreach (var module in _assemblyDefinition.Modules)
-      {
-        Console.WriteLine ("###### " + module.Name);
-        writer.WriteModule (module);
-      }
     }
+
+    [Test]
+    public void OverrideMethods_MainModule_MethodMarkedTwice ()
+    {
+      MethodDefinition methodMain = _assemblyDefinition.MainModule.Types[1].Methods[0];
+
+      Assert.That (_assemblyDefinition.MainModule.Types[1].CustomAttributes, Is.Empty);
+      Assert.That (_assemblyDefinition.Modules.Count, Is.EqualTo (2));
+      Assert.That (_assemblyDefinition.MainModule.Types.Count, Is.EqualTo (2));
+
+      _markerDefaultMarkingStrategy.AddCustomAttribute (methodMain, _assemblyDefinition);
+      _markerDefaultMarkingStrategy.AddCustomAttribute (methodMain, _assemblyDefinition);
+
+      Assert.That (_assemblyDefinition.MainModule.Types.Count, Is.EqualTo (3));
+      Assert.That (_assemblyDefinition.MainModule.Types[2].Name, Is.EqualTo ("NonVirtualAttribute"));
+      Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].CustomAttributes.Count, Is.EqualTo (1));
+    }
+
 
     [Test]
     public void OverrideMethods_SecondaryModule_MethodMarked ()
@@ -64,29 +90,23 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
       Assert.That (_assemblyDefinition.Modules.Count, Is.EqualTo (2));
       Assert.That (_assemblyDefinition.MainModule.Types.Count, Is.EqualTo (2));
 
-      _markerDefaultMarkingStrategy.AddCustomAttribute (secondModuleMethod, mainModule);
+      _markerDefaultMarkingStrategy.AddCustomAttribute (secondModuleMethod, _assemblyDefinition);
 
+      // Main module contains attribute type, but method not modified
       Assert.That (_assemblyDefinition.MainModule.Types.Count, Is.EqualTo (3));
       Assert.That (_assemblyDefinition.MainModule.Types[2].Name, Is.EqualTo ("NonVirtualAttribute"));
       Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].CustomAttributes.Count, Is.EqualTo (0));
 
+      // Second module was modified
       Assert.That (_assemblyDefinition.Modules[1].ModuleReferences.Count, Is.EqualTo (1));
       Assert.That (_assemblyDefinition.Modules[1].ModuleReferences[0].Name, Is.EqualTo (_assemblyDefinition.MainModule.Name));
-      Assert.That (_assemblyDefinition.Modules[1].Types[1].Methods[0].CustomAttributes.Count, Is.EqualTo (1));
-      Assert.That (_assemblyDefinition.Modules[1].Types[1].Methods[0].CustomAttributes[0].AttributeType.Name, Is.EqualTo ("NonVirtualAttribute"));
+      Assert.That (_assemblyDefinition.Modules[1].ModuleReferences[0].MetadataScopeType, Is.EqualTo (MetadataScopeType.ModuleReference));
+      Assert.That (secondModuleMethod.CustomAttributes.Count, Is.EqualTo (1));
+      Assert.That (secondModuleMethod.CustomAttributes[0].AttributeType.Name, Is.EqualTo ("NonVirtualAttribute"));
+      Assert.That (secondModuleMethod.CustomAttributes[0].AttributeType.Scope, Is.SameAs (_assemblyDefinition.Modules[1].ModuleReferences[0]));
 
       TypeReference attributeType = _assemblyDefinition.MainModule.Types[2];
       Assert.That (attributeType.Scope.MetadataScopeType, Is.EqualTo (MetadataScopeType.ModuleDefinition));
-      Assert.That (_assemblyDefinition.Modules[1].ModuleReferences[0].MetadataScopeType, Is.EqualTo (MetadataScopeType.ModuleReference));
-      //Assert.That (attributeType.Scope.MetadataToken, Is.EqualTo (_assemblyDefinition.Modules[1].ModuleReferences[0].MetadataToken));
-
-
-      IModuleDefinitionWriter writer = new AssemblyTransformer.AssemblyWriting.ModuleWriter ();
-      foreach (var module in _assemblyDefinition.Modules)
-      {
-        Console.WriteLine ("###### " + module.Name);
-        writer.WriteModule (module);
-      }
     }
 
     [Test]
@@ -100,32 +120,22 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
       Assert.That (_assemblyDefinition.Modules.Count, Is.EqualTo (2));
       Assert.That (_assemblyDefinition.MainModule.Types.Count, Is.EqualTo (2));
 
-      _markerDefaultMarkingStrategy.AddCustomAttribute (mainModuleMethod, mainModule);
-      _markerDefaultMarkingStrategy.AddCustomAttribute (secondModuleMethod, mainModule);
+      _markerDefaultMarkingStrategy.AddCustomAttribute (mainModuleMethod, _assemblyDefinition);
+      _markerDefaultMarkingStrategy.AddCustomAttribute (secondModuleMethod, _assemblyDefinition);
 
       Assert.That (_assemblyDefinition.MainModule.Types.Count, Is.EqualTo (3));
       Assert.That (_assemblyDefinition.MainModule.Types[2].Name, Is.EqualTo ("NonVirtualAttribute"));
-      Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].CustomAttributes.Count, Is.EqualTo (1));
-      Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].CustomAttributes[0].AttributeType.Name, Is.EqualTo ("NonVirtualAttribute"));
+      Assert.That (mainModuleMethod.CustomAttributes.Count, Is.EqualTo (1));
+      Assert.That (mainModuleMethod.CustomAttributes[0].AttributeType.Name, Is.EqualTo ("NonVirtualAttribute"));
 
       Assert.That (_assemblyDefinition.Modules[1].ModuleReferences.Count, Is.EqualTo (1));
       Assert.That (_assemblyDefinition.Modules[1].ModuleReferences[0].Name, Is.EqualTo (_assemblyDefinition.MainModule.Name));
-      Assert.That (_assemblyDefinition.Modules[1].Types[1].Methods[0].CustomAttributes.Count, Is.EqualTo (1));
-      Assert.That (_assemblyDefinition.Modules[1].Types[1].Methods[0].CustomAttributes[0].AttributeType.Name, Is.EqualTo ("NonVirtualAttribute"));
+      Assert.That (secondModuleMethod.CustomAttributes.Count, Is.EqualTo (1));
+      Assert.That (secondModuleMethod.CustomAttributes[0].AttributeType.Name, Is.EqualTo ("NonVirtualAttribute"));
 
       TypeReference attributeType = _assemblyDefinition.MainModule.Types[2];
       Assert.That (attributeType.Scope.MetadataScopeType, Is.EqualTo (MetadataScopeType.ModuleDefinition));
       Assert.That (_assemblyDefinition.Modules[1].ModuleReferences[0].MetadataScopeType, Is.EqualTo (MetadataScopeType.ModuleReference));
-      
-      //Assert.That (attributeType.Scope.MetadataToken, Is.EqualTo (_assemblyDefinition.Modules[1].ModuleReferences[0].MetadataToken));
-
-
-      IModuleDefinitionWriter writer = new AssemblyTransformer.AssemblyWriting.ModuleWriter ();
-      foreach (var module in _assemblyDefinition.Modules)
-      {
-        Console.WriteLine ("###### " + module.Name);
-        writer.WriteModule (module);
-      }
     }
   }
 }

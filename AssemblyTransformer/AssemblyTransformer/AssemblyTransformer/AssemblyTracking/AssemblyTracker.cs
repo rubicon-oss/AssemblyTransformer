@@ -3,6 +3,7 @@
 //
 using System;
 using System.Collections.Generic;
+using AssemblyTransformer.Extensions;
 using Mono.Cecil;
 using System.Linq;
 

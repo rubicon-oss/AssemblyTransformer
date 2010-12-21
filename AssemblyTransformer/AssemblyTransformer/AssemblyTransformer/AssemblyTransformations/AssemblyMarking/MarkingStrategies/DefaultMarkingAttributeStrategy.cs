@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using MethodAttributes = Mono.Cecil.MethodAttributes;
 using TypeAttributes = Mono.Cecil.TypeAttributes;
 
-namespace AssemblyTransformer.AssemblyMarking.MarkingStrategies
+namespace AssemblyTransformer.AssemblyTransformations.AssemblyMarking.MarkingStrategies
 {
   public class DefaultMarkingAttributeStrategy : MarkingAttributeStrategy
   {
@@ -36,6 +35,11 @@ namespace AssemblyTransformer.AssemblyMarking.MarkingStrategies
       customType.Methods.Add (ctor);
 
       return customType;
+    }
+
+    public override void AddCustomAttribute (MethodDefinition methodDefinition, AssemblyDefinition assemblyOfMethod)
+    {
+      AddCustomAttribute (methodDefinition, assemblyOfMethod.MainModule);
     }
   }
 }

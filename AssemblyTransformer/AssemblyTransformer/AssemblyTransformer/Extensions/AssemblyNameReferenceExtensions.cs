@@ -5,7 +5,7 @@ using System;
 using Mono.Cecil;
 using System.Linq;
 
-namespace AssemblyTransformer
+namespace AssemblyTransformer.Extensions
 {
   public static class AssemblyNameReferenceExtensions
   {

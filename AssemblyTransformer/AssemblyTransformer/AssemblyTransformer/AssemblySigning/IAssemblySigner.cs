@@ -3,8 +3,8 @@
 //
 namespace AssemblyTransformer
 {
-  public interface IAssemblyMarker
+  public interface IAssemblySigner
   {
-    
+    void SignAndSave (IAssemblyTracker tracker);
   }
 }

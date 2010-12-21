@@ -2,8 +2,7 @@
 // All rights reserved.
 //
 using System;
-using AssemblyTransformer.AssemblyMarking;
-using AssemblyTransformer.AssemblyMarking.MarkingStrategies;
+using AssemblyTransformer.AssemblyTransformations.AssemblyMarking.MarkingStrategies;
 using Mono.Cecil;
 using NUnit.Framework;
 
@@ -32,8 +31,8 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
 
       Assert.That (_assemblyDefinition.MainModule.Types[1].CustomAttributes, Is.Empty);
 
-      _noAttributeMarkingStrategy.AddCustomAttribute(methodMain, methodMain.DeclaringType.Module);
-      _noAttributeMarkingStrategy.AddCustomAttribute (methodModule, methodMain.DeclaringType.Module);
+      _noAttributeMarkingStrategy.AddCustomAttribute (methodMain, _assemblyDefinition);
+      _noAttributeMarkingStrategy.AddCustomAttribute (methodModule, _assemblyDefinition);
 
       Assert.That (_assemblyDefinition.MainModule.Types.Count, Is.EqualTo (2));
       Assert.That (_assemblyDefinition.Modules[1].Types.Count, Is.EqualTo (2));
@@ -49,7 +48,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
 
       Assert.That (_assemblyDefinition.MainModule.Types[1].CustomAttributes, Is.Empty);
 
-      _noAttributeMarkingStrategy.AddCustomAttribute (methodMain, methodMain.DeclaringType.Module);
+      _noAttributeMarkingStrategy.AddCustomAttribute (methodMain, _assemblyDefinition);
       
       Assert.That (_assemblyDefinition.MainModule.Types.Count, Is.EqualTo (2));
       Assert.That (_assemblyDefinition.Modules[1].Types.Count, Is.EqualTo (2));
@@ -65,7 +64,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
 
       Assert.That (_assemblyDefinition.MainModule.Types[1].CustomAttributes, Is.Empty);
 
-      _noAttributeMarkingStrategy.AddCustomAttribute (methodModule, methodMain.DeclaringType.Module);
+      _noAttributeMarkingStrategy.AddCustomAttribute (methodModule, _assemblyDefinition);
 
       Assert.That (_assemblyDefinition.MainModule.Types.Count, Is.EqualTo (2));
       Assert.That (_assemblyDefinition.Modules[1].Types.Count, Is.EqualTo (2));

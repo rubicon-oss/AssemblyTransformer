@@ -46,22 +46,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyMarking\AssemblyMarker.cs" />
-    <Compile Include="AssemblyMarking\MarkingStrategies\CustomMarkingAttributeStrategy.cs" />
-    <Compile Include="AssemblyMarking\MarkingStrategies\DefaultMarkingAttributeStrategy.cs" />
-    <Compile Include="AssemblyMarking\IMarkingAttributeStrategy.cs" />
-    <Compile Include="AssemblyMarking\MarkingStrategies\MarkingAttributeStrategy.cs" />
-    <Compile Include="AssemblyMarking\MarkingStrategies\NoneMarkingAttributeStrategy.cs" />
-    <Compile Include="AssemblyNameReferenceExtensions.cs" />
+    <Compile Include="AssemblySigning\AssemblySignerFactory.cs" />
+    <Compile Include="AssemblyTransformations\AssemblyMarking\AssemblyMarker.cs" />
+    <Compile Include="AssemblyTransformations\AssemblyMarking\AssemblyMarkerFactory.cs" />
+    <Compile Include="AssemblyTransformations\AssemblyMarking\MarkingStrategies\CustomMarkingAttributeStrategy.cs" />
+    <Compile Include="AssemblyTransformations\AssemblyMarking\MarkingStrategies\DefaultMarkingAttributeStrategy.cs" />
+    <Compile Include="AssemblyTransformations\AssemblyMarking\MarkingStrategies\IMarkingAttributeStrategy.cs" />
+    <Compile Include="AssemblyTransformations\AssemblyMarking\MarkingStrategies\MarkingAttributeStrategy.cs" />
+    <Compile Include="AssemblyTransformations\AssemblyMarking\MarkingStrategies\NoneMarkingAttributeStrategy.cs" />
+    <Compile Include="AssemblySigning\IAssemblySignerFactory.cs" />
+    <Compile Include="Extensions\AssemblyNameReferenceExtensions.cs" />
     <Compile Include="AssemblySigning\AssemblySigner.cs" />
-    <Compile Include="AssemblySigning\IModuleDefinitionWriter.cs" />
+    <Compile Include="AssemblySigning\AssemblyWriting\IModuleDefinitionWriter.cs" />
     <Compile Include="AssemblyTracking\AssemblyTracker.cs" />
-    <Compile Include="AssemblyWriting\ModuleWriter.cs" />
-    <Compile Include="IAssemblyMarker.cs" />
-    <Compile Include="IAssemblyTracker.cs" />
+    <Compile Include="AssemblySigning\AssemblyWriting\ModuleWriter.cs" />
+    <Compile Include="AssemblyTracking\DirectoryBasedAssemblyTrackerFactory.cs" />
+    <Compile Include="FileSystem\FileSystem.cs" />
+    <Compile Include="AssemblyTransformations\IAssemblyTransformation.cs" />
+    <Compile Include="AssemblySigning\IAssemblySigner.cs" />
+    <Compile Include="AssemblyTracking\IAssemblyTracker.cs" />
+    <Compile Include="AssemblyTracking\IAssemblyTrackerFactory.cs" />
+    <Compile Include="FileSystem\IFileSystem.cs" />
+    <Compile Include="AssemblyTransformations\IAssemblyTransformationFactory.cs" />
+    <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AssemblyTracking\TrackedAssembly.cs" />
+    <Compile Include="Runner.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
