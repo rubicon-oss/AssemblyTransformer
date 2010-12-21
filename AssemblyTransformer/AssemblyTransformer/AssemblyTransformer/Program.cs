@@ -23,7 +23,7 @@ namespace AssemblyTransformer
       var trackerFactory = new DirectoryBasedAssemblyTrackerFactory(fileSystem);
       trackerFactory.AddOptions (optionSet);
       
-      // source out to runner?
+      // source out to runner? also for easy "add" function for all transformations
       transformationFactories.Add (new AssemblyMarkerFactory (fileSystem));
       foreach (var factory in transformationFactories)
         factory.AddOptions (optionSet);
