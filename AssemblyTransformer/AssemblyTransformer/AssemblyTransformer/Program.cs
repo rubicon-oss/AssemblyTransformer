@@ -19,16 +19,18 @@ namespace AssemblyTransformer
       var optionSet = new OptionSet { { "h|?|help", "show help message and exit", v => showHelp = v != null } };
       var fileSystem = new FileSystem.FileSystem ();
       var transformationFactories = new List<IAssemblyTransformationFactory> ();
+ // -- add the tracker then transformations and then signer     
       var trackerFactory = new DirectoryBasedAssemblyTrackerFactory(fileSystem);
       trackerFactory.AddOptions (optionSet);
       
+      // source out to runner?
       transformationFactories.Add (new AssemblyMarkerFactory (fileSystem));
       foreach (var factory in transformationFactories)
         factory.AddOptions (optionSet);
 
       var signerFactory = new AssemblySignerFactory (fileSystem);
       signerFactory.AddOptions (optionSet);
-
+ // --
       try
       {
         optionSet.Parse (args);
