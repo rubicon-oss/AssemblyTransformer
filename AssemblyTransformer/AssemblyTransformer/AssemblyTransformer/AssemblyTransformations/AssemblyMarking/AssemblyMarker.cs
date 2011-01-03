@@ -7,12 +7,13 @@ using AssemblyTransformer.AssemblyTransformations.AssemblyMarking.MarkingStrateg
 
 namespace AssemblyTransformer.AssemblyTransformations.AssemblyMarking
 {
-
+  // TODO Review FS: Consider renaming to MethodVirtualizer or something similar
   public class AssemblyMarker : IAssemblyTransformation
   {
     private readonly IMarkingAttributeStrategy _markingAttributeStrategy;
     private readonly Regex _regex;
 
+    // TODO Review FS: Consider renaming regex and _regex to (_)virtualizedMethodFullNameRegex or something similar, so that it's clear that the regex is matched against method full names to decide which methods to make virtual
     public AssemblyMarker (IMarkingAttributeStrategy markingAttributeStrategy, Regex regex)
     {
       _markingAttributeStrategy = markingAttributeStrategy;

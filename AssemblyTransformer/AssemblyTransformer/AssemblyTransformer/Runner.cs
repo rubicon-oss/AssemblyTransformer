@@ -9,10 +9,11 @@ using AssemblyTransformer.AssemblyTransformations;
 
 namespace AssemblyTransformer
 {
+  // TODO Review FS: Consider adding a unit test for the Run method
   public class Runner
   {
     public void Run (DirectoryBasedAssemblyTrackerFactory trackerFactory,
-                      List<IAssemblyTransformationFactory> transformationFactories, 
+                      IEnumerable<IAssemblyTransformationFactory> transformationFactories, 
                       AssemblySignerFactory signerFactory)
     {
       var tracker = trackerFactory.CreateTracker();

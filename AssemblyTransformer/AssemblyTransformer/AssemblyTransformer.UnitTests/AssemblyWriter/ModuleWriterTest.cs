@@ -36,6 +36,8 @@ namespace AssemblyTransformer.UnitTests.AssemblyWriter
       _assemblyDefinition1 = AssemblyDefinitionObjectMother.CreateMultiModuleAssemblyDefinition();
     }
 
+    // TODO Review FS: Name the tests like this: MethodName_AdditionalInfo_AndOtherInfo_AndThirdInfo; eg., WriteModule_UnsignedAssembly_NoKeyUsed, WriteModule_AssemblyWithUnknownKey_UsesDefaultKey()
+
     [Test]
     public void ModuleWriter_WriteModuleWasCalled_WithKey ()
     {
@@ -74,5 +76,11 @@ namespace AssemblyTransformer.UnitTests.AssemblyWriter
       _fileSystemMock.VerifyAllExpectations ();
     }
 
+    // TODO Review FS: I'd add tests for the following situations:
+    // TODO Review FS: - main module of assembly with public key is passed in and a match is found in the list of key pairs
+    // TODO Review FS: - main module of assembly with public key is passed in and no match is found in the list of key pairs - default key is used
+    // TODO Review FS: - main module of assembly with public key is passed in, no match is found in the list of key pairs, but there is no default key - is this even allowed? There should probably be an exception in this case?
+    // TODO Review FS: - secondary module of signed assembly is passed in
+    // TODO Review FS: - secondary module of unsigned assembly is passed in
   }
 }

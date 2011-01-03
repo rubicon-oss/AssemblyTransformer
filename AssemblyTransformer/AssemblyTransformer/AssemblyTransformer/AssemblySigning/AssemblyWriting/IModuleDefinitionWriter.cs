@@ -7,6 +7,7 @@ namespace AssemblyTransformer.AssemblySigning.AssemblyWriting
 {
   public interface IModuleDefinitionWriter
   {
+    // TODO Review FS: I'd reverse the parameters: First what should be written (moduleDefinition), then the associated main module
     void WriteModule (ModuleDefinition mainModule, ModuleDefinition moduleDefinition);
   }
 }

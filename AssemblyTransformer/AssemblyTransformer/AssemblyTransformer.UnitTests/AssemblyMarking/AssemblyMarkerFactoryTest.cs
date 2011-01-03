@@ -38,7 +38,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
     }
 
     [Test]
-    public void CreateTransformation ()
+    public void CreateTransformation_DefaultStrategy ()
     {
       var optionSet = new OptionSet ();
       _factory.AddOptions (optionSet);
@@ -47,6 +47,8 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
       var result = _factory.CreateTransformation ();
 
       Assert.That (result, Is.TypeOf (typeof (AssemblyMarker)));
+      // TODO Review FS: Check that the DefaultMarkingStrategy is used (probably requires a MarkingStrategy property on AssemblyMarker)
+      // TODO Review FS: Check the regex (probably requires a Regex property on AssemblyMarker)
     }
 
     [Test]
@@ -64,6 +66,12 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
 
       Assert.That (result, Is.TypeOf (typeof (AssemblyMarker)));
       _fileSystemMock.VerifyAllExpectations();
+
+      // TODO Review FS: Check that the CustomMarkingStrategy is used
+      // TODO Review FS: Check that the CustomMarkingStrategy uses the right module and type namespace/name
     }
+
+    // TODO Review FS: Add a test specifying "-a:None" - check that NoneMarkingAttributeStrategy is used when constructing the AssemblyMarker
+    // TODO Review FS: Add a test showing that None is the default strategy if no "-a:..." is given (check that NoneMarkingAttributeStrategy is used when constructing the AssemblyMarker)
   }
 }

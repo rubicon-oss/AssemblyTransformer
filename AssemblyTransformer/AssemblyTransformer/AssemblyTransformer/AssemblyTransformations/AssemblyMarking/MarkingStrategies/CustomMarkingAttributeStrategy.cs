@@ -20,7 +20,8 @@ namespace AssemblyTransformer.AssemblyTransformations.AssemblyMarking.MarkingStr
 
     protected override TypeDefinition CreateCustomAttributeType (ModuleDefinition targetModule)
     {
-      throw new ArgumentException ("The given Attribute " + _attributeNamespace +"."+ _attributeName + " could not be found in the given Assembly!");
+      // TODO Review FS: ArgumentException doesn't seem like the right exception type because it's not an argument to this method that is wrong. Use InvalidOperationException instead.
+      throw new ArgumentException ("The given attribute " + _attributeNamespace +"."+ _attributeName + " could not be found in the given assembly!");
     }
   }
 }

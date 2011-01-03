@@ -35,12 +35,16 @@ namespace AssemblyTransformer
       {
         optionSet.Parse (args);
         if (showHelp)
+        {
           ShowHelp (optionSet);
+          // TODO Review FS: Return here - no further processing if someone specified /=
+        }
       }
       catch (OptionException e)
       {
         Console.WriteLine (e.Message);
         ShowHelp (optionSet);
+        // TODO Review FS: Return a non-zero int return value here (int Main (string[] args)) to indicate failure.
       }
 
       Console.WriteLine ("AssemblyTransformer starting up ...");
@@ -52,7 +56,7 @@ namespace AssemblyTransformer
       catch (ArgumentException e)
       {
         Console.WriteLine (e.Message);
-        return;
+        return; // TODO Review FS: Use a non-zero int return value here (int Main (string[] args)) to indicate failure.
       }
 
       Console.WriteLine ("Assemblies successfully loaded, transformed, signed and saved!");

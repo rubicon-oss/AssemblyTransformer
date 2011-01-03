@@ -47,8 +47,9 @@ namespace AssemblyTransformer.AssemblyTracking
          {
             assemblies.Add (_fileSystem.ReadAssembly (doc));
          }
-         catch (Exception)
+         catch (Exception) // TODO Review FS: If Cecil throws a sensible exception type when a file is read that is not a .NET assembly, catch that exception type instead
          {
+           // TODO Review FS: Use the original exception message in the warning - there are many different cases why Cecil can refuse reading an assembly.
            Console.WriteLine ("    WARNING :: " + doc + " is not a .NET assembly!");
         }
       }

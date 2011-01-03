@@ -32,7 +32,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
     }
 
     [Test]
-    public void OverrideMethods_MarksAssemblyModified ()
+    public void OverrideMethods_MarksAssemblyWithMatchingMethodsModified ()
     {
       Regex regex = new Regex ("(.*)");
       Assert.That (_tracker.IsModified (_assemblyDefinition), Is.False);
@@ -43,8 +43,9 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
     }
 
     [Test]
-    public void OverrideMethods_DoesNotMarkModified ()
+    public void OverrideMethods_DoesNotMarkAssemblyWithougMatchingMethodsModified ()
     {
+      // TODO Review FS: Use a second marker field for the "xxxx" marker for the non-matching tests (eg., _markerWithNonMatchingRegex) instead of changing _marker. When initializing a field in the SetUp method, avoid changing it to a different reference later on.
       _marker = new AssemblyMarker (_markingAttributeStrategy, new Regex ("xxxx"));
       Assert.That (_tracker.IsModified (_assemblyDefinition), Is.False);
 
@@ -54,7 +55,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
     }
 
     [Test]
-    public void OverrideMethods_SetsMethodVirtual ()
+    public void OverrideMethods_SetsMatchingMethodVirtual ()
     {
       Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].IsVirtual, Is.False);
 
@@ -64,7 +65,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
     }
 
     [Test]
-    public void OverrideMethods_DoesNotSetMethodVirtual ()
+    public void OverrideMethods_DoesNotSetNonMatchingMethodVirtual ()
     {
       _marker = new AssemblyMarker (_markingAttributeStrategy, new Regex ("xxxx"));
       Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].IsVirtual, Is.False);
