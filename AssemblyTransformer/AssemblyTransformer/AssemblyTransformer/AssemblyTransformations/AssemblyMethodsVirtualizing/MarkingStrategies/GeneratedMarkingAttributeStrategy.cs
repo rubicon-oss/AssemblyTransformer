@@ -5,16 +5,23 @@ using Mono.Cecil.Cil;
 using MethodAttributes = Mono.Cecil.MethodAttributes;
 using TypeAttributes = Mono.Cecil.TypeAttributes;
 
-namespace AssemblyTransformer.AssemblyTransformations.AssemblyMarking.MarkingStrategies
+namespace AssemblyTransformer.AssemblyTransformations.AssemblyMethodsVirtualizing.MarkingStrategies
 {
-  public class DefaultMarkingAttributeStrategy : MarkingAttributeStrategy
+  /// <summary>
+  /// The standard marking attribute, generates a new attribute type in the mainmodule of the assembly.
+  /// The namespace and typename can be changed. All .netmodules that reference the attribute, get a reference
+  /// if no reference exists.
+  /// </summary>
+  public class GeneratedMarkingAttributeStrategy : MarkingAttributeStrategy
   {
 
-    public DefaultMarkingAttributeStrategy (string defAttributeNamespace, string defAttributeName)
+    public GeneratedMarkingAttributeStrategy (string defAttributeNamespace, string defAttributeName)
             : base (defAttributeNamespace, defAttributeName) {}
 
     protected override TypeDefinition CreateCustomAttributeType (ModuleDefinition targetModule)
     {
+      ArgumentUtility.CheckNotNull ("targetModule", targetModule);
+
       var customType = new TypeDefinition (_attributeNamespace,
                                            _attributeName,
                                            TypeAttributes.Public | TypeAttributes.Class,
@@ -39,6 +46,9 @@ namespace AssemblyTransformer.AssemblyTransformations.AssemblyMarking.MarkingStr
 
     public override void AddCustomAttribute (MethodDefinition methodDefinition, AssemblyDefinition assemblyOfMethod)
     {
+      ArgumentUtility.CheckNotNull ("methodDefinition", methodDefinition);
+      ArgumentUtility.CheckNotNull ("assemblyOfMethod", assemblyOfMethod);
+
       AddCustomAttribute (methodDefinition, assemblyOfMethod.MainModule);
     }
   }

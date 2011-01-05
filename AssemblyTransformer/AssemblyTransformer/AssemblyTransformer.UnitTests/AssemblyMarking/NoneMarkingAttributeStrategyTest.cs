@@ -2,7 +2,7 @@
 // All rights reserved.
 //
 using System;
-using AssemblyTransformer.AssemblyTransformations.AssemblyMarking.MarkingStrategies;
+using AssemblyTransformer.AssemblyTransformations.AssemblyMethodsVirtualizing.MarkingStrategies;
 using Mono.Cecil;
 using NUnit.Framework;
 

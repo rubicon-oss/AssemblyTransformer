@@ -4,13 +4,16 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using AssemblyTransformer.FileSystem;
 using Mono.Cecil;
-using Mono.Options;
-using System.Linq;
 
 namespace AssemblyTransformer.AssemblyTracking
 {
+  /// <summary>
+  /// This assembly tracker factory implementation creates a directory based tracker. The user has to specify the root directory.
+  /// All dlls and exes are loaded. In case of an error, a warning is printed, but the process still commences!
+  /// </summary>
   public class DirectoryBasedAssemblyTrackerFactory : IAssemblyTrackerFactory
   {
     private readonly IFileSystem _fileSystem;
@@ -18,11 +21,15 @@ namespace AssemblyTransformer.AssemblyTracking
 
     public DirectoryBasedAssemblyTrackerFactory (IFileSystem fileSystem)
     {
+      ArgumentUtility.CheckNotNull ("fileSystem", fileSystem);
+
       _fileSystem = fileSystem;
     }
 
     public void AddOptions (OptionSet options)
     {
+      ArgumentUtility.CheckNotNull ("options", options);
+
       options.Add (
           "d|dir|workingDirectory=",
           "The (root) directory containing the assemblies.",
@@ -38,7 +45,6 @@ namespace AssemblyTransformer.AssemblyTracking
           _fileSystem.EnumerateFiles (_workingDirectory, "*.dll", SearchOption.AllDirectories)
               .Concat (_fileSystem.EnumerateFiles (_workingDirectory, "*.exe", SearchOption.AllDirectories));
 
-
       List<AssemblyDefinition> assemblies = new List<AssemblyDefinition> ();
       foreach (var doc in allFiles)
       {
@@ -47,10 +53,9 @@ namespace AssemblyTransformer.AssemblyTracking
          {
             assemblies.Add (_fileSystem.ReadAssembly (doc));
          }
-         catch (Exception) // TODO Review FS: If Cecil throws a sensible exception type when a file is read that is not a .NET assembly, catch that exception type instead
+         catch (BadImageFormatException e)
          {
-           // TODO Review FS: Use the original exception message in the warning - there are many different cases why Cecil can refuse reading an assembly.
-           Console.WriteLine ("    WARNING :: " + doc + " is not a .NET assembly!");
+           Console.WriteLine ("    WARNING :: " + doc + " is not a .NET assembly! (" + e.Message + ")");
         }
       }
 

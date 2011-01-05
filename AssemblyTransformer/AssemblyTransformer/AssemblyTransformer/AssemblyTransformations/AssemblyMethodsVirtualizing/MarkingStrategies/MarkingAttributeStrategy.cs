@@ -4,8 +4,13 @@
 using System.Linq;
 using Mono.Cecil;
 
-namespace AssemblyTransformer.AssemblyTransformations.AssemblyMarking.MarkingStrategies
+namespace AssemblyTransformer.AssemblyTransformations.AssemblyMethodsVirtualizing.MarkingStrategies
 {
+  /// <summary>
+  /// The abstract baseclass of all marking strategies provides nontrivial core functionality and the action flow of the necessary
+  /// steps to add references/types and the corresponding attributes to the method/module.
+  /// The concrete strategies have to implement the CreateCustomAttributeType method which generates/adds the type to the given module.
+  /// </summary>
   public abstract class MarkingAttributeStrategy : IMarkingAttributeStrategy
   {
     protected readonly string _attributeNamespace;
@@ -13,6 +18,9 @@ namespace AssemblyTransformer.AssemblyTransformations.AssemblyMarking.MarkingStr
 
     protected MarkingAttributeStrategy (string attributeNamespace, string attributeName)
     {
+      ArgumentUtility.CheckNotNull ("attributeNamespace", attributeNamespace);
+      ArgumentUtility.CheckNotNull ("attributeName", attributeName);
+
       _attributeNamespace = attributeNamespace;
       _attributeName = attributeName;
     }
@@ -23,6 +31,9 @@ namespace AssemblyTransformer.AssemblyTransformations.AssemblyMarking.MarkingStr
 
     protected void AddCustomAttribute (MethodDefinition methodDefinition, ModuleDefinition moduleWithAttributeType)
     {
+      ArgumentUtility.CheckNotNull ("methodDefinition", methodDefinition);
+      ArgumentUtility.CheckNotNull ("moduleWithAttributeType", moduleWithAttributeType);
+
       var attributeCtor = MakeCtorAndReference ( methodDefinition.Module, moduleWithAttributeType);
       var customAttribute = new CustomAttribute (attributeCtor);
       if (!methodDefinition.CustomAttributes.Any (att => att.Constructor.FullName == attributeCtor.FullName))

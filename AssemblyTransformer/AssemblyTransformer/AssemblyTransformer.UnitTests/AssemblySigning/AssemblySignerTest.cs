@@ -41,7 +41,7 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
     [Test]
     public void SignAndSave_OneModifiedAssembly ()
     {
-      _writerMock.Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule, _assemblyDefinition1.MainModule));
+      _writerMock.Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule));
       _writerMock.Replay();
       var tracker = CreateTracker (_assemblyDefinition1);
 
@@ -56,8 +56,8 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
       var secondaryModule = ModuleDefinition.CreateModule ("Test2.netmodule", ModuleKind.NetModule);
       _assemblyDefinition1.Modules.Add (secondaryModule);
 
-      _writerMock.Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule,_assemblyDefinition1.MainModule));
-      _writerMock.Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule, secondaryModule));
+      _writerMock.Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule));
+      _writerMock.Expect (mock => mock.WriteModule (secondaryModule));
       _writerMock.Replay();
 
       var tracker = CreateTracker (_assemblyDefinition1);
@@ -70,7 +70,7 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
     [Test]
     public void SignAndSave_OneModifiedAssembly_IsUnmarked ()
     {
-      _writerMock.Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule, _assemblyDefinition1.MainModule));
+      _writerMock.Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule));
       _writerMock.Replay();
       var tracker = CreateTracker (_assemblyDefinition1);
 
@@ -83,7 +83,7 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
     public void SignAndSave_OneModifiedAssembly_WithReference ()
     {
       _assemblyDefinition1.MainModule.AssemblyReferences.Add (_assemblyDefinition2.Name);
-      _writerMock.Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule, _assemblyDefinition1.MainModule));
+      _writerMock.Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule));
       _writerMock.Replay();
       var tracker = CreateTracker (_assemblyDefinition1);
 
@@ -96,7 +96,7 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
     public void SignAndSave_OneModifiedAssembly_WithReference_NotTracked ()
     {
       _assemblyDefinition1.MainModule.AssemblyReferences.Add (new AssemblyNameReference ("Untracked", null));
-      _writerMock.Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule, _assemblyDefinition1.MainModule));
+      _writerMock.Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule));
       _writerMock.Replay();
       var tracker = CreateTracker (_assemblyDefinition1);
 
@@ -111,8 +111,8 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
       _assemblyDefinition1.MainModule.AssemblyReferences.Add (_assemblyDefinition2.Name);
       using (_writerMock.GetMockRepository().Ordered())
       {
-        _writerMock.Expect (mock => mock.WriteModule (_assemblyDefinition2.MainModule, _assemblyDefinition2.MainModule));
-        _writerMock.Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule, _assemblyDefinition1.MainModule));
+        _writerMock.Expect (mock => mock.WriteModule (_assemblyDefinition2.MainModule));
+        _writerMock.Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule));
       }
       _writerMock.Replay();
       var tracker = CreateTracker (_assemblyDefinition1, _assemblyDefinition2);
@@ -130,8 +130,8 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
 
       using (_writerMock.GetMockRepository().Ordered())
       {
-        _writerMock.Expect (mock => mock.WriteModule (_assemblyDefinition2.MainModule, _assemblyDefinition2.MainModule));
-        _writerMock.Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule, _assemblyDefinition1.MainModule));
+        _writerMock.Expect (mock => mock.WriteModule (_assemblyDefinition2.MainModule));
+        _writerMock.Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule));
       }
       _writerMock.Replay();
       var tracker = CreateTracker (_assemblyDefinition1, _assemblyDefinition2);
@@ -150,11 +150,11 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
 
       using (_writerMock.GetMockRepository().Ordered())
       {
-        _writerMock.Expect (mock => mock.WriteModule (_assemblyDefinition2.MainModule, _assemblyDefinition2.MainModule)).WhenCalled (
+        _writerMock.Expect (mock => mock.WriteModule (_assemblyDefinition2.MainModule)).WhenCalled (
             mi => ChangePublicKeyToken (_assemblyDefinition2.MainModule, AssemblyNameReferenceObjectMother.PublicKeyToken1));
 
         _writerMock
-            .Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule, _assemblyDefinition1.MainModule))
+            .Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule))
             .WhenCalled (
                 mi =>
                 AssemblyNameReferenceChecker.CheckNameReferences (_assemblyDefinition2.Name, _assemblyDefinition1.MainModule.AssemblyReferences[0]));
@@ -181,13 +181,13 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
       using (_writerMock.GetMockRepository().Ordered())
       {
         _writerMock
-            .Expect (mock => mock.WriteModule (_assemblyDefinition2.MainModule, _assemblyDefinition2.MainModule))
+            .Expect (mock => mock.WriteModule (_assemblyDefinition2.MainModule))
             .WhenCalled (
                 mi => ChangePublicKeyToken (_assemblyDefinition2.MainModule, AssemblyNameReferenceObjectMother.PublicKeyToken3))
             .Message ("First, _assemblyDefinition2 is saved and changes its public key.");
 
         _writerMock
-            .Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule, _assemblyDefinition1.MainModule))
+            .Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule))
             .WhenCalled (
                 mi =>
                 {
@@ -197,7 +197,7 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
             .Message ("Second, _assemblyDefinition1 is saved (with updated reference to _assemblyDefinition2) and also changes its public key.");
 
         _writerMock
-            .Expect (mock => mock.WriteModule (_assemblyDefinition2.MainModule, _assemblyDefinition2.MainModule))
+            .Expect (mock => mock.WriteModule (_assemblyDefinition2.MainModule))
             .WhenCalled (
                 mi =>
                 AssemblyNameReferenceChecker.CheckNameReferences (_assemblyDefinition1.Name, _assemblyDefinition2.MainModule.AssemblyReferences[0]))
@@ -227,13 +227,13 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
       using (_writerMock.GetMockRepository().Ordered())
       {
         _writerMock
-            .Expect (mock => mock.WriteModule (_assemblyDefinition2.MainModule, _assemblyDefinition2.MainModule))
+            .Expect (mock => mock.WriteModule (_assemblyDefinition2.MainModule))
             .WhenCalled (
                 mi => ChangePublicKeyToken (_assemblyDefinition2.MainModule, AssemblyNameReferenceObjectMother.PublicKeyToken3))
             .Message ("First, _assemblyDefinition2 is saved and changes its public key.");
 
         _writerMock
-            .Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule, _assemblyDefinition1.MainModule))
+            .Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule))
             .WhenCalled (
                 mi =>
                 {
@@ -243,7 +243,7 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
             .Message ("Second, _assemblyDefinition1 is saved (with updated reference to _assemblyDefinition2) and also changes its public key.");
 
         _writerMock
-            .Expect (mock => mock.WriteModule (_assemblyDefinition2.MainModule, _assemblyDefinition2.MainModule))
+            .Expect (mock => mock.WriteModule (_assemblyDefinition2.MainModule))
             .WhenCalled (
                 mi =>
                 {
@@ -253,7 +253,7 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
             .Message ("Third, _assemblyDefinition2 is saved again (with updated reference to _assemblyDefinition1), key changes a second time.");
 
         _writerMock
-            .Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule, _assemblyDefinition1.MainModule))
+            .Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule))
             .WhenCalled (
                 mi => AssemblyNameReferenceChecker.CheckNameReferences (_assemblyDefinition2.Name, _assemblyDefinition1.MainModule.AssemblyReferences[0]))
             .Message ("Fourth, _assemblyDefinition1 is saved again (with updated reference to _assemblyDefinition2), no key changes, recursion terminates.");
@@ -281,13 +281,13 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
       using (_writerMock.GetMockRepository ().Ordered ())
       {
         _writerMock
-            .Expect (mock => mock.WriteModule (_assemblyDefinition2.MainModule, _assemblyDefinition2.MainModule))
+            .Expect (mock => mock.WriteModule (_assemblyDefinition2.MainModule))
             .WhenCalled (
                 mi => ChangePublicKeyToken (_assemblyDefinition2.MainModule, AssemblyNameReferenceObjectMother.PublicKeyToken3))
             .Message ("First, _assemblyDefinition2 is saved and changes its public key.");
 
         _writerMock
-            .Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule, _assemblyDefinition1.MainModule))
+            .Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule))
             .WhenCalled (
                 mi =>
                 {
@@ -297,7 +297,7 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
             .Message ("Second, _assemblyDefinition1 is saved (with updated reference to _assemblyDefinition2) and also changes its public key.");
 
         _writerMock
-            .Expect (mock => mock.WriteModule (_assemblyDefinition2.MainModule, _assemblyDefinition2.MainModule))
+            .Expect (mock => mock.WriteModule (_assemblyDefinition2.MainModule))
             .WhenCalled (
                 mi =>
                 {
@@ -307,7 +307,7 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
             .Message ("Third, _assemblyDefinition2 is saved again (with updated reference to _assemblyDefinition1), key changes a second time.");
 
         _writerMock
-            .Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule, _assemblyDefinition1.MainModule))
+            .Expect (mock => mock.WriteModule (_assemblyDefinition1.MainModule))
             .WhenCalled (
                 mi => AssemblyNameReferenceChecker.CheckNameReferences (_assemblyDefinition2.Name, _assemblyDefinition1.MainModule.AssemblyReferences[0]))
             .Message ("Fourth, _assemblyDefinition1 is saved again (with updated reference to _assemblyDefinition2), no key changes, recursion terminates.");

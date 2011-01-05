@@ -2,14 +2,12 @@
 // All rights reserved.
 //
 using System;
-using System.IO;
-using AssemblyTransformer.AssemblyTracking;
-using AssemblyTransformer.AssemblyTransformations.AssemblyMarking;
+using AssemblyTransformer.AssemblyTransformations.AssemblyMethodsVirtualizing;
 using AssemblyTransformer.FileSystem;
 using Mono.Cecil;
-using Mono.Options;
 using NUnit.Framework;
 using Rhino.Mocks;
+using AssemblyTransformer.AssemblyTransformations.AssemblyMethodsVirtualizing.MarkingStrategies;
 
 namespace AssemblyTransformer.UnitTests.AssemblyMarking
 {
@@ -17,7 +15,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
   public class AssemblyMarkerFactoryTest
   {
     private IFileSystem _fileSystemMock;
-    private AssemblyMarkerFactory _factory;
+    private AssemblyMethodVirtualizerFactory _factory;
 
     private AssemblyDefinition _assemblyDefinition1;
 
@@ -25,7 +23,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
     public void SetUp ()
     {
       _fileSystemMock = MockRepository.GenerateStrictMock<IFileSystem> ();
-      _factory = new AssemblyMarkerFactory (_fileSystemMock);
+      _factory = new AssemblyMethodVirtualizerFactory (_fileSystemMock);
 
       _assemblyDefinition1 = AssemblyDefinitionObjectMother.CreateMultiModuleAssemblyDefinition();
     }
@@ -38,17 +36,17 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
     }
 
     [Test]
-    public void CreateTransformation_DefaultStrategy ()
+    public void CreateTransformation_GeneratedStrategy ()
     {
       var optionSet = new OptionSet ();
       _factory.AddOptions (optionSet);
-      optionSet.Parse (new[] { "-r:regex", "-a:Default", "-n:attNS", "-t:attName", "-f:attFile" });
+      optionSet.Parse (new[] { "-r:regex", "-a:Generated", "-n:attNS", "-t:attName", "-f:attFile" });
 
       var result = _factory.CreateTransformation ();
-
-      Assert.That (result, Is.TypeOf (typeof (AssemblyMarker)));
-      // TODO Review FS: Check that the DefaultMarkingStrategy is used (probably requires a MarkingStrategy property on AssemblyMarker)
-      // TODO Review FS: Check the regex (probably requires a Regex property on AssemblyMarker)
+      
+      Assert.That (result, Is.TypeOf (typeof (AssemblyMethodsVirtualizer)));
+      Assert.That (((AssemblyMethodsVirtualizer)result).MarkingAttributeStrategy, Is.TypeOf (typeof(GeneratedMarkingAttributeStrategy)));
+      Assert.That (((AssemblyMethodsVirtualizer) result).TargetMethodsFullNameMatchingRegex.ToString() == "regex");
     }
 
     [Test]
@@ -64,14 +62,40 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
 
       var result = _factory.CreateTransformation ();
 
-      Assert.That (result, Is.TypeOf (typeof (AssemblyMarker)));
+      Assert.That (result, Is.TypeOf (typeof (AssemblyMethodsVirtualizer)));
       _fileSystemMock.VerifyAllExpectations();
 
       // TODO Review FS: Check that the CustomMarkingStrategy is used
       // TODO Review FS: Check that the CustomMarkingStrategy uses the right module and type namespace/name
     }
 
-    // TODO Review FS: Add a test specifying "-a:None" - check that NoneMarkingAttributeStrategy is used when constructing the AssemblyMarker
-    // TODO Review FS: Add a test showing that None is the default strategy if no "-a:..." is given (check that NoneMarkingAttributeStrategy is used when constructing the AssemblyMarker)
+    [Test]
+    public void CreateTransformation_NoneStrategy ()
+    {
+      var optionSet = new OptionSet ();
+      _factory.AddOptions (optionSet);
+      optionSet.Parse (new[] { "-r:regex", "-a:None", "-n:attNS", "-t:attName", "-f:attFile" });
+
+      var result = _factory.CreateTransformation ();
+
+      Assert.That (result, Is.TypeOf (typeof (AssemblyMethodsVirtualizer)));
+      // TODO Review FS: Check that the DefaultMarkingStrategy is used (probably requires a MarkingStrategy property on AssemblyMethodsVirtualizer)
+      // TODO Review FS: Check the regex (probably requires a Regex property on AssemblyMethodsVirtualizer)
+    }
+
+    [Test]
+    public void CreateTransformation_NoneStrategyIsDefault ()
+    {
+      var optionSet = new OptionSet ();
+      _factory.AddOptions (optionSet);
+      optionSet.Parse (new[] { "-r:regex" });
+
+      var result = _factory.CreateTransformation ();
+
+      Assert.That (result, Is.TypeOf (typeof (AssemblyMethodsVirtualizer)));
+      // TODO Review FS: Check that the DefaultMarkingStrategy is used (probably requires a MarkingStrategy property on AssemblyMethodsVirtualizer)
+      // TODO Review FS: Check the regex (probably requires a Regex property on AssemblyMethodsVirtualizer)
+    }
+    // TODO Review FS: Add a test showing that None is the default strategy if no "-a:..." is given (check that NoneMarkingAttributeStrategy is used when constructing the AssemblyMethodsVirtualizer)
   }
 }

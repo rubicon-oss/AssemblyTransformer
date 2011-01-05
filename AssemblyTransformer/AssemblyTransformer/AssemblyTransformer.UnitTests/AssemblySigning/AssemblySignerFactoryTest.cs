@@ -8,7 +8,6 @@ using AssemblyTransformer.AssemblySigning;
 using AssemblyTransformer.AssemblyTracking;
 using AssemblyTransformer.FileSystem;
 using Mono.Cecil;
-using Mono.Options;
 using NUnit.Framework;
 using Rhino.Mocks;
 
@@ -38,7 +37,7 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
 
       _fileSystemMock.VerifyAllExpectations();
       Assert.That (result, Is.TypeOf (typeof (AssemblySigner)));
-      // TODO Review FS: Check the default key and available key pairs of the writer - this will probably require adding a Writer property on AssemblySigner, and DefaultKey and AvailableKeys properties on ModuleWriter
+      // TODO Review FS: Check the default key and available key pairs of the writer - this will probably require adding a Writer property on AssemblySigner, and DefaultKey and AvailableKeys properties on ModuleDefinitionWriter
     }
 
     // TODO Review FS: Try to write tests successfully getting and using a default key and key set (without expecting an ArgumentException). To do so:
@@ -47,7 +46,7 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
     // TODO Review FS: In those tests, check that the signer's writer has the right default and strong name keys
 
     [Test]
-    [ExpectedException (typeof(ArgumentException))]
+    [ExpectedException (typeof(ArgumentNullException))]
     public void CreateSigner_WithDefaultKey ()
     {
       var optionSet = new OptionSet ();
@@ -65,7 +64,7 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException))]
+    [ExpectedException (typeof (ArgumentNullException))]
     public void CreateSigner_WithKeySet ()
     {
       var optionSet = new OptionSet ();

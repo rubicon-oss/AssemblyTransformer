@@ -17,10 +17,11 @@ namespace AssemblyTransformer.UnitTests.AssemblyWriter
   {
 
     private IFileSystem _fileSystemMock;
-    private ModuleWriter _writer;
+    private ModuleDefinitionWriter _definitionWriter;
     private StrongNameKeyPair _signKey;
     private StrongNameKeyPair _signKey2;
     private AssemblyDefinition _assemblyDefinition1;
+    private AssemblyDefinition _signedAssemblyDefinition;
 
     [SetUp]
     public void SetUp ()
@@ -28,42 +29,49 @@ namespace AssemblyTransformer.UnitTests.AssemblyWriter
       _fileSystemMock = MockRepository.GenerateStrictMock<IFileSystem> ();
       _signKey = new StrongNameKeyPair (AssemblyNameReferenceObjectMother.PublicKey1);
       _signKey2 = new StrongNameKeyPair (AssemblyNameReferenceObjectMother.PublicKey2);
-      _writer = new ModuleWriter (
+      _definitionWriter = new ModuleDefinitionWriter (
           _fileSystemMock,
           _signKey,
           new List<StrongNameKeyPair> { });
 
-      _assemblyDefinition1 = AssemblyDefinitionObjectMother.CreateMultiModuleAssemblyDefinition();
+      _assemblyDefinition1 = AssemblyDefinitionObjectMother.CreateMultiModuleAssemblyDefinition ();
+      _signedAssemblyDefinition = AssemblyDefinitionObjectMother.CreateSignedMultiModuleAssemblyDefinition ();
     }
 
-    // TODO Review FS: Name the tests like this: MethodName_AdditionalInfo_AndOtherInfo_AndThirdInfo; eg., WriteModule_UnsignedAssembly_NoKeyUsed, WriteModule_AssemblyWithUnknownKey_UsesDefaultKey()
-
     [Test]
-    public void ModuleWriter_WriteModuleWasCalled_WithKey ()
+    public void WriteModuleDefinition_WriterHasDefaultKey ()
     {
       _fileSystemMock
-          .Expect (mock => mock.Move(_assemblyDefinition1.MainModule.FullyQualifiedName, _assemblyDefinition1.MainModule.FullyQualifiedName+".bak"));
+           .Expect (mock => mock.FileExists (_assemblyDefinition1.MainModule.FullyQualifiedName)).Return (true);
+      _fileSystemMock
+           .Expect (mock => mock.FileExists (_assemblyDefinition1.MainModule.FullyQualifiedName + ".bak0")).Return (false);
+      _fileSystemMock
+          .Expect (mock => mock.Move(_assemblyDefinition1.MainModule.FullyQualifiedName, _assemblyDefinition1.MainModule.FullyQualifiedName+".bak0"));
       _fileSystemMock
           .Expect (mock => mock.WriteModuleDefinition (
             Arg<ModuleDefinition>.Is.Same (_assemblyDefinition1.MainModule),
             Arg<string>.Is.Same (_assemblyDefinition1.MainModule.FullyQualifiedName),
-            Arg<WriterParameters>.Matches(param => param.StrongNameKeyPair.Equals(_signKey))));
+            Arg<WriterParameters>.Matches(param => param.StrongNameKeyPair.Equals (_signKey))));
       _fileSystemMock.Replay();
 
-      _writer.WriteModule (_assemblyDefinition1.MainModule, _assemblyDefinition1.MainModule);
+      _definitionWriter.WriteModule (_assemblyDefinition1.MainModule);
 
       _fileSystemMock.VerifyAllExpectations();
     }
 
     [Test]
-    public void ModuleWriter_WriteModuleWasCalled_WithoutKey ()
+    public void WriteModuleDefinition_NoDefaultKey_NoAvailableKeys ()
     {
-      _writer = new ModuleWriter (
+      _definitionWriter = new ModuleDefinitionWriter (
           _fileSystemMock,
           null,
           new List<StrongNameKeyPair> { });
       _fileSystemMock
-          .Expect (mock => mock.Move (_assemblyDefinition1.MainModule.FullyQualifiedName, _assemblyDefinition1.MainModule.FullyQualifiedName + ".bak"));
+           .Expect (mock => mock.FileExists (_assemblyDefinition1.MainModule.FullyQualifiedName)).Return (true);
+      _fileSystemMock
+           .Expect (mock => mock.FileExists (_assemblyDefinition1.MainModule.FullyQualifiedName + ".bak0")).Return (false);
+      _fileSystemMock
+          .Expect (mock => mock.Move (_assemblyDefinition1.MainModule.FullyQualifiedName, _assemblyDefinition1.MainModule.FullyQualifiedName + ".bak0"));
       _fileSystemMock
           .Expect (mock => mock.WriteModuleDefinition (
             Arg<ModuleDefinition>.Is.Same (_assemblyDefinition1.MainModule),
@@ -71,16 +79,122 @@ namespace AssemblyTransformer.UnitTests.AssemblyWriter
             Arg<WriterParameters>.Matches (param => param.StrongNameKeyPair == null)));
       _fileSystemMock.Replay ();
 
-      _writer.WriteModule (_assemblyDefinition1.MainModule, _assemblyDefinition1.MainModule);
+      _definitionWriter.WriteModule (_assemblyDefinition1.MainModule);
 
       _fileSystemMock.VerifyAllExpectations ();
     }
 
-    // TODO Review FS: I'd add tests for the following situations:
-    // TODO Review FS: - main module of assembly with public key is passed in and a match is found in the list of key pairs
-    // TODO Review FS: - main module of assembly with public key is passed in and no match is found in the list of key pairs - default key is used
-    // TODO Review FS: - main module of assembly with public key is passed in, no match is found in the list of key pairs, but there is no default key - is this even allowed? There should probably be an exception in this case?
-    // TODO Review FS: - secondary module of signed assembly is passed in
-    // TODO Review FS: - secondary module of unsigned assembly is passed in
+    [Test]
+    public void WriteModuleDefinition_SignedAssembly_WriterFindsMatchingKey ()
+    {
+      _definitionWriter = new ModuleDefinitionWriter (
+          _fileSystemMock,
+          null,
+          new List<StrongNameKeyPair> { AssemblyNameReferenceObjectMother.RealKeyPair });
+      _fileSystemMock
+           .Expect (mock => mock.FileExists (_signedAssemblyDefinition.MainModule.FullyQualifiedName)).Return (true);
+      _fileSystemMock
+           .Expect (mock => mock.FileExists (_signedAssemblyDefinition.MainModule.FullyQualifiedName + ".bak0")).Return (false);
+      _fileSystemMock
+          .Expect (mock => mock.Move (_signedAssemblyDefinition.MainModule.FullyQualifiedName, _signedAssemblyDefinition.MainModule.FullyQualifiedName + ".bak0"));
+      _fileSystemMock
+          .Expect (mock => mock.WriteModuleDefinition (
+            Arg<ModuleDefinition>.Is.Same (_signedAssemblyDefinition.MainModule),
+            Arg<string>.Is.Same (_signedAssemblyDefinition.MainModule.FullyQualifiedName),
+            Arg<WriterParameters>.Matches (param => param.StrongNameKeyPair.Equals (AssemblyNameReferenceObjectMother.RealKeyPair))));
+      _fileSystemMock.Replay ();
+
+      _definitionWriter.WriteModule (_signedAssemblyDefinition.MainModule);
+
+      _fileSystemMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void WriteModuleDefinition_SignedAssembly_WriterHasDefaultKey ()
+    {
+      _fileSystemMock
+           .Expect (mock => mock.FileExists (_signedAssemblyDefinition.MainModule.FullyQualifiedName)).Return (true);
+      _fileSystemMock
+           .Expect (mock => mock.FileExists (_signedAssemblyDefinition.MainModule.FullyQualifiedName + ".bak0")).Return (false);
+      _fileSystemMock
+          .Expect (mock => mock.Move (_signedAssemblyDefinition.MainModule.FullyQualifiedName, _assemblyDefinition1.MainModule.FullyQualifiedName + ".bak0"));
+      _fileSystemMock
+          .Expect (mock => mock.WriteModuleDefinition (
+            Arg<ModuleDefinition>.Is.Same (_signedAssemblyDefinition.MainModule),
+            Arg<string>.Is.Same (_signedAssemblyDefinition.MainModule.FullyQualifiedName),
+            Arg<WriterParameters>.Matches (param => param.StrongNameKeyPair.Equals (_signKey))));
+      _fileSystemMock.Replay ();
+
+      _definitionWriter.WriteModule (_signedAssemblyDefinition.MainModule);
+
+      _fileSystemMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void WriteModuleDefinition_SignedAssembly_WriterHasNoKeys ()
+    {
+      _definitionWriter = new ModuleDefinitionWriter (
+          _fileSystemMock,
+          null,
+          new List<StrongNameKeyPair> { });
+      _fileSystemMock
+           .Expect (mock => mock.FileExists (_signedAssemblyDefinition.MainModule.FullyQualifiedName)).Return (true);
+      _fileSystemMock
+           .Expect (mock => mock.FileExists (_signedAssemblyDefinition.MainModule.FullyQualifiedName + ".bak0")).Return (false);
+      _fileSystemMock
+          .Expect (mock => mock.Move (_signedAssemblyDefinition.MainModule.FullyQualifiedName, _assemblyDefinition1.MainModule.FullyQualifiedName + ".bak0"));
+      _fileSystemMock
+          .Expect (mock => mock.WriteModuleDefinition (
+            Arg<ModuleDefinition>.Is.Same (_signedAssemblyDefinition.MainModule),
+            Arg<string>.Is.Same (_signedAssemblyDefinition.MainModule.FullyQualifiedName),
+            Arg<WriterParameters>.Matches (param => param.StrongNameKeyPair == null)));
+      _fileSystemMock.Replay ();
+
+      _definitionWriter.WriteModule (_signedAssemblyDefinition.MainModule);
+
+      _fileSystemMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void WriteModuleDefinition_SignedAssembly_SecondaryModule_WriterHasDefaultKey ()
+    {
+      _fileSystemMock
+           .Expect (mock => mock.FileExists (_signedAssemblyDefinition.Modules[1].FullyQualifiedName)).Return (true);
+      _fileSystemMock
+           .Expect (mock => mock.FileExists (_signedAssemblyDefinition.Modules[1].FullyQualifiedName + ".bak0")).Return (false);
+      _fileSystemMock
+          .Expect (mock => mock.Move (_signedAssemblyDefinition.Modules[1].FullyQualifiedName, _assemblyDefinition1.Modules[1].FullyQualifiedName + ".bak0"));
+      _fileSystemMock
+          .Expect (mock => mock.WriteModuleDefinition (
+            Arg<ModuleDefinition>.Is.Same (_signedAssemblyDefinition.Modules[1]),
+            Arg<string>.Is.Same (_signedAssemblyDefinition.Modules[1].FullyQualifiedName),
+            Arg<WriterParameters>.Matches (param => param.StrongNameKeyPair.Equals (_signKey))));
+      _fileSystemMock.Replay ();
+
+      _definitionWriter.WriteModule (_signedAssemblyDefinition.Modules[1]);
+
+      _fileSystemMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void WriteModuleDefinition_SecondaryModule_WriterHasDefaultKey ()
+    {
+      _fileSystemMock
+           .Expect (mock => mock.FileExists (_assemblyDefinition1.Modules[1].FullyQualifiedName)).Return (true);
+      _fileSystemMock
+           .Expect (mock => mock.FileExists (_assemblyDefinition1.Modules[1].FullyQualifiedName + ".bak0")).Return (false);
+      _fileSystemMock
+          .Expect (mock => mock.Move (_assemblyDefinition1.Modules[1].FullyQualifiedName, _assemblyDefinition1.Modules[1].FullyQualifiedName + ".bak0"));
+      _fileSystemMock
+          .Expect (mock => mock.WriteModuleDefinition (
+            Arg<ModuleDefinition>.Is.Same (_assemblyDefinition1.Modules[1]),
+            Arg<string>.Is.Same (_assemblyDefinition1.Modules[1].FullyQualifiedName),
+            Arg<WriterParameters>.Matches (param => param.StrongNameKeyPair.Equals (_signKey))));
+      _fileSystemMock.Replay ();
+
+      _definitionWriter.WriteModule (_assemblyDefinition1.Modules[1]);
+
+      _fileSystemMock.VerifyAllExpectations ();
+    }
   }
 }

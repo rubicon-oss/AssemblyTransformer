@@ -3,12 +3,15 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using AssemblyTransformer.Extensions;
 using Mono.Cecil;
-using System.Linq;
 
 namespace AssemblyTransformer.AssemblyTracking
 {
+  /// <summary>
+  /// Implements an assembly tracker. Provides functionality to handle tracked assemblies and associate them with the assembly definitions.
+  /// </summary>
   public class AssemblyTracker : IAssemblyTracker
   {
     private readonly IDictionary<AssemblyDefinition, TrackedAssembly> _trackedAssemblies;
@@ -37,24 +40,32 @@ namespace AssemblyTransformer.AssemblyTracking
 
     public AssemblyDefinition GetAssemblyByReference (AssemblyNameReference referencedAssemblyName)
     {
+      ArgumentUtility.CheckNotNull ("referencedAssemblyName", referencedAssemblyName);
+
       var trackedAssembly = GetTrackedAssemblyByReference (referencedAssemblyName);
       return trackedAssembly != null ? trackedAssembly.AssemblyDefinition : null;
     }
 
     public bool IsModified (AssemblyDefinition assemblyDefinition)
     {
+      ArgumentUtility.CheckNotNull ("assemblyDefinition", assemblyDefinition);
+
       var trackedAssembly = GetTrackedAssembly (assemblyDefinition);
       return trackedAssembly.IsModified;
     }
 
     public void MarkModified (AssemblyDefinition assemblyDefinition)
     {
+      ArgumentUtility.CheckNotNull ("assemblyDefinition", assemblyDefinition);
+
       var trackedAssembly = GetTrackedAssembly(assemblyDefinition);
       trackedAssembly.MarkModified();
     }
 
     public void MarkUnmodified (AssemblyDefinition assemblyDefinition)
     {
+      ArgumentUtility.CheckNotNull ("assemblyDefinition", assemblyDefinition);
+
       var trackedAssembly = GetTrackedAssembly (assemblyDefinition);
       trackedAssembly.MarkUnmodified ();
     }
@@ -66,6 +77,8 @@ namespace AssemblyTransformer.AssemblyTracking
 
     public AssemblyDefinition[] GetReverseReferences (AssemblyDefinition assemblyDefinition)
     {
+      ArgumentUtility.CheckNotNull ("assemblyDefinition", assemblyDefinition);
+
       var trackedAssembly = GetTrackedAssembly(assemblyDefinition);
       return trackedAssembly.ReverseReferences.Select(asm => asm.AssemblyDefinition).ToArray();
     }

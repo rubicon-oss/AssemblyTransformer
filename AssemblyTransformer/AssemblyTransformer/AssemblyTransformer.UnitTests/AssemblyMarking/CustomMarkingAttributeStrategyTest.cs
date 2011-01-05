@@ -5,7 +5,7 @@ using System;
 using System.Reflection;
 using AssemblyTransformer.AssemblySigning;
 using AssemblyTransformer.AssemblySigning.AssemblyWriting;
-using AssemblyTransformer.AssemblyTransformations.AssemblyMarking.MarkingStrategies;
+using AssemblyTransformer.AssemblyTransformations.AssemblyMethodsVirtualizing.MarkingStrategies;
 using Mono.Cecil;
 using System.Collections.Generic;
 using NUnit.Framework;
@@ -30,7 +30,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
     [TearDown]
     public void TearDown ()
     {
-      IModuleDefinitionWriter writer = new ModuleWriter (new FileSystem.FileSystem (), null, new List<StrongNameKeyPair> ());
+      IModuleDefinitionWriter writer = new ModuleDefinitionWriter (new FileSystem.FileSystem (), null, new List<StrongNameKeyPair> ());
       foreach (var module in _assemblyDefinition.Modules)
       {
         Console.WriteLine ("###### " + module.Name);
@@ -127,7 +127,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
       Assert.That (_assemblyDefinition.Modules.Count, Is.EqualTo (2));
       Assert.That (_assemblyDefinition.MainModule.Types.Count, Is.EqualTo (2));
 
-      Assert.Throws<ArgumentException> (() => _markerCustomMarkingStrategy.AddCustomAttribute (methodMain, _assemblyDefinition));
+      Assert.Throws<InvalidOperationException> (() => _markerCustomMarkingStrategy.AddCustomAttribute (methodMain, _assemblyDefinition));
     }
 
   }

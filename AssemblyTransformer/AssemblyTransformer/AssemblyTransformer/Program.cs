@@ -1,50 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
 using AssemblyTransformer.AssemblySigning;
-using AssemblyTransformer.AssemblySigning.AssemblyWriting;
 using AssemblyTransformer.AssemblyTracking;
 using AssemblyTransformer.AssemblyTransformations;
-using AssemblyTransformer.AssemblyTransformations.AssemblyMarking;
-using AssemblyTransformer.AssemblyTransformations.AssemblyMarking.MarkingStrategies;
-using Mono.Cecil;
-using Mono.Options;
+using AssemblyTransformer.AssemblyTransformations.AssemblyMethodsVirtualizing;
 
 namespace AssemblyTransformer
 {
+  /// <summary>
+  /// The main program of the assemblytransformer is responsible for adding the essential objects ( FileSystem, AssemblyTracker, AssemblySigner)
+  /// to the transformation process. also the assembly transformations have to be added in order to be executed.
+  /// This program also reads the parameters from the commandline and takes care of diverse argument exceptions (which means, print it to the user
+  /// and exit).
+  /// </summary>
   class Program
   {
-    static void Main (string[] args)
+    static int Main (string[] args)
     {
       var showHelp = false;
       var optionSet = new OptionSet { { "h|?|help", "show help message and exit", v => showHelp = v != null } };
       var fileSystem = new FileSystem.FileSystem ();
       var transformationFactories = new List<IAssemblyTransformationFactory> ();
- // -- add the tracker then transformations and then signer     
+
+ // -- add the assembly tracker   
       var trackerFactory = new DirectoryBasedAssemblyTrackerFactory(fileSystem);
       trackerFactory.AddOptions (optionSet);
-      
-      // source out to runner? also for easy "add" function for all transformations
-      transformationFactories.Add (new AssemblyMarkerFactory (fileSystem));
+
+ // -- add all the assembly transformations
+      transformationFactories.Add (new AssemblyMethodVirtualizerFactory (fileSystem));
       foreach (var factory in transformationFactories)
         factory.AddOptions (optionSet);
 
+ // -- add the assembly signer
       var signerFactory = new AssemblySignerFactory (fileSystem);
       signerFactory.AddOptions (optionSet);
- // --
+
       try
       {
         optionSet.Parse (args);
         if (showHelp)
         {
           ShowHelp (optionSet);
-          // TODO Review FS: Return here - no further processing if someone specified /=
+          return -2;
         }
       }
       catch (OptionException e)
       {
         Console.WriteLine (e.Message);
         ShowHelp (optionSet);
-        // TODO Review FS: Return a non-zero int return value here (int Main (string[] args)) to indicate failure.
+        return -2;
       }
 
       Console.WriteLine ("AssemblyTransformer starting up ...");
@@ -56,10 +60,11 @@ namespace AssemblyTransformer
       catch (ArgumentException e)
       {
         Console.WriteLine (e.Message);
-        return; // TODO Review FS: Use a non-zero int return value here (int Main (string[] args)) to indicate failure.
+        return -2;
       }
 
       Console.WriteLine ("Assemblies successfully loaded, transformed, signed and saved!");
+      return 0;
     }
 
     private static void ShowHelp (OptionSet options)

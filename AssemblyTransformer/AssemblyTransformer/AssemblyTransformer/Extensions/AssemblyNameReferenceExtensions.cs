@@ -2,13 +2,20 @@
 // All rights reserved.
 //
 using System;
-using Mono.Cecil;
 using System.Linq;
+using Mono.Cecil;
 
 namespace AssemblyTransformer.Extensions
 {
+  /// <summary>
+  /// These extensions provide necessary functionality to handle assembly name references, since Cecil does not, or insufficiently, provide these
+  /// methods.
+  /// </summary>
   public static class AssemblyNameReferenceExtensions
   {
+    /// <summary>
+    /// Compares the given references the way Microsoft intended it. (specified in ECMA#355)
+    /// </summary>
     public static bool MatchesDefinition (this AssemblyNameReference reference, AssemblyNameReference definition)
     {
       return  reference.Name == definition.Name 

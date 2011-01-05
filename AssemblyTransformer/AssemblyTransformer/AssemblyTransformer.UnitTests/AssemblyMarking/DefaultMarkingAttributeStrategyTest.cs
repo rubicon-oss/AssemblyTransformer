@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using AssemblyTransformer.AssemblySigning;
 using AssemblyTransformer.AssemblySigning.AssemblyWriting;
-using AssemblyTransformer.AssemblyTransformations.AssemblyMarking.MarkingStrategies;
+using AssemblyTransformer.AssemblyTransformations.AssemblyMethodsVirtualizing.MarkingStrategies;
 using Mono.Cecil;
 using NUnit.Framework;
 
@@ -22,13 +22,13 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
     public void SetUp ()
     {
       _assemblyDefinition = AssemblyDefinitionObjectMother.CreateMultiModuleAssemblyDefinition ();
-      _markerDefaultMarkingStrategy = new DefaultMarkingAttributeStrategy ("NonVirtualAttribute", "NonVirtualAttribute");
+      _markerDefaultMarkingStrategy = new GeneratedMarkingAttributeStrategy ("NonVirtualAttribute", "NonVirtualAttribute");
     }
 
     [TearDown]
     public void TearDown ()
     {
-      IModuleDefinitionWriter writer = new ModuleWriter (new FileSystem.FileSystem(), null, new List<StrongNameKeyPair> ());
+      IModuleDefinitionWriter writer = new ModuleDefinitionWriter (new FileSystem.FileSystem(), null, new List<StrongNameKeyPair> ());
       foreach (var module in _assemblyDefinition.Modules)
       {
         Console.WriteLine ("###### " + module.Name);

@@ -2,22 +2,35 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AssemblyTransformer.AssemblySigning.AssemblyWriting;
+using AssemblyTransformer.AssemblyTracking;
 using AssemblyTransformer.Extensions;
 using Mono.Cecil;
 
 namespace AssemblyTransformer.AssemblySigning
 {
+  /// <summary>
+  /// The assembly signer offers the core functionality of signing the given assemblies,
+  /// recalculating the assemblies hashes/keys and modifying the depending assemblies
+  /// references to contain the correct values again.
+  /// This is a recursive algorithm, as every modification of an assembly can have sideeffects 
+  /// on multiple other assemblies. The whole "assembly tree" is updated, and written using the
+  /// given module definition writer.
+  /// </summary>
   public class AssemblySigner : IAssemblySigner
   {
     private readonly IModuleDefinitionWriter _writer;
 
     public AssemblySigner (IModuleDefinitionWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       _writer = writer;
     }
 
     public void SignAndSave (IAssemblyTracker tracker)
     {
+      ArgumentUtility.CheckNotNull ("tracker", tracker);
+
       ICollection<AssemblyDefinition> assembliesToSave = new List<AssemblyDefinition> (tracker.GetModifiedAssemblies ());
       while (assembliesToSave.Count != 0)
       {
@@ -49,7 +62,7 @@ namespace AssemblyTransformer.AssemblySigning
 
         // Keep track of original name of this assembly before saving the module. The writer might change the name.
         var originalAssemblyName = assembly.Name.Clone();
-        _writer.WriteModule (assembly.MainModule, moduleDefinition);
+        _writer.WriteModule (moduleDefinition);
 
         // If the writer has changed the name of this assembly, all assemblies referencing this assembly must be updated. Because of the recursive
         // call above, we can be sure that these assemblies will be saved after returning from this method: it is guaranteed that the referenced

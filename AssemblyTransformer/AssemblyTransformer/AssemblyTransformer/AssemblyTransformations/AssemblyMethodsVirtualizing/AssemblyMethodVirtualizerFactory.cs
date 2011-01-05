@@ -3,16 +3,20 @@
 //
 using System;
 using System.Text.RegularExpressions;
-using AssemblyTransformer.AssemblyTransformations.AssemblyMarking.MarkingStrategies;
+using AssemblyTransformer.AssemblyTransformations.AssemblyMethodsVirtualizing.MarkingStrategies;
 using AssemblyTransformer.FileSystem;
 using Mono.Cecil;
-using Mono.Options;
 
-namespace AssemblyTransformer.AssemblyTransformations.AssemblyMarking
+namespace AssemblyTransformer.AssemblyTransformations.AssemblyMethodsVirtualizing
 {
-  public class AssemblyMarkerFactory : IAssemblyTransformationFactory
+  /// <summary>
+  /// This factory is responsible for the correct instantiation of the assembly method virtualizer transformation.
+  /// All the needed parameters are added to the options and parsed for the instantiation of the correct marking
+  /// strategy. 
+  /// </summary>
+  public class AssemblyMethodVirtualizerFactory : IAssemblyTransformationFactory
   {
-    public enum AttributeMode { None, Custom, Default }
+    public enum AttributeMode { None, Custom, Generated }
 
     private readonly IFileSystem _fileSystem;
     private Regex _regex;
@@ -21,54 +25,54 @@ namespace AssemblyTransformer.AssemblyTransformations.AssemblyMarking
     private string _attNamespace = "NonVirtualAttribute";
     private string _attributeAssembly;
 
-    public AssemblyMarkerFactory (IFileSystem fileSystem)
+    public AssemblyMethodVirtualizerFactory (IFileSystem fileSystem)
     {
+      ArgumentUtility.CheckNotNull ("fileSystem", fileSystem);
+
       _fileSystem = fileSystem;
     }
 
     public void AddOptions (OptionSet options)
     {
+      ArgumentUtility.CheckNotNull ("options", options);
+
       options.Add (
              "r|regex|methods=",
-             "The regular expression matching the targeted methods.",
+             "The regular expression matching the targeted methods full name.",
              r => _regex = new Regex (r));
-      // TODO Review FS: Consider renaming "Default" (including the enum, the strategy, etc.) to "Generated" because a) it's not the default case, and b) it's hard to know what the Default case is
       options.Add (
             "a|att|attribute=",         
-            "Mark affected methods with Attribute [None | Default | Custom] (standard = None)",  
+            "Mark affected methods with Attribute [None | Generated | Custom] (standard = None)",  
             att => _mode = (AttributeMode) Enum.Parse (typeof (AttributeMode), att));
       options.Add (
             "n|atNS|namespace=",
-        // TODO Review FS: Describe that this is used for the Default and Custom attribute modes
-            "The namespace of the attribute (default value: NonVirtualAttribute)",  
+            "The namespace of the attribute (default value: NonVirtualAttribute). This is used for both the Generated and Custom attribute!",  
             ns => _attNamespace = ns);
       options.Add (
             "t|attType|attName=",
-            // TODO Review FS: Describe that this is used for the Default and Custom attribute modes
-            "The name of the attribute type (default value: NonVirtualAttribute)",  
+            "The name of the attribute type (default value: NonVirtualAttribute). This is used for both the Generated and Custom attribute!",  
             at => _attName = at);
       options.Add (
             "f|attFile|attributeFile=",
-            // TODO Review FS: Describe that this is used only for the Custom attribute mode
-            "Customattribute to be used to mark methods. (dll or exe containing the type)", 
+            "Custom attribute to be used to mark methods (dll or exe containing the type). ONLY applicable on Custom attribute mode!", 
             custAtt => _attributeAssembly = custAtt);
     }
 
     public IAssemblyTransformation CreateTransformation ()
     {
-      if (_regex == null)
+      if (_regex == null || _mode == null)
         throw new InvalidOperationException ("Initialize options first.");
 
-      return new AssemblyMarker (CreateMarkingStrategy (_mode), _regex);
+      return new AssemblyMethodsVirtualizer (CreateMarkingStrategy (_mode), _regex);
     }
 
     private IMarkingAttributeStrategy CreateMarkingStrategy (AttributeMode attributeMode)
     {
       switch (attributeMode)
       {
-        case AttributeMode.Default:
+        case AttributeMode.Generated:
           Console.WriteLine ("Using default attribute mechanism, generating attribute: " + _attNamespace + "." + _attName + " in main module.");
-          return new DefaultMarkingAttributeStrategy (_attNamespace, _attName);
+          return new GeneratedMarkingAttributeStrategy (_attNamespace, _attName);
 
         case AttributeMode.Custom:
           ModuleDefinition customAttributeModule = null;
@@ -82,17 +86,14 @@ namespace AssemblyTransformer.AssemblyTransformations.AssemblyMarking
                   customAttributeModule = module;
               }
             }
-
+            // REMARK RS: isnt an option an argument and vice versa?
             // TODO Review FS: Consider using a custom exception (eg., OptionsException) to notify the program of an invalid option
             if (customAttributeModule == null)
               throw new ArgumentException ("The given custom attribute is not available in the given assembly!");
           }
-          // TODO Review FS: If Cecil throws a sensible exception type when a file is read that is not a .NET assembly, catch that exception type instead
-          catch (Exception e)
+          catch (BadImageFormatException e)
           {
-            // TODO Review FS: Consider using a custom exception (eg., OptionsException) to notify the program of an invalid option
-            // TODO Review FS: Include the original exception message in the error message - there are many different cases why Cecil can refuse reading an assembly. (Also pass in e as the inner exception.)
-            throw new ArgumentException ("The given custom attribute file could not be opened!");
+            throw new ArgumentException ("The given custom attribute file could not be opened!", e);
           }
           Console.WriteLine ("Using the custom attribute: " + _attNamespace + "." + _attName + " in " + _attributeAssembly + ".");
           return new CustomMarkingAttributeStrategy (_attNamespace, _attName, customAttributeModule);

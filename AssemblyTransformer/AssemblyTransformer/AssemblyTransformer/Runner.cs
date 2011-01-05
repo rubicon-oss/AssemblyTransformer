@@ -10,12 +10,22 @@ using AssemblyTransformer.AssemblyTransformations;
 namespace AssemblyTransformer
 {
   // TODO Review FS: Consider adding a unit test for the Run method
+  /// <summary>
+  /// The runner instantiates the transformations, one by one and executes them in a serial way.
+  /// Before the transformations, the tracker has to be instantiated and initialized, because the transformations
+  /// need the assemblies. After the transformations have taken place, the signer is instantiated and used to
+  /// sign and save the assemblies.
+  /// </summary>
   public class Runner
   {
     public void Run (DirectoryBasedAssemblyTrackerFactory trackerFactory,
                       IEnumerable<IAssemblyTransformationFactory> transformationFactories, 
                       AssemblySignerFactory signerFactory)
     {
+      ArgumentUtility.CheckNotNull ("trackerFactory", trackerFactory);
+      ArgumentUtility.CheckNotNull ("transformationFactories", transformationFactories);
+      ArgumentUtility.CheckNotNull ("signerFactory", signerFactory);
+
       var tracker = trackerFactory.CreateTracker();
 
       foreach (var factory in transformationFactories)

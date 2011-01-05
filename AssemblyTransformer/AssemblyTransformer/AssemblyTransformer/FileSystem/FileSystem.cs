@@ -8,6 +8,9 @@ using Mono.Cecil;
 
 namespace AssemblyTransformer.FileSystem
 {
+  /// <summary>
+  /// Abstraction of the filesystem. Useful for testing and generally exchanging the underlying filesystem.
+  /// </summary>
   public class FileSystem : IFileSystem
   {
     public IEnumerable<string> EnumerateFiles (string path, string searchPattern, SearchOption searchOption)
@@ -18,6 +21,11 @@ namespace AssemblyTransformer.FileSystem
     public void Move (string sourceFileName, string destFileName)
     {
       File.Move (sourceFileName, destFileName);
+    }
+
+    public bool FileExists (string fileName)
+    {
+      return File.Exists (fileName);
     }
 
     public AssemblyDefinition ReadAssembly (string fileName)

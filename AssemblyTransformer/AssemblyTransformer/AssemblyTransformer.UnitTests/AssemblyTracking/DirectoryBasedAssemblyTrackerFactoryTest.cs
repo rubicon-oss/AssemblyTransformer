@@ -6,7 +6,6 @@ using System.IO;
 using AssemblyTransformer.AssemblyTracking;
 using AssemblyTransformer.FileSystem;
 using Mono.Cecil;
-using Mono.Options;
 using NUnit.Framework;
 using Rhino.Mocks;
 
@@ -80,7 +79,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyTracking
       _fileSystemMock
           .Expect (mock => mock.EnumerateFiles ("something", "*.exe", SearchOption.AllDirectories))
           .Return (new string[0]);
-      _fileSystemMock.Expect (mock => mock.ReadAssembly (@"something\1.dll")).Throw (new Exception ("Catastrophe"));
+      _fileSystemMock.Expect (mock => mock.ReadAssembly (@"something\1.dll")).Throw (new BadImageFormatException ("Catastrophe"));
       _fileSystemMock.Expect (mock => mock.ReadAssembly (@"something\2.dll")).Return (_assemblyDefinition2);
       _fileSystemMock.Replay ();
 

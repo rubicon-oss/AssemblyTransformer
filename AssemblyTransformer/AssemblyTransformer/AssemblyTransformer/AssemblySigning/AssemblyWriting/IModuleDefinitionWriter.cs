@@ -1,13 +1,16 @@
 // Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
 // All rights reserved.
 //
+using System;
 using Mono.Cecil;
 
 namespace AssemblyTransformer.AssemblySigning.AssemblyWriting
 {
+  /// <summary>
+  /// A module definition writer, only has to offer the writing functionality.
+  /// </summary>
   public interface IModuleDefinitionWriter
   {
-    // TODO Review FS: I'd reverse the parameters: First what should be written (moduleDefinition), then the associated main module
-    void WriteModule (ModuleDefinition mainModule, ModuleDefinition moduleDefinition);
+    void WriteModule (ModuleDefinition moduleDefinition);
   }
 }
