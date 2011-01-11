@@ -19,7 +19,7 @@ namespace AssemblyTransformer.UnitTests
     public static readonly byte[] PublicKey1 = new byte[] { 0xB7, 0x7A, 0x5C, 0x56, 0x19, 0x34, 0xE0, 0x89, 0x00 };
     public static readonly byte[] PublicKey2 = new byte[] { 0xB7, 0x7A, 0x5C, 0x56, 0x19, 0x34, 0xE0, 0x90, 0x00 };
 
-    public static readonly StrongNameKeyPair RealKeyPair = new StrongNameKeyPair (File.Open (@"C:\Development\Masterthesis_Schober\AssemblyTransformer\prereq\testing\key.snk", FileMode.Open));
+    public static readonly StrongNameKeyPair RealKeyPair = new StrongNameKeyPair (File.Open (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\prereq\testing\key.snk"), FileMode.Open));
 
     public static AssemblyNameReference CreateAssemblyNameReference (string shortName)
     {

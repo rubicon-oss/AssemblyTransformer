@@ -62,9 +62,13 @@ namespace AssemblyTransformer.UnitTests
       ExportedType e = new ExportedType ("TestSpace", "TestSecondType", new ModuleReference (secondModule.Name));
       assemblyDefinition.MainModule.ExportedTypes.Add (e);
 
-      assemblyDefinition.Write (@"C:\temp\testing\test.mainmodule");
-      secondModule.Write (@"C:\temp\testing\test.module");
-      assemblyDefinition = AssemblyDefinition.ReadAssembly (@"C:\temp\testing\test.mainmodule");
+      var testingDirectory = Path.Combine (AppDomain.CurrentDomain.BaseDirectory, @"temp\testing");
+      if (!Directory.Exists (testingDirectory))
+        Directory.CreateDirectory (testingDirectory);
+
+      assemblyDefinition.Write (Path.Combine (testingDirectory, "test.mainmodule"));
+      secondModule.Write (Path.Combine (testingDirectory, "test.module"));
+      assemblyDefinition = AssemblyDefinition.ReadAssembly (Path.Combine (testingDirectory, "test.mainmodule"));
 
       return assemblyDefinition;
     }
