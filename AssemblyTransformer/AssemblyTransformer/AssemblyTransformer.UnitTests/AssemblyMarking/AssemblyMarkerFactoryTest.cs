@@ -64,7 +64,8 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
 
       Assert.That (result, Is.TypeOf (typeof (AssemblyMethodsVirtualizer)));
       _fileSystemMock.VerifyAllExpectations();
-
+      Assert.That (((AssemblyMethodsVirtualizer) result).MarkingAttributeStrategy, Is.TypeOf (typeof (CustomMarkingAttributeStrategy)));
+      Assert.That (((AssemblyMethodsVirtualizer) result).TargetMethodsFullNameMatchingRegex.ToString () == "regex");
       // TODO Review FS: Check that the CustomMarkingStrategy is used
       // TODO Review FS: Check that the CustomMarkingStrategy uses the right module and type namespace/name
     }
