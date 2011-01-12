@@ -2,6 +2,7 @@
 // All rights reserved.
 //
 using System;
+using System.IO;
 using System.Reflection;
 using AssemblyTransformer.AssemblySigning;
 using AssemblyTransformer.AssemblySigning.AssemblyWriting;
@@ -15,6 +16,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
   [TestFixture]
   public class CustomMarkingAttributeStrategyTest
   {
+    private readonly string _assemblyPath = Path.Combine (AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\prereq\testing\CecilUser.exe");
     private AssemblyDefinition _assemblyDefinition;
     private IMarkingAttributeStrategy _markerCustomMarkingStrategy;
 
@@ -23,7 +25,8 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
     {
       _assemblyDefinition = AssemblyDefinitionObjectMother.CreateMultiModuleAssemblyDefinition ();
       _markerCustomMarkingStrategy = new CustomMarkingAttributeStrategy (
-          "CustomNonVirtualAttribute", "CustomNonVirtualAttribute", ModuleDefinition.ReadModule ("CecilUser.exe")
+          "CustomNonVirtualAttribute", "CustomNonVirtualAttribute", 
+          ModuleDefinition.ReadModule (_assemblyPath)
         );
     }
 
@@ -42,7 +45,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
     public void OverrideMethods_MainModule_MethodMarked ()
     {
       MethodDefinition methodMain = _assemblyDefinition.MainModule.Types[1].Methods[0];
-      ModuleDefinition attributeModule = ModuleDefinition.ReadModule ("CecilUser.exe");
+      ModuleDefinition attributeModule = ModuleDefinition.ReadModule (_assemblyPath);
 
       Assert.That (_assemblyDefinition.MainModule.Types[1].CustomAttributes, Is.Empty);
       Assert.That (_assemblyDefinition.Modules.Count, Is.EqualTo (2));
@@ -65,7 +68,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
     public void OverrideMethods_SecondaryModule_MethodMarked ()
     {
       MethodDefinition secondModuleMethod = _assemblyDefinition.Modules[1].Types[1].Methods[0];
-      ModuleDefinition attributeModule = ModuleDefinition.ReadModule ("CecilUser.exe");
+      ModuleDefinition attributeModule = ModuleDefinition.ReadModule (_assemblyPath);
 
       Assert.That (_assemblyDefinition.MainModule.Types[1].CustomAttributes, Is.Empty);
       Assert.That (_assemblyDefinition.Modules.Count, Is.EqualTo (2));
@@ -91,7 +94,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
     {
       MethodDefinition mainModuleMethod = _assemblyDefinition.MainModule.Types[1].Methods[0];
       MethodDefinition secondModuleMethod = _assemblyDefinition.Modules[1].Types[1].Methods[0];
-      ModuleDefinition attributeModule = ModuleDefinition.ReadModule ("CecilUser.exe");
+      ModuleDefinition attributeModule = ModuleDefinition.ReadModule (_assemblyPath);
 
       Assert.That (_assemblyDefinition.MainModule.Types[1].CustomAttributes, Is.Empty);
       Assert.That (_assemblyDefinition.Modules.Count, Is.EqualTo (2));
@@ -118,10 +121,10 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
     public void OverrideMethods_AttributeTypeNotFound_Exception ()
     {
       _markerCustomMarkingStrategy = new CustomMarkingAttributeStrategy (
-          "NotFoundAttribute", "NotFoundAttribute", ModuleDefinition.ReadModule ("CecilUser.exe")
+          "NotFoundAttribute", "NotFoundAttribute", ModuleDefinition.ReadModule (_assemblyPath)
         );
       MethodDefinition methodMain = _assemblyDefinition.MainModule.Types[1].Methods[0];
-      ModuleDefinition attributeModule = ModuleDefinition.ReadModule ("CecilUser.exe");
+      ModuleDefinition attributeModule = ModuleDefinition.ReadModule (_assemblyPath);
 
       Assert.That (_assemblyDefinition.MainModule.Types[1].CustomAttributes, Is.Empty);
       Assert.That (_assemblyDefinition.Modules.Count, Is.EqualTo (2));
