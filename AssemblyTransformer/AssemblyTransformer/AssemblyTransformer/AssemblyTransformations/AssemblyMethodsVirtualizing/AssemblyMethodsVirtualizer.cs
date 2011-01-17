@@ -50,8 +50,8 @@ namespace AssemblyTransformer.AssemblyTransformations.AssemblyMethodsVirtualizin
                             from methodDefinition in typeDefinition.Methods
                             where _targetMethodsFullNameMatchingRegex.IsMatch (methodDefinition.FullName)
                             select new { Assembly = assemblyDefinition, Method = methodDefinition };
-
-      foreach (var modifiedMethodDefinition in modifiedMethods)
+      
+      foreach (var modifiedMethodDefinition in modifiedMethods.ToList())
       {
         tracker.MarkModified (modifiedMethodDefinition.Assembly);
         
