@@ -28,7 +28,6 @@ namespace AssemblyTransformer.AssemblySigning
       _fileSystem = fileSystem;
     }
 
-    // TODO Review FS: Why so many different names for the same command line parameter?
     public void AddOptions (OptionSet options)
     {
       ArgumentUtility.CheckNotNull ("options", options);
@@ -37,7 +36,6 @@ namespace AssemblyTransformer.AssemblySigning
             "k|key|defaultKey=", 
             "The default key (.snk) to be used to sign Assemblies.",
             key => _defaultKeyFile = key);
-      // TODO Review FS: Why "s"?
       options.Add (
             "s|keyDir|keyDirectory=", 
             "The root dir of all keys (.snk) to sign Assemblies.",
@@ -62,9 +60,7 @@ namespace AssemblyTransformer.AssemblySigning
         }
         catch (IOException e)
         {
-          // TODO Review FS: Consider using a custom exception (eg., OptionsException) to notify the program of an invalid option
-          // REMARK isnt an option an argument?
-          throw new ArgumentException ("The defaultKey file could not be opened! (" + e.Message +")", e);
+          throw new ProgramArgumentException ("The defaultKey file could not be opened! (" + e.Message +")", e);
         }
       }
       if (keysDirectory != null)
@@ -76,8 +72,7 @@ namespace AssemblyTransformer.AssemblySigning
         }
         catch (IOException e) 
         {
-          // TODO Review FS: Consider using a custom exception (eg., OptionsException) to notify the program of an invalid option
-          throw new ArgumentException ("Reading keys from the key directory caused an error! (" + e.Message + ")", e);
+          throw new ProgramArgumentException ("Reading keys from the key directory caused an error! (" + e.Message + ")", e);
         }
       }
 
@@ -90,8 +85,6 @@ namespace AssemblyTransformer.AssemblySigning
       {
         return new StrongNameKeyPair (keyFile);
       }
-
-      // TODO Review FS: Use a "using" block to ensure the opened file is closed when finished with it. (In the test expect that the stream returned by Open is closed when the method is finished.)
     }
   }
 }

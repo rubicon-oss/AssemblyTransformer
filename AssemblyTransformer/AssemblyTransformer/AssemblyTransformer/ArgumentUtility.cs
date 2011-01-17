@@ -14,4 +14,14 @@ namespace AssemblyTransformer
     }
   }
 
+  public class ProgramArgumentException : Exception
+  {
+    public ProgramArgumentException (string message, Exception innerException)
+      : base ("AssemblyTransformer program argument error: " + message, 
+      innerException) {}
+
+    public ProgramArgumentException (string message)
+      : base ("AssemblyTransformer program argument error: " + message) {}
+  }
+
 }

@@ -5,11 +5,13 @@ using System;
 using System.IO;
 using System.Reflection;
 using AssemblyTransformer.AssemblySigning;
+using AssemblyTransformer.AssemblySigning.AssemblyWriting;
 using AssemblyTransformer.AssemblyTracking;
 using AssemblyTransformer.FileSystem;
 using Mono.Cecil;
 using NUnit.Framework;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace AssemblyTransformer.UnitTests.AssemblySigning
 {
@@ -18,16 +20,40 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
   {
     private IFileSystem _fileSystemMock;
     private AssemblySignerFactory _factory;
+    private OptionSet _options;
 
     [SetUp]
     public void SetUp ()
     {
       _fileSystemMock = MockRepository.GenerateStrictMock<IFileSystem> ();
       _factory = new AssemblySignerFactory (_fileSystemMock);
+      //_options = MockRepository.GenerateStrictMock <OptionSet> ();
+      _options = new OptionSet ();
     }
 
-    // TODO Review FS: If easily possible, add a test for AddOptions that shows that the "-k", "--key", "-s", "--keyDir", "--keyDirectories" options are added
-    // TODO Review FS: (Also do this for the other factory tests.)
+    [Test]
+    public void CreateSigner_AddsOptions ()
+    {
+      //_options.Expect (
+      //    mock => mock.Add (
+      //        Arg<string>.Is.Equal ("k|key|defaultKey="),
+      //        Arg<string>.Is.Equal ("The default key (.snk) to be used to sign Assemblies."),
+      //        Arg<Action<string>>.Is.NotNull));
+      //_options.Expect (
+      //    mock => mock.Add (
+      //        Arg<string>.Is.Equal ("s|keyDir|keyDirectory="),
+      //        Arg<string>.Is.Equal ("The root dir of all keys (.snk) to sign Assemblies."),
+      //        Arg<Action<string>>.Is.NotNull));
+
+      _factory.AddOptions (_options);
+
+      Assert.That (_options.Contains ("k"));
+      Assert.That (_options.Contains ("key"));
+      Assert.That (_options.Contains ("defaultKey"));
+      Assert.That (_options.Contains ("s"));
+      Assert.That (_options.Contains ("keyDir"));
+      Assert.That (_options.Contains ("keyDirectory"));
+    }
 
     [Test]
     public void CreateSigner_NoOptions ()
@@ -37,39 +63,61 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
 
       _fileSystemMock.VerifyAllExpectations();
       Assert.That (result, Is.TypeOf (typeof (AssemblySigner)));
-      // TODO Review FS: Check the default key and available key pairs of the writer - this will probably require adding a Writer property on AssemblySigner, and DefaultKey and AvailableKeys properties on ModuleDefinitionWriter
+      Assert.That (((ModuleDefinitionWriter) ((AssemblySigner) result).Writer).DefaultKey == null);
+      Assert.That (((ModuleDefinitionWriter) ((AssemblySigner) result).Writer).Keys.Length == 0);
     }
 
-    // TODO Review FS: Try to write tests successfully getting and using a default key and key set (without expecting an ArgumentException). To do so:
-    // TODO Review FS: - change IFileSystem.Open to return Stream instead of FileStream
-    // TODO Review FS: - in the expectation (Expect (mock => mock.Open (...))), return an in-memory stream containing a valid key blob (add an object mother class for this)
-    // TODO Review FS: In those tests, check that the signer's writer has the right default and strong name keys
-
     [Test]
-    [ExpectedException (typeof(ArgumentNullException))]
-    public void CreateSigner_WithDefaultKey ()
+    public void CreateSigner_HasCorrectKeys ()
     {
-      var optionSet = new OptionSet ();
-      _factory.AddOptions (optionSet);
-      optionSet.Parse (new[] { "-k:someKey" });
+      var key = AssemblyNameReferenceObjectMother.RealKeyPairStream ();
+      var keyPair = AssemblyNameReferenceObjectMother.RealKeyPair ();
 
+      _factory.AddOptions (_options);
+      _options.Parse (new[] { "-k:someKey", "-s:someDir" });
+      
       _fileSystemMock
-          .Expect (mock => mock.Open("someKey", FileMode.Open))
-          .Return (null);
+          .Expect (mock => mock.Open ("someKey", FileMode.Open))
+          .Return (AssemblyNameReferenceObjectMother.RealKeyPairStream ());
+      _fileSystemMock
+          .Expect (mock => mock.EnumerateFiles ("someDir", "*.snk", SearchOption.AllDirectories))
+          .Return (new[] { @"something\1.snk" });
+      _fileSystemMock
+          .Expect (mock => mock.Open (@"something\1.snk", FileMode.Open))
+          .Return (AssemblyNameReferenceObjectMother.RealKeyPairStream ());
       _fileSystemMock.Replay ();
 
       var result = _factory.CreateSigner ();
 
       _fileSystemMock.VerifyAllExpectations ();
+      Assert.That (result, Is.TypeOf (typeof (AssemblySigner)));
+      Assert.That (((ModuleDefinitionWriter) ((AssemblySigner) result).Writer).DefaultKey.PublicKey.SequenceEqual (AssemblyNameReferenceObjectMother.RealKeyPair().PublicKey));
+      Assert.That (((ModuleDefinitionWriter) ((AssemblySigner) result).Writer).Keys.Length == 1);
+      Assert.That (((ModuleDefinitionWriter) ((AssemblySigner) result).Writer).Keys[0].PublicKey.SequenceEqual (AssemblyNameReferenceObjectMother.RealKeyPair ().PublicKey));
+    }
+
+    [Test]
+    [ExpectedException (typeof(ArgumentNullException))]
+    public void CreateSigner_WithDefaultKey ()
+    {
+      _factory.AddOptions (_options);
+      _options.Parse (new[] { "-k:someKey" });
+
+      _fileSystemMock
+          .Expect (mock => mock.Open("someKey", FileMode.Open))
+          .Return (null);
+
+      var result = _factory.CreateSigner ();
+
+      _fileSystemMock.VerifyAllExpectations ();     
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentNullException))]
     public void CreateSigner_WithKeySet ()
     {
-      var optionSet = new OptionSet ();
-      _factory.AddOptions (optionSet);
-      optionSet.Parse (new[] { "-s:someDir" });
+      _factory.AddOptions (_options);
+      _options.Parse (new[] { "-s:someDir" });
 
       _fileSystemMock
           .Expect (mock => mock.EnumerateFiles ("someDir", "*.snk", SearchOption.AllDirectories))

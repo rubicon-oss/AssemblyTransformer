@@ -9,7 +9,6 @@ using AssemblyTransformer.AssemblyTransformations;
 
 namespace AssemblyTransformer
 {
-  // TODO Review FS: Consider adding a unit test for the Run method
   /// <summary>
   /// The runner instantiates the transformations, one by one and executes them in a serial way.
   /// Before the transformations, the tracker has to be instantiated and initialized, because the transformations
@@ -18,9 +17,9 @@ namespace AssemblyTransformer
   /// </summary>
   public class Runner
   {
-    public void Run (DirectoryBasedAssemblyTrackerFactory trackerFactory,
+    public void Run (IAssemblyTrackerFactory trackerFactory,
                       IEnumerable<IAssemblyTransformationFactory> transformationFactories, 
-                      AssemblySignerFactory signerFactory)
+                      IAssemblySignerFactory signerFactory)
     {
       ArgumentUtility.CheckNotNull ("trackerFactory", trackerFactory);
       ArgumentUtility.CheckNotNull ("transformationFactories", transformationFactories);

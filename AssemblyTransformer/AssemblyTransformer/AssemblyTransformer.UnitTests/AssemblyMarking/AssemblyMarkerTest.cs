@@ -45,11 +45,10 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
     [Test]
     public void OverrideMethods_DoesNotMarkAssemblyWithougMatchingMethodsModified ()
     {
-      // TODO Review FS: Use a second marker field for the "xxxx" marker for the non-matching tests (eg., _markerWithNonMatchingRegex) instead of changing _methodsVirtualizer. When initializing a field in the SetUp method, avoid changing it to a different reference later on.
-      _methodsVirtualizer = new AssemblyMethodsVirtualizer (_markingAttributeStrategy, new Regex ("xxxx"));
+      var _methodsVirtualizerNoMatch = new AssemblyMethodsVirtualizer (_markingAttributeStrategy, new Regex ("xxxx"));
       Assert.That (_tracker.IsModified (_assemblyDefinition), Is.False);
 
-      _methodsVirtualizer.Transform (_tracker);
+      _methodsVirtualizerNoMatch.Transform (_tracker);
 
       Assert.That (_tracker.IsModified (_assemblyDefinition), Is.False);
     }

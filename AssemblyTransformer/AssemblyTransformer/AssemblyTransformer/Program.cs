@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using AssemblyTransformer.AssemblySigning;
 using AssemblyTransformer.AssemblyTracking;
 using AssemblyTransformer.AssemblyTransformations;
 using AssemblyTransformer.AssemblyTransformations.AssemblyMethodsVirtualizing;
+using System.Linq;
 
 namespace AssemblyTransformer
 {

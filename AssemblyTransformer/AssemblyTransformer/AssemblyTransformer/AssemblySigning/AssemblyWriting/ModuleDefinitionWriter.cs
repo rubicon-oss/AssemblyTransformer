@@ -21,6 +21,16 @@ namespace AssemblyTransformer.AssemblySigning.AssemblyWriting
     private readonly StrongNameKeyPair _defaultKey;
     private readonly StrongNameKeyPair[] _keys;
 
+    public StrongNameKeyPair DefaultKey
+    {
+      get { return _defaultKey; }
+    }
+
+    public StrongNameKeyPair[] Keys
+    {
+      get { return _keys; }
+    }
+
     public ModuleDefinitionWriter (IFileSystem fileSystem, StrongNameKeyPair defaultKey, IEnumerable<StrongNameKeyPair> availableKeys)
     {
       ArgumentUtility.CheckNotNull ("fileSystem", fileSystem);

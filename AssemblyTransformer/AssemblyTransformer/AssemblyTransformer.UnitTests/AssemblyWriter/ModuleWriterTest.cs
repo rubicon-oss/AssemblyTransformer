@@ -90,7 +90,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyWriter
       _definitionWriter = new ModuleDefinitionWriter (
           _fileSystemMock,
           null,
-          new List<StrongNameKeyPair> { AssemblyNameReferenceObjectMother.RealKeyPair });
+          new List<StrongNameKeyPair> { AssemblyNameReferenceObjectMother.RealKeyPair() });
       _fileSystemMock
            .Expect (mock => mock.FileExists (_signedAssemblyDefinition.MainModule.FullyQualifiedName)).Return (true);
       _fileSystemMock
@@ -101,7 +101,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyWriter
           .Expect (mock => mock.WriteModuleDefinition (
             Arg<ModuleDefinition>.Is.Same (_signedAssemblyDefinition.MainModule),
             Arg<string>.Is.Same (_signedAssemblyDefinition.MainModule.FullyQualifiedName),
-            Arg<WriterParameters>.Matches (param => param.StrongNameKeyPair.Equals (AssemblyNameReferenceObjectMother.RealKeyPair))));
+            Arg<WriterParameters>.Matches (param => param.StrongNameKeyPair.Equals (AssemblyNameReferenceObjectMother.RealKeyPair()))));
       _fileSystemMock.Replay ();
 
       _definitionWriter.WriteModule (_signedAssemblyDefinition.MainModule);

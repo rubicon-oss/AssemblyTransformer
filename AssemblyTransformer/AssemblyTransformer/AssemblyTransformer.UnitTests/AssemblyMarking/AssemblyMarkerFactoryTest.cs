@@ -66,8 +66,9 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
       _fileSystemMock.VerifyAllExpectations();
       Assert.That (((AssemblyMethodsVirtualizer) result).MarkingAttributeStrategy, Is.TypeOf (typeof (CustomMarkingAttributeStrategy)));
       Assert.That (((AssemblyMethodsVirtualizer) result).TargetMethodsFullNameMatchingRegex.ToString () == "regex");
-      // TODO Review FS: Check that the CustomMarkingStrategy is used
-      // TODO Review FS: Check that the CustomMarkingStrategy uses the right module and type namespace/name
+      Assert.That (((CustomMarkingAttributeStrategy) ((AssemblyMethodsVirtualizer) result).MarkingAttributeStrategy).AttributeName == "TestType");
+      Assert.That (((CustomMarkingAttributeStrategy) ((AssemblyMethodsVirtualizer) result).MarkingAttributeStrategy).AttributeNamespace == "TestSpace");
+      Assert.That (((CustomMarkingAttributeStrategy) ((AssemblyMethodsVirtualizer) result).MarkingAttributeStrategy).ModuleContainingAttribute == _assemblyDefinition1.MainModule);
     }
 
     [Test]
@@ -80,8 +81,8 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
       var result = _factory.CreateTransformation ();
 
       Assert.That (result, Is.TypeOf (typeof (AssemblyMethodsVirtualizer)));
-      // TODO Review FS: Check that the DefaultMarkingStrategy is used (probably requires a MarkingStrategy property on AssemblyMethodsVirtualizer)
-      // TODO Review FS: Check the regex (probably requires a Regex property on AssemblyMethodsVirtualizer)
+      Assert.That (((AssemblyMethodsVirtualizer) result).MarkingAttributeStrategy, Is.TypeOf (typeof (NoneMarkingAttributeStrategy)));
+      Assert.That (((AssemblyMethodsVirtualizer) result).TargetMethodsFullNameMatchingRegex.ToString () == "regex");
     }
 
     [Test]
@@ -94,9 +95,8 @@ namespace AssemblyTransformer.UnitTests.AssemblyMarking
       var result = _factory.CreateTransformation ();
 
       Assert.That (result, Is.TypeOf (typeof (AssemblyMethodsVirtualizer)));
-      // TODO Review FS: Check that the DefaultMarkingStrategy is used (probably requires a MarkingStrategy property on AssemblyMethodsVirtualizer)
-      // TODO Review FS: Check the regex (probably requires a Regex property on AssemblyMethodsVirtualizer)
+      Assert.That (((AssemblyMethodsVirtualizer) result).MarkingAttributeStrategy, Is.TypeOf (typeof (NoneMarkingAttributeStrategy)));
+      Assert.That (((AssemblyMethodsVirtualizer) result).TargetMethodsFullNameMatchingRegex.ToString () == "regex");
     }
-    // TODO Review FS: Add a test showing that None is the default strategy if no "-a:..." is given (check that NoneMarkingAttributeStrategy is used when constructing the AssemblyMethodsVirtualizer)
   }
 }

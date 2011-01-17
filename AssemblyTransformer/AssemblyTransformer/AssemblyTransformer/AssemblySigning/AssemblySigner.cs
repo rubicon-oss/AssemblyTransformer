@@ -20,6 +20,11 @@ namespace AssemblyTransformer.AssemblySigning
   {
     private readonly IModuleDefinitionWriter _writer;
 
+    public IModuleDefinitionWriter Writer
+    {
+      get { return _writer; }
+    }
+
     public AssemblySigner (IModuleDefinitionWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);

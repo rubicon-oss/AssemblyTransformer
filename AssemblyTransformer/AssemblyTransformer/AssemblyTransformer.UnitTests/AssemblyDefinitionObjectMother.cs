@@ -78,7 +78,7 @@ namespace AssemblyTransformer.UnitTests
       var assembly = CreateMultiModuleAssemblyDefinition();
       assembly.Name.HashAlgorithm = AssemblyHashAlgorithm.SHA1;
       assembly.Name.HasPublicKey = true;
-      assembly.Name.PublicKey = AssemblyNameReferenceObjectMother.RealKeyPair.PublicKey;
+      assembly.Name.PublicKey = AssemblyNameReferenceObjectMother.RealKeyPair().PublicKey;
       assembly.MainModule.Attributes |= ModuleAttributes.StrongNameSigned;
       return assembly;
     }

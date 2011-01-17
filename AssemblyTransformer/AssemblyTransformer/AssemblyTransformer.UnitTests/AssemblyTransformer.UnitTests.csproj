@@ -68,6 +68,7 @@
     <Compile Include="AssemblyWriter\ModuleWriterTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AssemblyTracking\TrackedAssemblyTest.cs" />
+    <Compile Include="RunnerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AssemblyTransformer\AssemblyTransformer.csproj">

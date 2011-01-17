@@ -11,6 +11,11 @@ namespace AssemblyTransformer.AssemblyTransformations.AssemblyMethodsVirtualizin
   {
     private readonly ModuleDefinition _moduleContainingAttribute;
 
+    public ModuleDefinition ModuleContainingAttribute
+    {
+      get { return _moduleContainingAttribute; }
+    }
+
     public CustomMarkingAttributeStrategy (string attributeNameSpace, string attributeName, ModuleDefinition moduleContainingAttribute) 
             : base (attributeNameSpace, attributeName)
     {

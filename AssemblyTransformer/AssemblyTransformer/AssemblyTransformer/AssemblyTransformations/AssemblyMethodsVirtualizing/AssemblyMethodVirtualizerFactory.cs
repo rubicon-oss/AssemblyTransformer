@@ -86,10 +86,8 @@ namespace AssemblyTransformer.AssemblyTransformations.AssemblyMethodsVirtualizin
                   customAttributeModule = module;
               }
             }
-            // REMARK RS: isnt an option an argument and vice versa?
-            // TODO Review FS: Consider using a custom exception (eg., OptionsException) to notify the program of an invalid option
             if (customAttributeModule == null)
-              throw new ArgumentException ("The given custom attribute is not available in the given assembly!");
+              throw new ProgramArgumentException ("The given custom attribute is not available in the given assembly!");
           }
           catch (BadImageFormatException e)
           {

@@ -16,6 +16,16 @@ namespace AssemblyTransformer.AssemblyTransformations.AssemblyMethodsVirtualizin
     protected readonly string _attributeNamespace;
     protected readonly string _attributeName;
 
+    public string AttributeNamespace
+    {
+      get { return _attributeNamespace; }
+    }
+
+    public string AttributeName
+    {
+      get { return _attributeName; }
+    }
+
     protected MarkingAttributeStrategy (string attributeNamespace, string attributeName)
     {
       ArgumentUtility.CheckNotNull ("attributeNamespace", attributeNamespace);
