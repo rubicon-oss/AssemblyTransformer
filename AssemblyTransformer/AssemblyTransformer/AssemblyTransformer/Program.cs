@@ -6,8 +6,8 @@ using System.Reflection;
 using AssemblyTransformer.AssemblySigning;
 using AssemblyTransformer.AssemblyTracking;
 using AssemblyTransformer.AssemblyTransformations;
-using AssemblyTransformer.AssemblyTransformations.AssemblyMethodsVirtualizing;
 using System.Linq;
+using AssemblyTransformer.AssemblyTransformations.AssemblyTransformationFactoryFactory;
 
 namespace AssemblyTransformer
 {
@@ -24,14 +24,23 @@ namespace AssemblyTransformer
       var showHelp = false;
       var optionSet = new OptionSet { { "h|?|help", "show help message and exit", v => showHelp = v != null } };
       var fileSystem = new FileSystem.FileSystem ();
-      var transformationFactories = new List<IAssemblyTransformationFactory> ();
+      ICollection<IAssemblyTransformationFactory> transformationFactories;
+
+ // -- create all the transformations
+      var transformationFactoryFactory = new DLLBasedTransformationFactoryFactory (fileSystem);
+      transformationFactoryFactory.AddOptions (optionSet);
+      optionSet.Parse (args);
+      // catch the case when the user doesnt know what hes doing
+      if (!Directory.Exists (transformationFactoryFactory.WorkingDirectory))
+        ShowHelp (optionSet);
+      transformationFactories = transformationFactoryFactory.CreateTrackerFactories();
 
  // -- add the assembly tracker   
       var trackerFactory = new DirectoryBasedAssemblyTrackerFactory(fileSystem);
       trackerFactory.AddOptions (optionSet);
 
  // -- add all the assembly transformations
-      transformationFactories.Add (new AssemblyMethodVirtualizerFactory (fileSystem));
+ //     transformationFactories.Add (new AssemblyMethodVirtualizerFactory (fileSystem));
       foreach (var factory in transformationFactories)
         factory.AddOptions (optionSet);
 
@@ -43,16 +52,12 @@ namespace AssemblyTransformer
       {
         optionSet.Parse (args);
         if (showHelp)
-        {
           ShowHelp (optionSet);
-          return -2;
-        }
       }
       catch (OptionException e)
       {
         Console.WriteLine (e.Message);
         ShowHelp (optionSet);
-        return -2;
       }
 
       Console.WriteLine ("AssemblyTransformer starting up ...");
@@ -73,7 +78,7 @@ namespace AssemblyTransformer
 
     private static void ShowHelp (OptionSet options)
     {
-      Console.WriteLine ("Usage: AssemblyTransformer.exe [OPTIONS]+");
+      Console.WriteLine ("\nUsage: AssemblyTransformer.exe [OPTIONS]+");
       Console.WriteLine ("Marks all the Methods in the Assemblies existing in ");
       Console.WriteLine ("the given root folder (includes subfolders), that ");
       Console.WriteLine ("match the given regular expression as virtual. ");
@@ -85,7 +90,7 @@ namespace AssemblyTransformer
       Console.WriteLine ();
       Console.WriteLine ("Options:");
       options.WriteOptionDescriptions (Console.Out);
-      return;
+      Environment.Exit (-2);
     }
   }
 }

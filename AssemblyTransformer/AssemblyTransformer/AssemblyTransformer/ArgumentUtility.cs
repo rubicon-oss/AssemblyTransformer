@@ -5,7 +5,7 @@ using System;
 
 namespace AssemblyTransformer
 {
-  static class ArgumentUtility
+  public static class ArgumentUtility
   {
     public static void CheckNotNull<T> (string parameterName, T parameterValue)
     {

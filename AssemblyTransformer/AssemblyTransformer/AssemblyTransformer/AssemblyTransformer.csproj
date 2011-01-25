@@ -49,14 +49,9 @@
   <ItemGroup>
     <Compile Include="ArgumentUtility.cs" />
     <Compile Include="AssemblySigning\AssemblySignerFactory.cs" />
-    <Compile Include="AssemblyTransformations\AssemblyMethodsVirtualizing\AssemblyMethodsVirtualizer.cs" />
-    <Compile Include="AssemblyTransformations\AssemblyMethodsVirtualizing\AssemblyMethodVirtualizerFactory.cs" />
-    <Compile Include="AssemblyTransformations\AssemblyMethodsVirtualizing\MarkingStrategies\CustomMarkingAttributeStrategy.cs" />
-    <Compile Include="AssemblyTransformations\AssemblyMethodsVirtualizing\MarkingStrategies\GeneratedMarkingAttributeStrategy.cs" />
-    <Compile Include="AssemblyTransformations\AssemblyMethodsVirtualizing\MarkingStrategies\IMarkingAttributeStrategy.cs" />
-    <Compile Include="AssemblyTransformations\AssemblyMethodsVirtualizing\MarkingStrategies\MarkingAttributeStrategy.cs" />
-    <Compile Include="AssemblyTransformations\AssemblyMethodsVirtualizing\MarkingStrategies\NoneMarkingAttributeStrategy.cs" />
     <Compile Include="AssemblySigning\IAssemblySignerFactory.cs" />
+    <Compile Include="AssemblyTransformations\AssemblyTransformationFactoryFactory\DLLBasedTransformationFactoryFactory.cs" />
+    <Compile Include="AssemblyTransformations\AssemblyTransformationFactoryFactory\ITransformationFactoryFactory.cs" />
     <Compile Include="Extensions\AssemblyNameReferenceExtensions.cs" />
     <Compile Include="AssemblySigning\AssemblySigner.cs" />
     <Compile Include="AssemblySigning\AssemblyWriting\IModuleDefinitionWriter.cs" />
