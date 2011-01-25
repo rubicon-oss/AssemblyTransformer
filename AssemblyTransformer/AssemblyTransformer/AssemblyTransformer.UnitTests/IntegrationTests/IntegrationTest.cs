@@ -10,12 +10,12 @@ using AssemblyTransformer.AssemblySigning;
 using AssemblyTransformer.AssemblySigning.AssemblyWriting;
 using AssemblyTransformer.AssemblyTracking;
 using AssemblyTransformer.AssemblyTransformations;
-using AssemblyTransformer.AssemblyTransformations.AssemblyMethodsVirtualizing;
-using AssemblyTransformer.AssemblyTransformations.AssemblyMethodsVirtualizing.MarkingStrategies;
 using Mono.Cecil;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using System.Collections.Generic;
+using AssemblyMethodsVirtualizer.MarkingStrategies;
+using AssemblyMethodsVirtualizer;
 
 namespace AssemblyTransformer.UnitTests.IntegrationTests
 {
@@ -52,9 +52,9 @@ namespace AssemblyTransformer.UnitTests.IntegrationTests
       List<AssemblyDefinition> assemblies = allFiles.Select (AssemblyDefinition.ReadAssembly).ToList();
 
       _tracker = new AssemblyTracker (assemblies);
-
+      // TODO refactor integration test (doesnt work because transformation is now a dll)
       var strategy = new GeneratedMarkingAttributeStrategy (_defAttributeNamespace, _defAttributeName);
-      _transformator = new AssemblyMethodsVirtualizer(strategy, _regex);
+      _transformator = new AssemblyMethodsVirtualizer.AssemblyMethodsVirtualizer(strategy, _regex);
 
       _signer = new AssemblySigner (new ModuleDefinitionWriter (new FileSystem.FileSystem(), null, new List<StrongNameKeyPair>()));
     }
