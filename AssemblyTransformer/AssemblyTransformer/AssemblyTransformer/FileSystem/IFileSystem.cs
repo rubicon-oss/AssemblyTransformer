@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using Mono.Cecil;
 
 namespace AssemblyTransformer.FileSystem
@@ -17,5 +18,7 @@ namespace AssemblyTransformer.FileSystem
 
     AssemblyDefinition ReadAssembly (string fileName);
     void WriteModuleDefinition (ModuleDefinition moduleDefinition, string fileName, WriterParameters writerParameters);
+
+    Assembly LoadAssemblyFrom (string fileName);
   }
 }

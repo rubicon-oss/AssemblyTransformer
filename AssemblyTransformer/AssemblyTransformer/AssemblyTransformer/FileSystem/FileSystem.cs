@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using Mono.Cecil;
 
 namespace AssemblyTransformer.FileSystem
@@ -36,6 +37,11 @@ namespace AssemblyTransformer.FileSystem
     public void WriteModuleDefinition (ModuleDefinition moduleDefinition, string fileName, WriterParameters writerParameters)
     {
       moduleDefinition.Write (fileName, writerParameters);
+    }
+
+    public Assembly LoadAssemblyFrom (string fileName)
+    {
+      return Assembly.LoadFrom (fileName);
     }
 
     public FileStream Open (string path, FileMode mode)
