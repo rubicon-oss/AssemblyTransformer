@@ -68,7 +68,7 @@ namespace AssemblyTransformer.UnitTests.TransformationFactoryFactoryTest
           .Expect (mock => mock.EnumerateFiles ("something", "*.dll", SearchOption.AllDirectories))
           .Return (new[] { @"something\1.dll" });
       _fileSystemMock.Expect (mock => mock.LoadAssemblyFrom (@"something\1.dll")).
-        Return (System.Reflection.Assembly.LoadFrom (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\prereq\testing\AssemblyMethodsVirtualizer.dll")));
+        Return (System.Reflection.Assembly.LoadFrom (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\prereq\testing\transformation\AssemblyMethodsVirtualizer.dll")));
       _fileSystemMock.Replay ();
 
       var result = _factory.CreateTrackerFactories ();
