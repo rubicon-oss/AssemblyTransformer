@@ -13,7 +13,7 @@ namespace AssemblyTransformer.AssemblyTracking
   public interface IAssemblyTracker
   {
     IEnumerable<AssemblyDefinition> GetAssemblies ();
-    AssemblyDefinition GetAssemblyByReference (AssemblyNameReference referencedAssemblyName);
+    AssemblyDefinition[] GetAssemblyByReference (AssemblyNameReference referencedAssemblyName);
     bool IsModified (AssemblyDefinition assemblyDefinition);
     void MarkModified (AssemblyDefinition assemblyDefinition);
     void MarkUnmodified (AssemblyDefinition assemblyDefinition);

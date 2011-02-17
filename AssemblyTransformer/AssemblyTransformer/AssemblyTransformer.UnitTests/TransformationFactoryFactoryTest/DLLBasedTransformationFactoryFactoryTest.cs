@@ -43,7 +43,7 @@ namespace AssemblyTransformer.UnitTests.TransformationFactoryFactoryTest
     {
       var optionSet = new OptionSet ();
       _factory.AddOptions (optionSet);
-      optionSet.Parse (new[] { "-i:something" });
+      optionSet.Parse (new[] { "--tdir:something" });
 
       _fileSystemMock
           .Expect (mock => mock.EnumerateFiles ("something", "*.dll", SearchOption.AllDirectories))
@@ -62,7 +62,7 @@ namespace AssemblyTransformer.UnitTests.TransformationFactoryFactoryTest
     {
       var optionSet = new OptionSet ();
       _factory.AddOptions (optionSet);
-      optionSet.Parse (new[] { "-i:something" });
+      optionSet.Parse (new[] { "--tdir:something" });
 
       _fileSystemMock
           .Expect (mock => mock.EnumerateFiles ("something", "*.dll", SearchOption.AllDirectories))

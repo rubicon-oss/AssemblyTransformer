@@ -48,7 +48,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyTracking
 
       var result = tracker.GetAssemblyByReference (name);
 
-      Assert.That (result, Is.SameAs (assembly));
+      Assert.That (result, Is.EqualTo (new [] {assembly}));
 
     }
 
@@ -63,7 +63,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyTracking
 
       var result = tracker.GetAssemblyByReference (name);
 
-      Assert.That (result, Is.SameAs (assembly));
+      Assert.That (result, Is.EqualTo (new [] {assembly}));
     }
 
     [Test]
@@ -77,7 +77,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyTracking
 
       var result = tracker.GetAssemblyByReference (name);
 
-      Assert.That (result, Is.Null);
+      Assert.That (result, Is.Empty);
     }
 
     [Test]

@@ -58,13 +58,19 @@ namespace AssemblyTransformer.AssemblySigning
         foreach (var assemblyNameReference in moduleDefinition.AssemblyReferences)
         {
           var referencedAssembly = tracker.GetAssemblyByReference (assemblyNameReference);
-          if (referencedAssembly != null && assembliesToSave.Contains (referencedAssembly))
-            SignAndSave (tracker, referencedAssembly, assembliesToSave);
+          foreach (var adef in referencedAssembly)
+          {
+            if (adef != null && assembliesToSave.Contains (adef))
+            {
+              SignAndSave (tracker, adef, assembliesToSave);
+            }
+          }
+          
         }
 
         // If a referenced assembly changes this assembly's references, this assembly will be modified again. Mark unmodified before saving.
         assembliesToSave.Remove (assembly);
-
+        tracker.MarkUnmodified (assembly);
         // Keep track of original name of this assembly before saving the module. The writer might change the name.
         var originalAssemblyName = assembly.Name.Clone();
         _writer.WriteModule (moduleDefinition);
@@ -80,7 +86,10 @@ namespace AssemblyTransformer.AssemblySigning
           foreach (var assemblyDefinition in tracker.GetReverseReferences (assembly))
           {
             UpdateReferences (assemblyDefinition, originalAssemblyName, assembly.Name);
-            assembliesToSave.Add (assemblyDefinition);
+            if (!assembliesToSave.Contains (assemblyDefinition))
+            {
+              assembliesToSave.Add (assemblyDefinition);
+            }
           }
         }
       }

@@ -1,8 +1,12 @@
 // Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
 // All rights reserved.
 //
+#define PERFORMANCE_TEST
+
+
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using AssemblyTransformer.AssemblySigning;
 using AssemblyTransformer.AssemblyTracking;
 using AssemblyTransformer.AssemblyTransformations;
@@ -25,7 +29,27 @@ namespace AssemblyTransformer
       ArgumentUtility.CheckNotNull ("transformationFactories", transformationFactories);
       ArgumentUtility.CheckNotNull ("signerFactory", signerFactory);
 
+#if PERFORMANCE_TEST
+      Stopwatch s = new Stopwatch ();
+      Stopwatch total = new Stopwatch ();
+      s.Start ();
+      total.Start();
+#endif
+
       var tracker = trackerFactory.CreateTracker();
+
+#if PERFORMANCE_TEST
+      total.Stop();
+      Process procObj = Process.GetCurrentProcess ();
+      Console.WriteLine (Environment.NewLine + "  Private Memory Size : {0:N0}" + Environment.NewLine +
+      "  Virtual Memory Size : {1:N0}" + Environment.NewLine +
+      "  Working Set Size: {2:N0}", procObj.PrivateMemorySize64, procObj.VirtualMemorySize64, procObj.WorkingSet64);
+      Console.WriteLine (Environment.NewLine + "  Initialization:   " + s.Elapsed);
+      Console.WriteLine (Environment.NewLine + "  press key to continue with transformations");
+      Console.ReadLine();
+      total.Start ();
+      s.Restart ();
+#endif
 
       foreach (var factory in transformationFactories)
       {
@@ -33,9 +57,33 @@ namespace AssemblyTransformer
         factory.CreateTransformation().Transform (tracker);
       }
 
+#if PERFORMANCE_TEST
+      total.Stop ();
+      procObj = Process.GetCurrentProcess ();
+      Console.WriteLine (Environment.NewLine + "  Private Memory Size : {0:N0}" + Environment.NewLine +
+      "  Virtual Memory Size : {1:N0}" + Environment.NewLine +
+      "  Working Set Size: {2:N0}", procObj.PrivateMemorySize64, procObj.VirtualMemorySize64, procObj.WorkingSet64);
+      Console.WriteLine (Environment.NewLine + "  Transformation:   " + s.Elapsed);
+      Console.WriteLine (Environment.NewLine + "  press key to continue with sign and save");
+      Console.ReadLine();
+      total.Start ();
+      s.Restart ();
+#endif
+
       var signer = signerFactory.CreateSigner();
       Console.WriteLine ("Signing and writing the transformed assemblies ... ");
       signer.SignAndSave (tracker);
+
+#if PERFORMANCE_TEST
+      s.Stop();
+      total.Stop ();
+      procObj = Process.GetCurrentProcess ();
+      Console.WriteLine (Environment.NewLine + "  Private Memory Size : {0:N0}" + Environment.NewLine +
+      "  Virtual Memory Size : {1:N0}" + Environment.NewLine +
+      "  Working Set Size: {2:N0}", procObj.PrivateMemorySize64, procObj.VirtualMemorySize64, procObj.WorkingSet64);
+      Console.WriteLine (Environment.NewLine + "  Signing & Saving: " + s.Elapsed);
+      Console.WriteLine (Environment.NewLine + "Total: " + total.Elapsed + Environment.NewLine);
+#endif
     }
   }
 }

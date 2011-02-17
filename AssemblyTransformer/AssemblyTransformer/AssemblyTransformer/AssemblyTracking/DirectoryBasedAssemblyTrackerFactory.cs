@@ -1,6 +1,8 @@
 // Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
 // All rights reserved.
 //
+//#define WRITE_OUTPUT
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -48,14 +50,18 @@ namespace AssemblyTransformer.AssemblyTracking
       List<AssemblyDefinition> assemblies = new List<AssemblyDefinition> ();
       foreach (var doc in allFiles)
       {
+#if WRITE_OUTPUT
          Console.WriteLine ("  processing " + doc + " ...");
+#endif
          try
          {
             assemblies.Add (_fileSystem.ReadAssembly (doc));
          }
          catch (BadImageFormatException e)
          {
+#if WRITE_OUTPUT
            Console.WriteLine ("    WARNING :: " + doc + " is not a .NET assembly! (" + e.Message + ")");
+#endif
         }
       }
 

@@ -32,7 +32,7 @@ namespace AssemblyTransformer.AssemblyTransformations.AssemblyTransformationFact
       ArgumentUtility.CheckNotNull ("options", options);
 
       options.Add (
-          "i|tdir|transformations=",
+          "tdir|transformations=",
           "The (root) directory containing the transformation assemblies.",
           dir => _workingDirectory = dir);
     }

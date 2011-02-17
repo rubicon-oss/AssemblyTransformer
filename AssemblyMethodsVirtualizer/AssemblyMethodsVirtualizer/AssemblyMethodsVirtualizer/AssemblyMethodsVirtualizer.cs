@@ -1,12 +1,14 @@
 // Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
 // All rights reserved.
 //
+using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using AssemblyMethodsVirtualizer.MarkingStrategies;
 using AssemblyTransformer;
 using AssemblyTransformer.AssemblyTracking;
 using AssemblyTransformer.AssemblyTransformations;
+using Mono.Cecil;
 
 namespace AssemblyMethodsVirtualizer
 {
@@ -52,13 +54,21 @@ namespace AssemblyMethodsVirtualizer
                             from methodDefinition in typeDefinition.Methods
                             where _targetMethodsFullNameMatchingRegex.IsMatch (methodDefinition.FullName)
                             select new { Assembly = assemblyDefinition, Method = methodDefinition };
-      
+
       foreach (var modifiedMethodDefinition in modifiedMethods.ToList())
       {
         tracker.MarkModified (modifiedMethodDefinition.Assembly);
-        
-        modifiedMethodDefinition.Method.IsVirtual = true;
-        _markingAttributeStrategy.AddCustomAttribute (modifiedMethodDefinition.Method, modifiedMethodDefinition.Assembly);
+        if (!modifiedMethodDefinition.Method.IsStatic && 
+          !modifiedMethodDefinition.Method.IsConstructor && 
+          !modifiedMethodDefinition.Method.IsFinal &&
+          !modifiedMethodDefinition.Method.IsVirtual &&
+          !modifiedMethodDefinition.Method.CustomAttributes.Any(ca => ca.AttributeType.Namespace == "System.Runtime.Serialization"))
+        {
+          //modifiedMethodDefinition.Method.IsVirtual = true;
+          //modifiedMethodDefinition.Method.IsNewSlot = true;
+          //_markingAttributeStrategy.AddCustomAttribute (modifiedMethodDefinition.Method, modifiedMethodDefinition.Assembly);
+        }
+
       }
     }
   }

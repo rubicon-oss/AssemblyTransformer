@@ -52,7 +52,7 @@ namespace AssemblyTransformer.UnitTests.IntegrationTests
       List<AssemblyDefinition> assemblies = allFiles.Select (AssemblyDefinition.ReadAssembly).ToList();
 
       _tracker = new AssemblyTracker (assemblies);
-      // TODO refactor integration test (doesnt work because transformation is now a dll)
+
       var strategy = new GeneratedMarkingAttributeStrategy (_defAttributeNamespace, _defAttributeName);
       _transformator = new AssemblyMethodsVirtualizer.AssemblyMethodsVirtualizer(strategy, _regex);
 

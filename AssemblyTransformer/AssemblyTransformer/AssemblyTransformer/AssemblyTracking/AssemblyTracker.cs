@@ -25,9 +25,10 @@ namespace AssemblyTransformer.AssemblyTracking
       var reverseReferences = from trackedAssembly in _trackedAssemblies.Values
                               from module in trackedAssembly.AssemblyDefinition.Modules
                               from reference in module.AssemblyReferences
-                              let trackedAssemblyByReference = GetTrackedAssemblyByReference (reference)
-                              where trackedAssemblyByReference != null
-                              select new { Origin = trackedAssembly, Reference = trackedAssemblyByReference };
+                              //let trackedAssemblyByReference = GetTrackedAssemblyByReference (reference)
+                              from trackedAssembliesByReference in GetTrackedAssemblyByReference (reference)
+                              where trackedAssembliesByReference != null
+                              select new { Origin = trackedAssembly, Reference = trackedAssembliesByReference };
 
       foreach (var reverseReference in reverseReferences)
         reverseReference.Reference.AddReverseReference (reverseReference.Origin);
@@ -38,12 +39,16 @@ namespace AssemblyTransformer.AssemblyTracking
       return _trackedAssemblies.Keys;
     }
 
-    public AssemblyDefinition GetAssemblyByReference (AssemblyNameReference referencedAssemblyName)
+    public AssemblyDefinition[] GetAssemblyByReference (AssemblyNameReference referencedAssemblyName)
     {
       ArgumentUtility.CheckNotNull ("referencedAssemblyName", referencedAssemblyName);
 
       var trackedAssembly = GetTrackedAssemblyByReference (referencedAssemblyName);
-      return trackedAssembly != null ? trackedAssembly.AssemblyDefinition : null;
+        foreach (var assembly in trackedAssembly)
+        {
+          Console.WriteLine ("## " + assembly.AssemblyDefinition.Name);
+        }
+      return trackedAssembly != null ? trackedAssembly.Select(asm => asm.AssemblyDefinition).ToArray() : null;
     }
 
     public bool IsModified (AssemblyDefinition assemblyDefinition)
@@ -92,9 +97,10 @@ namespace AssemblyTransformer.AssemblyTracking
       return result;
     }
 
-    private TrackedAssembly GetTrackedAssemblyByReference (AssemblyNameReference referencedAssemblyName)
+    private TrackedAssembly[] GetTrackedAssemblyByReference (AssemblyNameReference referencedAssemblyName)
     {
-      return _trackedAssemblies.Values.SingleOrDefault (asm => referencedAssemblyName.MatchesDefinition (asm.AssemblyDefinition.Name));
+      //return _trackedAssemblies.Values.SingleOrDefault (asm => referencedAssemblyName.MatchesDefinition (asm.AssemblyDefinition.Name));
+      return _trackedAssemblies.Values.Where (asm => referencedAssemblyName.MatchesDefinition (asm.AssemblyDefinition.Name)).ToArray();
     }
   }
 }
