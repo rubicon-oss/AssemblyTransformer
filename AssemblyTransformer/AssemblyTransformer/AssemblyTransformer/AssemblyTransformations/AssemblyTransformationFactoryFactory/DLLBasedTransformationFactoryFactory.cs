@@ -3,10 +3,6 @@
 //
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using AssemblyTransformer.AssemblyTracking;
 using AssemblyTransformer.FileSystem;
 
 namespace AssemblyTransformer.AssemblyTransformations.AssemblyTransformationFactoryFactory
@@ -14,8 +10,9 @@ namespace AssemblyTransformer.AssemblyTransformations.AssemblyTransformationFact
   public class DLLBasedTransformationFactoryFactory : ITransformationFactoryFactory
   {
     private readonly IFileSystem _fileSystem;
-
     private string _workingDirectory;
+    private readonly List<string> _transformations;
+
     public string WorkingDirectory
     {
       get { return _workingDirectory; }
@@ -25,6 +22,7 @@ namespace AssemblyTransformer.AssemblyTransformations.AssemblyTransformationFact
     public DLLBasedTransformationFactoryFactory (IFileSystem fileSystem)
     {
       _fileSystem = fileSystem;
+      _transformations = new List<string>();
     }
 
     public void AddOptions (OptionSet options)
@@ -32,9 +30,13 @@ namespace AssemblyTransformer.AssemblyTransformations.AssemblyTransformationFact
       ArgumentUtility.CheckNotNull ("options", options);
 
       options.Add (
-          "tdir|transformations=",
-          "The (root) directory containing the transformation assemblies.",
-          dir => _workingDirectory = dir);
+          "t|transformation=",
+          "The filename(s) of the transformations to be executed. (e.g.: '... -t=Virtualizer.dll -t=Constructor ...')",
+          transformation => { 
+            if (transformation.EndsWith (".dll")) 
+              _transformations.Add (transformation);
+            _transformations.Add (transformation+".dll");
+          });
     }
 
     public ICollection<IAssemblyTransformationFactory> CreateTrackerFactories ()
@@ -42,20 +44,27 @@ namespace AssemblyTransformer.AssemblyTransformations.AssemblyTransformationFact
       if (_workingDirectory == null)
         throw new InvalidOperationException ("Initialize options first.");
 
-      var allFiles = _fileSystem.EnumerateFiles (_workingDirectory, "*.dll", SearchOption.AllDirectories);
+      //var allFiles = _fileSystem.EnumerateFiles (_workingDirectory, "*.dll", SearchOption.AllDirectories);
       var factoryInterface = typeof (IAssemblyTransformationFactory);
       ICollection<IAssemblyTransformationFactory> transformationFactories = new List<IAssemblyTransformationFactory> ();
 
-      foreach (var file in allFiles)
+      foreach (string file in _transformations)
       {
-        var assembly = _fileSystem.LoadAssemblyFrom (file);
-        foreach (var type in assembly.GetTypes())
+        try
         {
-          if (factoryInterface.IsAssignableFrom (type))
+          var assembly = _fileSystem.LoadAssemblyFrom (file);
+          foreach (var type in assembly.GetTypes ())
           {
-            var transformationFactory = (IAssemblyTransformationFactory) Activator.CreateInstance (type, _fileSystem);
-            transformationFactories.Add (transformationFactory);
+            if (factoryInterface.IsAssignableFrom (type))
+            {
+              var transformationFactory = (IAssemblyTransformationFactory) Activator.CreateInstance (type, _fileSystem);
+              transformationFactories.Add (transformationFactory);
+            }
           }
+        }
+        catch (Exception e)
+        {
+          Console.WriteLine ("Could not load " + file);
         }
       }
       return transformationFactories;

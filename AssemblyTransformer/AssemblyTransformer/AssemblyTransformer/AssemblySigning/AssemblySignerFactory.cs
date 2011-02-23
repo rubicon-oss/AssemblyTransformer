@@ -33,12 +33,12 @@ namespace AssemblyTransformer.AssemblySigning
       ArgumentUtility.CheckNotNull ("options", options);
 
       options.Add (
-            "k|key|defaultKey=", 
+            "k|key=", 
             "The default key (.snk) to be used to sign Assemblies.",
             key => _defaultKeyFile = key);
       options.Add (
-            "s|keyDir|keyDirectory=", 
-            "The root dir of all keys (.snk) to sign Assemblies.",
+            "s|keyDir=", 
+            "The root dir of all available keys (.snk) to sign Assemblies.",
             allKeys => _allKeysDirectory = allKeys);
     }
 

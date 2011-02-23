@@ -16,6 +16,8 @@ namespace AssemblyTransformer.AssemblyTracking
   {
     private readonly IDictionary<AssemblyDefinition, TrackedAssembly> _trackedAssemblies;
 
+    //private readonly string _workingDirectory;
+
     public AssemblyTracker (IEnumerable<AssemblyDefinition> assemblyDefinitions)
     {
       _trackedAssemblies = assemblyDefinitions
@@ -44,10 +46,6 @@ namespace AssemblyTransformer.AssemblyTracking
       ArgumentUtility.CheckNotNull ("referencedAssemblyName", referencedAssemblyName);
 
       var trackedAssembly = GetTrackedAssemblyByReference (referencedAssemblyName);
-        foreach (var assembly in trackedAssembly)
-        {
-          Console.WriteLine ("## " + assembly.AssemblyDefinition.Name);
-        }
       return trackedAssembly != null ? trackedAssembly.Select(asm => asm.AssemblyDefinition).ToArray() : null;
     }
 

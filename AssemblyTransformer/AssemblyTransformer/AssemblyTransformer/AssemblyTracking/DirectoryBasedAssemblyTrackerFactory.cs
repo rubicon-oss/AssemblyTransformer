@@ -33,8 +33,8 @@ namespace AssemblyTransformer.AssemblyTracking
       ArgumentUtility.CheckNotNull ("options", options);
 
       options.Add (
-          "d|dir|workingDirectory=",
-          "The (root) directory containing the assemblies.",
+          "d|dir=",
+          "The (root) directory containing the targeted assemblies.",
           dir => _workingDirectory = dir);
     }
 

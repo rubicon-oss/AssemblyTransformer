@@ -71,6 +71,7 @@ namespace AssemblyTransformer.AssemblySigning
         // If a referenced assembly changes this assembly's references, this assembly will be modified again. Mark unmodified before saving.
         assembliesToSave.Remove (assembly);
         tracker.MarkUnmodified (assembly);
+
         // Keep track of original name of this assembly before saving the module. The writer might change the name.
         var originalAssemblyName = assembly.Name.Clone();
         _writer.WriteModule (moduleDefinition);
