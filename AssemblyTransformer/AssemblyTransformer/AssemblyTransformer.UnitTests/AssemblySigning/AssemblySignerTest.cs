@@ -3,6 +3,7 @@ using AssemblyTransformer.AssemblySigning;
 using AssemblyTransformer.AssemblySigning.AssemblyWriting;
 using AssemblyTransformer.AssemblyTracking;
 using AssemblyTransformer.Extensions;
+using AssemblyTransformer.TypeDefinitionCaching;
 using Mono.Cecil;
 using NUnit.Framework;
 using Rhino.Mocks;
@@ -333,7 +334,7 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
     private IAssemblyTracker CreateTracker (params AssemblyDefinition[] modifiedAssemblies)
     {
       // Should AssemblyTracker get external dependencies (or become otherwise more complex), consider using a stub instead of the real tracker.
-      var tracker = new AssemblyTracker (new[] { _assemblyDefinition1, _assemblyDefinition2 });
+      var tracker = new AssemblyTracker (new[] { _assemblyDefinition1, _assemblyDefinition2 }, new TypeDefinitionCache ());
 
       foreach (var modifiedAssembly in modifiedAssemblies)
         tracker.MarkModified (modifiedAssembly);

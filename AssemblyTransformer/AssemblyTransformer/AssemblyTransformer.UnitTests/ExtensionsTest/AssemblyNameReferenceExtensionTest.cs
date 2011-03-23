@@ -115,5 +115,31 @@ namespace AssemblyTransformer.UnitTests
       AssemblyNameReferenceChecker.CheckNameReferences(referenceWithNoneSet, copyReference);
       Assert.That (copyReference.MetadataToken, Is.Not.SameAs (referenceWithNoneSet.MetadataToken));
     }
+
+    [Test]
+    public void BuildReflectionAssemblyQualifiedName_WithNestedType ()
+    {
+      var assm = AssemblyDefinitionObjectMother.CreateMultiModuleAssemblyDefinition();
+      var nested = new TypeDefinition ("", "GetEnumerator>d__b", TypeAttributes.NestedPrivate);
+      assm.MainModule.Types[1].NestedTypes.Add (nested);
+
+      var result = assm.Name.BuildReflectionAssemblyQualifiedName (assm.MainModule.Types[1].NestedTypes[0]);
+
+      Console.WriteLine (result);
+      Assert.That (result == "TestSpace.TestType+GetEnumerator>d__b, TestAssembly, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null");
+    }
+
+    [Test]
+    public void BuildReflectionAssemblyQualifiedName_WithNestedTypeAndWrongNamespace ()
+    {
+      var assm = AssemblyDefinitionObjectMother.CreateMultiModuleAssemblyDefinition ();
+      var nested = new TypeDefinition ("<IEnumerable.CompilerGenerated", "GetEnumerator>d__b", TypeAttributes.NestedPrivate);
+      assm.MainModule.Types[1].NestedTypes.Add (nested);
+
+      var result = assm.Name.BuildReflectionAssemblyQualifiedName (assm.MainModule.Types[1].NestedTypes[0]);
+
+      Console.WriteLine (result);
+      Assert.That (result == "TestSpace.TestType+<IEnumerable.CompilerGenerated.GetEnumerator>d__b, TestAssembly, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null");
+    }
   }
 }

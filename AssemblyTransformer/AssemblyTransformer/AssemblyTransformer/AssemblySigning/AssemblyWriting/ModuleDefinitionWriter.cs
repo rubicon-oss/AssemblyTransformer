@@ -46,16 +46,19 @@ namespace AssemblyTransformer.AssemblySigning.AssemblyWriting
       ArgumentUtility.CheckNotNull ("moduleDefinition", moduleDefinition);
 
       StrongNameKeyPair signKey = null;
-      if (moduleDefinition.IsMain && moduleDefinition.Assembly.Name.HasPublicKey)
-        signKey = FindMatchingKeyPair (moduleDefinition.Assembly.Name.PublicKey);
-      if (signKey == null)
+      if (moduleDefinition.IsMain && 
+        (moduleDefinition.Attributes & ModuleAttributes.StrongNameSigned) == ModuleAttributes.StrongNameSigned)
       {
-        signKey = _defaultKey;
+        signKey = FindMatchingKeyPair (moduleDefinition.Assembly.Name.PublicKey);
         if (signKey == null)
         {
-          moduleDefinition.Assembly.Name.HasPublicKey = false;
-          moduleDefinition.Assembly.Name.PublicKey = new byte[0];
-          moduleDefinition.Attributes &= ~ModuleAttributes.StrongNameSigned;
+          signKey = _defaultKey;
+          if (signKey == null)
+          {
+            moduleDefinition.Assembly.Name.HasPublicKey = false;
+            moduleDefinition.Assembly.Name.PublicKey = new byte[0];
+            moduleDefinition.Attributes &= ~ModuleAttributes.StrongNameSigned;
+          }
         }
       }
       Write (moduleDefinition, signKey);

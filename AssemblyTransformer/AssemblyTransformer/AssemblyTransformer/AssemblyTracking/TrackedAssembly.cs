@@ -44,7 +44,6 @@ namespace AssemblyTransformer.AssemblyTracking
     public void AddReverseReference (TrackedAssembly reverseReference)
     {
       ArgumentUtility.CheckNotNull ("reverseReference", reverseReference);
-
       _reverseReferences.Add (reverseReference);
     }
 

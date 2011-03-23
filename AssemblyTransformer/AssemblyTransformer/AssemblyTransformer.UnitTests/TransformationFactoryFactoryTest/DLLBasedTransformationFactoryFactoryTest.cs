@@ -43,13 +43,10 @@ namespace AssemblyTransformer.UnitTests.TransformationFactoryFactoryTest
     {
       var optionSet = new OptionSet ();
       _factory.AddOptions (optionSet);
-      optionSet.Parse (new[] { "--tdir:something" });
+      _factory.WorkingDirectory = ".";
+      optionSet.Parse (new []{"-t=testcase"});
 
-      _fileSystemMock
-          .Expect (mock => mock.EnumerateFiles ("something", "*.dll", SearchOption.AllDirectories))
-          .Return (new[] { @"something\1.dll", @"something\2.dll" });
-      _fileSystemMock.Expect (mock => mock.LoadAssemblyFrom (@"something\1.dll")).Return (_assembly1);
-      _fileSystemMock.Expect (mock => mock.LoadAssemblyFrom (@"something\2.dll")).Return (_assembly1);
+      _fileSystemMock.Expect (mock => mock.LoadAssemblyFrom (@".\testcase.dll")).Return (_assembly1);
       _fileSystemMock.Replay ();
 
       var result = _factory.CreateTrackerFactories();
@@ -62,12 +59,10 @@ namespace AssemblyTransformer.UnitTests.TransformationFactoryFactoryTest
     {
       var optionSet = new OptionSet ();
       _factory.AddOptions (optionSet);
-      optionSet.Parse (new[] { "--tdir:something" });
+      _factory.WorkingDirectory = ".";
+      optionSet.Parse (new[] { "-t=testcase"});
 
-      _fileSystemMock
-          .Expect (mock => mock.EnumerateFiles ("something", "*.dll", SearchOption.AllDirectories))
-          .Return (new[] { @"something\1.dll" });
-      _fileSystemMock.Expect (mock => mock.LoadAssemblyFrom (@"something\1.dll")).
+      _fileSystemMock.Expect (mock => mock.LoadAssemblyFrom (@".\testcase.dll")).
         Return (System.Reflection.Assembly.LoadFrom (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\prereq\testing\transformation\AssemblyMethodsVirtualizer.dll")));
       _fileSystemMock.Replay ();
 

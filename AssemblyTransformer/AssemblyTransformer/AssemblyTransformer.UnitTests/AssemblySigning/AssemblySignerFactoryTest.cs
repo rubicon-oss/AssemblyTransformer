@@ -49,10 +49,8 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
 
       Assert.That (_options.Contains ("k"));
       Assert.That (_options.Contains ("key"));
-      Assert.That (_options.Contains ("defaultKey"));
       Assert.That (_options.Contains ("s"));
       Assert.That (_options.Contains ("keyDir"));
-      Assert.That (_options.Contains ("keyDirectory"));
     }
 
     [Test]

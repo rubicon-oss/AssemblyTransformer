@@ -44,5 +44,38 @@ namespace AssemblyTransformer.Extensions
     {
       return originalValue != null ? (T) originalValue.Clone() : null;
     }
+
+    /// <summary>
+    /// Builds the assembly qualified name for the given type.
+    /// </summary>
+    public static string BuildAssemblyQualifiedName (this AssemblyNameReference assembly, TypeReference typeRef)
+    {
+      if (typeRef == null)
+        return null;
+
+      if (typeRef.Scope.MetadataScopeType == MetadataScopeType.AssemblyNameReference)
+        return typeRef.FullName + ", " + typeRef.Scope.Name;
+      return typeRef.FullName + ", " + assembly.FullName;
+    }
+
+    public static string BuildReflectionAssemblyQualifiedName (this AssemblyNameReference assembly, TypeReference typeRef)
+    {
+      if (typeRef == null)
+        return null;
+      var fullName = BuildFullTypeRefName (typeRef).Replace (",", "\\,");
+
+      if (typeRef.Scope.MetadataScopeType == MetadataScopeType.AssemblyNameReference)
+        return fullName + ", " + ((AssemblyNameReference)typeRef.Scope).FullName;
+      return fullName + ", " + assembly.FullName;
+    }
+
+    private static string BuildFullTypeRefName (TypeReference typeRef)
+    {
+      if (typeRef.IsNested)
+        return BuildFullTypeRefName (typeRef.DeclaringType) + "+" + (!string.IsNullOrEmpty (typeRef.Namespace) ? (typeRef.Namespace + ".") : "") + typeRef.Name;
+      if (typeRef.IsGenericInstance)
+        return typeRef.Namespace + "." + typeRef.Name;
+      return typeRef.FullName;
+    }
   }
 }

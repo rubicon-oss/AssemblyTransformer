@@ -72,10 +72,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyDefinitionObjectMother.cs" />
-    <Compile Include="AssemblyNameReferenceChecker.cs" />
-    <Compile Include="AssemblyNameReferenceExtensionTest.cs" />
-    <Compile Include="AssemblyNameReferenceObjectMother.cs" />
+    <Compile Include="Util\AssemblyDefinitionObjectMother.cs" />
+    <Compile Include="Util\AssemblyNameReferenceChecker.cs" />
+    <Compile Include="ExtensionsTest\AssemblyNameReferenceExtensionTest.cs" />
+    <Compile Include="Util\AssemblyNameReferenceObjectMother.cs" />
     <Compile Include="AssemblySigning\AssemblySignerFactoryTest.cs" />
     <Compile Include="AssemblySigning\AssemblySignerTest.cs" />
     <Compile Include="AssemblyTracking\AssemblyTrackerTest.cs" />

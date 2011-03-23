@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using AssemblyTransformer.AssemblySigning.AssemblyWriting;
 using AssemblyTransformer.AssemblyTracking;
@@ -57,15 +58,14 @@ namespace AssemblyTransformer.AssemblySigning
       {
         foreach (var assemblyNameReference in moduleDefinition.AssemblyReferences)
         {
-          var referencedAssembly = tracker.GetAssemblyByReference (assemblyNameReference);
+          var referencedAssembly = tracker.GetAssembliesByReference (assemblyNameReference);
           foreach (var adef in referencedAssembly)
           {
-            if (adef != null && assembliesToSave.Contains (adef))
+            if (assembliesToSave.Contains (adef))
             {
               SignAndSave (tracker, adef, assembliesToSave);
             }
           }
-          
         }
 
         // If a referenced assembly changes this assembly's references, this assembly will be modified again. Mark unmodified before saving.
@@ -102,7 +102,12 @@ namespace AssemblyTransformer.AssemblySigning
           .Select ((reference, i) => new { Index = i, Reference = reference })
           .Single (tuple => tuple.Reference.MatchesDefinition (oldDefinition) || object.ReferenceEquals (tuple.Reference, newDefinition));
       
-      assemblyDefinition.MainModule.AssemblyReferences[nameReference.Index] = newDefinition.Clone();
+      assemblyDefinition.MainModule.AssemblyReferences[nameReference.Index].PublicKey = newDefinition.PublicKey;
+      assemblyDefinition.MainModule.AssemblyReferences[nameReference.Index].HasPublicKey = newDefinition.HasPublicKey;
+      assemblyDefinition.MainModule.AssemblyReferences[nameReference.Index].PublicKeyToken = newDefinition.PublicKeyToken;
+      assemblyDefinition.MainModule.AssemblyReferences[nameReference.Index].Version = newDefinition.Version;
+      assemblyDefinition.MainModule.AssemblyReferences[nameReference.Index].Hash = newDefinition.Hash;
+      assemblyDefinition.MainModule.AssemblyReferences[nameReference.Index].HashAlgorithm = newDefinition.HashAlgorithm;
     }
   }
 }

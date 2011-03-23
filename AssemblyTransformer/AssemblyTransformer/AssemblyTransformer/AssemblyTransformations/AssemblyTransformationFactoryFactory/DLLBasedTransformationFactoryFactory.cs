@@ -3,6 +3,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.IO;
 using AssemblyTransformer.FileSystem;
 
 namespace AssemblyTransformer.AssemblyTransformations.AssemblyTransformationFactoryFactory
@@ -32,27 +33,28 @@ namespace AssemblyTransformer.AssemblyTransformations.AssemblyTransformationFact
       options.Add (
           "t|transformation=",
           "The filename(s) of the transformations to be executed. (e.g.: '... -t=Virtualizer.dll -t=Constructor ...')",
-          transformation => { 
+          transformation => {
             if (transformation.EndsWith (".dll")) 
               _transformations.Add (transformation);
-            _transformations.Add (transformation+".dll");
+            else
+              _transformations.Add (transformation+".dll");
           });
     }
 
     public ICollection<IAssemblyTransformationFactory> CreateTrackerFactories ()
     {
       if (_workingDirectory == null)
-        throw new InvalidOperationException ("Initialize options first.");
+        throw new InvalidOperationException ("Initialize options first. (workingdir on DLLBasedTransformationFactoryFactory)");
 
       //var allFiles = _fileSystem.EnumerateFiles (_workingDirectory, "*.dll", SearchOption.AllDirectories);
       var factoryInterface = typeof (IAssemblyTransformationFactory);
       ICollection<IAssemblyTransformationFactory> transformationFactories = new List<IAssemblyTransformationFactory> ();
 
-      foreach (string file in _transformations)
+      foreach (var file in _transformations)
       {
         try
         {
-          var assembly = _fileSystem.LoadAssemblyFrom (file);
+          var assembly = _fileSystem.LoadAssemblyFrom (Path.Combine(_workingDirectory, file));
           foreach (var type in assembly.GetTypes ())
           {
             if (factoryInterface.IsAssignableFrom (type))

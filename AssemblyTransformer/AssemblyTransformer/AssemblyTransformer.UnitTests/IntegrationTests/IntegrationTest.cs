@@ -10,6 +10,7 @@ using AssemblyTransformer.AssemblySigning;
 using AssemblyTransformer.AssemblySigning.AssemblyWriting;
 using AssemblyTransformer.AssemblyTracking;
 using AssemblyTransformer.AssemblyTransformations;
+using AssemblyTransformer.TypeDefinitionCaching;
 using Mono.Cecil;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
@@ -51,7 +52,7 @@ namespace AssemblyTransformer.UnitTests.IntegrationTests
 
       List<AssemblyDefinition> assemblies = allFiles.Select (AssemblyDefinition.ReadAssembly).ToList();
 
-      _tracker = new AssemblyTracker (assemblies);
+      _tracker = new AssemblyTracker (assemblies, new TypeDefinitionCache());
 
       var strategy = new GeneratedMarkingAttributeStrategy (_defAttributeNamespace, _defAttributeName);
       _transformator = new AssemblyMethodsVirtualizer.AssemblyMethodsVirtualizer(strategy, _regex);

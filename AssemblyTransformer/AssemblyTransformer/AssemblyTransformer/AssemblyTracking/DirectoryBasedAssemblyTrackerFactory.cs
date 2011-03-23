@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using AssemblyTransformer.FileSystem;
+using AssemblyTransformer.TypeDefinitionCaching;
 using Mono.Cecil;
 
 namespace AssemblyTransformer.AssemblyTracking
@@ -19,6 +20,8 @@ namespace AssemblyTransformer.AssemblyTracking
   public class DirectoryBasedAssemblyTrackerFactory : IAssemblyTrackerFactory
   {
     private readonly IFileSystem _fileSystem;
+    private readonly List<string> _whiteList;
+    private readonly List<string> _blackList;
     private string _workingDirectory;
 
     public DirectoryBasedAssemblyTrackerFactory (IFileSystem fileSystem)
@@ -26,6 +29,8 @@ namespace AssemblyTransformer.AssemblyTracking
       ArgumentUtility.CheckNotNull ("fileSystem", fileSystem);
 
       _fileSystem = fileSystem;
+      _whiteList = new List<string> ();
+      _blackList = new List<string> ();
     }
 
     public void AddOptions (OptionSet options)
@@ -36,16 +41,23 @@ namespace AssemblyTransformer.AssemblyTracking
           "d|dir=",
           "The (root) directory containing the targeted assemblies.",
           dir => _workingDirectory = dir);
+      options.Add (
+          "w|whitelist=",
+          "The target assemblies. At least use: '-w=*.dll -w=*.exe'! (eg: '-w=Remotion.*.dll -w=ActaNova.*.dll -w=*.exe')",
+          w => _whiteList.Add (w) );
+      options.Add (
+          "b|blacklist=",
+          "The targeted assemblies (eg: -b=Remotion.Interfaces.dll -b=ActaNova.*.dll)",
+          b => _blackList.Add (b));
     }
 
     public IAssemblyTracker CreateTracker ()
     {
-      if (_workingDirectory == null)
-        throw new InvalidOperationException ("Initialize options first.");
+      if (_workingDirectory == null || _whiteList.Count == 0)
+        throw new InvalidOperationException 
+          ("Initialize options first. (AssemblyTracker: workingDirectory AND a whitelist of files has to be present!)");
 
-      var allFiles =
-          _fileSystem.EnumerateFiles (_workingDirectory, "*.dll", SearchOption.AllDirectories)
-              .Concat (_fileSystem.EnumerateFiles (_workingDirectory, "*.exe", SearchOption.AllDirectories));
+      var allFiles = BuildTargetFilesList();
 
       List<AssemblyDefinition> assemblies = new List<AssemblyDefinition> ();
       foreach (var doc in allFiles)
@@ -64,8 +76,22 @@ namespace AssemblyTransformer.AssemblyTracking
 #endif
         }
       }
+      ((BaseAssemblyResolver) GlobalAssemblyResolver.Instance).AddSearchDirectory (_workingDirectory);
+      return new AssemblyTracker (assemblies, new TypeDefinitionCache());
+    }
 
-      return new AssemblyTracker (assemblies);
+    private IEnumerable<string> BuildTargetFilesList ()
+    {
+      var tmpList = new List<string> ();
+      var tmpBlackList = new List<string> ();
+
+      foreach (var target in _whiteList)
+        tmpList.AddRange (_fileSystem.EnumerateFiles (_workingDirectory, target, SearchOption.AllDirectories));
+
+      foreach (var nonTarget in _blackList)
+        tmpBlackList.AddRange (_fileSystem.EnumerateFiles (_workingDirectory, nonTarget, SearchOption.AllDirectories));
+
+      return tmpList.Except (tmpBlackList);
     }
 
   }

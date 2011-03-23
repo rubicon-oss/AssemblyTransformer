@@ -44,14 +44,11 @@ namespace AssemblyTransformer.UnitTests.AssemblyTracking
     {
       var optionSet = new OptionSet();
       _factory.AddOptions (optionSet);
-      optionSet.Parse (new[] { "-d:something" });
+      optionSet.Parse (new[] { "-d:something", "-w=*.*" });
 
       _fileSystemMock
-          .Expect (mock => mock.EnumerateFiles ("something", "*.dll", SearchOption.AllDirectories))
-          .Return (new[] { @"something\1.dll", @"something\2.dll" });
-      _fileSystemMock
-          .Expect (mock => mock.EnumerateFiles ("something", "*.exe", SearchOption.AllDirectories))
-          .Return (new[] { @"something\3.exe" });
+          .Expect (mock => mock.EnumerateFiles ("something", "*.*", SearchOption.AllDirectories))
+          .Return (new[] { @"something\1.dll", @"something\2.dll", @"something\3.exe" });
       _fileSystemMock.Expect (mock => mock.ReadAssembly (@"something\1.dll")).Return (_assemblyDefinition1);
       _fileSystemMock.Expect (mock => mock.ReadAssembly (@"something\2.dll")).Return (_assemblyDefinition2);
       _fileSystemMock.Expect (mock => mock.ReadAssembly (@"something\3.exe")).Return (_assemblyDefinition3);
@@ -71,14 +68,11 @@ namespace AssemblyTransformer.UnitTests.AssemblyTracking
     {
       var optionSet = new OptionSet ();
       _factory.AddOptions (optionSet);
-      optionSet.Parse (new[] { "-d:something" });
+      optionSet.Parse (new[] { "-d:something", "-w=*.*" });
 
       _fileSystemMock
-          .Expect (mock => mock.EnumerateFiles ("something", "*.dll", SearchOption.AllDirectories))
+          .Expect (mock => mock.EnumerateFiles ("something", "*.*", SearchOption.AllDirectories))
           .Return (new[] { @"something\1.dll", @"something\2.dll" });
-      _fileSystemMock
-          .Expect (mock => mock.EnumerateFiles ("something", "*.exe", SearchOption.AllDirectories))
-          .Return (new string[0]);
       _fileSystemMock.Expect (mock => mock.ReadAssembly (@"something\1.dll")).Throw (new BadImageFormatException ("Catastrophe"));
       _fileSystemMock.Expect (mock => mock.ReadAssembly (@"something\2.dll")).Return (_assemblyDefinition2);
       _fileSystemMock.Replay ();

@@ -3,6 +3,7 @@
 //
 using System;
 using System.Collections.Generic;
+using AssemblyTransformer.TypeDefinitionCaching;
 using Mono.Cecil;
 
 namespace AssemblyTransformer.AssemblyTracking
@@ -13,11 +14,13 @@ namespace AssemblyTransformer.AssemblyTracking
   public interface IAssemblyTracker
   {
     IEnumerable<AssemblyDefinition> GetAssemblies ();
-    AssemblyDefinition[] GetAssemblyByReference (AssemblyNameReference referencedAssemblyName);
+    AssemblyDefinition[] GetAssembliesByReference (AssemblyNameReference referencedAssemblyName);
     bool IsModified (AssemblyDefinition assemblyDefinition);
     void MarkModified (AssemblyDefinition assemblyDefinition);
     void MarkUnmodified (AssemblyDefinition assemblyDefinition);
+    void TrackNewReference (AssemblyDefinition originatingAssembly, AssemblyNameReference assemblyReference);
     AssemblyDefinition[] GetModifiedAssemblies ();
     AssemblyDefinition[] GetReverseReferences (AssemblyDefinition assemblyDefinition);
+    ITypeDefinitionCache TypeDefinitionCache { get; }
   }
 }

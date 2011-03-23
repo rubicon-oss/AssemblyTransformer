@@ -22,7 +22,6 @@ namespace AssemblyTransformer
   /// </summary>
   class Program
   {
-    private static readonly string OptionsFile = "@opt.txt";
     private static ICollection<IAssemblyTransformationFactory> _transformationFactories;
     private static AssemblySignerFactory _signerFactory;
     private static DirectoryBasedAssemblyTrackerFactory _trackerFactory;
@@ -50,12 +49,16 @@ namespace AssemblyTransformer
 
     private static IEnumerable<string> GetArgumentsFromFileOrCL (IEnumerable<string> args)
     {
-      if (!File.Exists (OptionsFile))
+      string optionsFile;
+      if ((optionsFile = args.FirstOrDefault (a => a.StartsWith ("@"))) == null)
+        return args;
+      optionsFile = optionsFile.Remove (0, 1);
+      if (!File.Exists (optionsFile))
         return args;
 
       var arguments = new List<string>();
       string line;
-      using (StreamReader r = new StreamReader (OptionsFile))
+      using (var r = new StreamReader (optionsFile))
       {
         while ((line = r.ReadLine ()) != null)
           arguments.AddRange (line.Split (' '));
@@ -72,24 +75,22 @@ namespace AssemblyTransformer
 
       // -- create all the transformations
       var transformationFactoryFactory = new DLLBasedTransformationFactoryFactory (fileSystem);
-      transformationFactoryFactory.AddOptions (optionSet);
       transformationFactoryFactory.WorkingDirectory = ".";
-
-      // catch the case when the user doesnt know what hes doing
-      if ((leftOver = optionSet.Parse (args)).Count != 0)
-        ShowHelp (optionSet, leftOver);
-
-      _transformationFactories = transformationFactoryFactory.CreateTrackerFactories();
+      transformationFactoryFactory.AddOptions (optionSet);
 
       // -- add the assembly tracker   
-      var trackerFactory = new DirectoryBasedAssemblyTrackerFactory(fileSystem);
+      var trackerFactory = new DirectoryBasedAssemblyTrackerFactory (fileSystem);
       trackerFactory.AddOptions (optionSet);
 
       // -- add the assembly signer
       _signerFactory = new AssemblySignerFactory (fileSystem);
       _signerFactory.AddOptions (optionSet);
 
-      // -- add all the assembly transformations
+      // load the given transformations
+      optionSet.Parse (args);
+
+      _transformationFactories = transformationFactoryFactory.CreateTrackerFactories ();
+      // -- add options of the transformations
       foreach (var factory in _transformationFactories)
         factory.AddOptions (optionSet);
 
@@ -117,7 +118,7 @@ namespace AssemblyTransformer
           Console.WriteLine (par);
       }
       Console.WriteLine ("\n  Usage:");
-      Console.WriteLine ("  'AssemblyTransformer.exe ( [OPTIONS]+ | option file in this folder {'"+ OptionsFile +"'} )' \n");
+      Console.WriteLine ("  'AssemblyTransformer.exe ( [OPTIONS]+ | option file in this folder {'@filename.extension'} )' \n");
       Console.WriteLine ("  Reads all the Assemblies in this folder. (where this .exe lies) ");
       Console.WriteLine ("  The contained transformations are then instantiated and according to the ");
       Console.WriteLine ("  factories, the options are added and parsed. ");

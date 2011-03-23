@@ -80,6 +80,7 @@ namespace AssemblyTransformer.UnitTests
       assembly.Name.HasPublicKey = true;
       assembly.Name.PublicKey = AssemblyNameReferenceObjectMother.RealKeyPair().PublicKey;
       assembly.MainModule.Attributes |= ModuleAttributes.StrongNameSigned;
+      assembly.Modules[1].Attributes |= ModuleAttributes.StrongNameSigned;
       return assembly;
     }
   }

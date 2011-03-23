@@ -51,7 +51,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyWriter
           .Expect (mock => mock.WriteModuleDefinition (
             Arg<ModuleDefinition>.Is.Same (_assemblyDefinition1.MainModule),
             Arg<string>.Is.Same (_assemblyDefinition1.MainModule.FullyQualifiedName),
-            Arg<WriterParameters>.Matches(param => param.StrongNameKeyPair.Equals (_signKey))));
+            Arg<WriterParameters>.Matches(param => param.StrongNameKeyPair == null)));
       _fileSystemMock.Replay();
 
       _definitionWriter.WriteModule (_assemblyDefinition1.MainModule);
@@ -168,7 +168,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyWriter
           .Expect (mock => mock.WriteModuleDefinition (
             Arg<ModuleDefinition>.Is.Same (_signedAssemblyDefinition.Modules[1]),
             Arg<string>.Is.Same (_signedAssemblyDefinition.Modules[1].FullyQualifiedName),
-            Arg<WriterParameters>.Matches (param => param.StrongNameKeyPair.Equals (_signKey))));
+            Arg<WriterParameters>.Matches (param => param.StrongNameKeyPair == null)));
       _fileSystemMock.Replay ();
 
       _definitionWriter.WriteModule (_signedAssemblyDefinition.Modules[1]);
@@ -189,7 +189,7 @@ namespace AssemblyTransformer.UnitTests.AssemblyWriter
           .Expect (mock => mock.WriteModuleDefinition (
             Arg<ModuleDefinition>.Is.Same (_assemblyDefinition1.Modules[1]),
             Arg<string>.Is.Same (_assemblyDefinition1.Modules[1].FullyQualifiedName),
-            Arg<WriterParameters>.Matches (param => param.StrongNameKeyPair.Equals (_signKey))));
+            Arg<WriterParameters>.Matches (param => param.StrongNameKeyPair == null)));
       _fileSystemMock.Replay ();
 
       _definitionWriter.WriteModule (_assemblyDefinition1.Modules[1]);
