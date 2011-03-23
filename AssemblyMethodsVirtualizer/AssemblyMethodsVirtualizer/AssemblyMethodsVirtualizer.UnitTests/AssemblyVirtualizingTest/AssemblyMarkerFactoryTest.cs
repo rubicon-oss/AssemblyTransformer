@@ -46,7 +46,7 @@ namespace AssemblyMethodsVirtualizer.UnitTests.AssemblyVirtualizingTest
       
       Assert.That (result, Is.TypeOf (typeof (AssemblyMethodsVirtualizer)));
       Assert.That (((AssemblyMethodsVirtualizer) result).MarkingAttributeStrategy, Is.TypeOf (typeof (GeneratedMarkingAttributeStrategy)));
-      Assert.That (((AssemblyMethodsVirtualizer) result).TargetMethodsFullNameMatchingRegex.ToString () == "regex");
+      //Assert.That (((AssemblyMethodsVirtualizer) result).SelectionStrategy != null);
     }
 
     [Test]
@@ -65,7 +65,7 @@ namespace AssemblyMethodsVirtualizer.UnitTests.AssemblyVirtualizingTest
       Assert.That (result, Is.TypeOf (typeof (AssemblyMethodsVirtualizer)));
       _fileSystemMock.VerifyAllExpectations();
       Assert.That (((AssemblyMethodsVirtualizer) result).MarkingAttributeStrategy, Is.TypeOf (typeof (CustomMarkingAttributeStrategy)));
-      Assert.That (((AssemblyMethodsVirtualizer) result).TargetMethodsFullNameMatchingRegex.ToString () == "regex");
+      //Assert.That (((AssemblyMethodsVirtualizer) result).SelectionStrategy != null);
       Assert.That (((CustomMarkingAttributeStrategy) ((AssemblyMethodsVirtualizer) result).MarkingAttributeStrategy).AttributeName == "TestType");
       Assert.That (((CustomMarkingAttributeStrategy) ((AssemblyMethodsVirtualizer) result).MarkingAttributeStrategy).AttributeNamespace == "TestSpace");
       Assert.That (((CustomMarkingAttributeStrategy) ((AssemblyMethodsVirtualizer) result).MarkingAttributeStrategy).ModuleContainingAttribute == _assemblyDefinition1.MainModule);
@@ -82,7 +82,7 @@ namespace AssemblyMethodsVirtualizer.UnitTests.AssemblyVirtualizingTest
 
       Assert.That (result, Is.TypeOf (typeof (AssemblyMethodsVirtualizer)));
       Assert.That (((AssemblyMethodsVirtualizer) result).MarkingAttributeStrategy, Is.TypeOf (typeof (NoneMarkingAttributeStrategy)));
-      Assert.That (((AssemblyMethodsVirtualizer) result).TargetMethodsFullNameMatchingRegex.ToString () == "regex");
+      //Assert.That (((AssemblyMethodsVirtualizer) result).SelectionStrategy != null);
     }
 
     [Test]
@@ -96,7 +96,7 @@ namespace AssemblyMethodsVirtualizer.UnitTests.AssemblyVirtualizingTest
 
       Assert.That (result, Is.TypeOf (typeof (AssemblyMethodsVirtualizer)));
       Assert.That (((AssemblyMethodsVirtualizer) result).MarkingAttributeStrategy, Is.TypeOf (typeof (NoneMarkingAttributeStrategy)));
-      Assert.That (((AssemblyMethodsVirtualizer) result).TargetMethodsFullNameMatchingRegex.ToString () == "regex");
+      //Assert.That (((AssemblyMethodsVirtualizer) result).SelectionStrategy != null);
     }
   }
 }

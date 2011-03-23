@@ -3,7 +3,10 @@
 //
 using System.Text.RegularExpressions;
 using AssemblyMethodsVirtualizer.MarkingStrategies;
+using AssemblyMethodsVirtualizer.TargetSelection;
+using AssemblyTransformer;
 using AssemblyTransformer.AssemblyTracking;
+using AssemblyTransformer.TypeDefinitionCaching;
 using Mono.Cecil;
 using NUnit.Framework;
 using Rhino.Mocks;
@@ -19,20 +22,26 @@ namespace AssemblyMethodsVirtualizer.UnitTests.AssemblyVirtualizingTest
     private AssemblyMethodsVirtualizer _methodsVirtualizer;
 
     private IMarkingAttributeStrategy _markingAttributeStrategy;
+    private ITargetSelectionFactory _selectionFactory;
+    private OptionSet _options;
 
     [SetUp]
     public void SetUp ()
     {
       _assemblyDefinition = AssemblyDefinitionObjectMother.CreateMultiModuleAssemblyDefinition();
-      _tracker = new AssemblyTracker (new [] { _assemblyDefinition });
+      _tracker = new AssemblyTracker (new [] { _assemblyDefinition }, new TypeDefinitionCache());
       _markingAttributeStrategy = MockRepository.GenerateStub<IMarkingAttributeStrategy> ();
-      _methodsVirtualizer = new AssemblyMethodsVirtualizer (_markingAttributeStrategy, new Regex ("(.*)"));
+      _selectionFactory = new TargetSelectorFactory ();
+      _options = new OptionSet ();
+      _methodsVirtualizer = new AssemblyMethodsVirtualizer (_markingAttributeStrategy, _selectionFactory);
+      
     }
 
     [Test]
     public void OverrideMethods_MarksAssemblyWithMatchingMethodsModified ()
     {
-      Regex regex = new Regex ("(.*)");
+      _selectionFactory.AddOptions (_options);
+      _options.Parse (new[] { "--regex=(.*)" });
       Assert.That (_tracker.IsModified (_assemblyDefinition), Is.False);
 
       _methodsVirtualizer.Transform (_tracker);
@@ -43,7 +52,9 @@ namespace AssemblyMethodsVirtualizer.UnitTests.AssemblyVirtualizingTest
     [Test]
     public void OverrideMethods_DoesNotMarkAssemblyWithougMatchingMethodsModified ()
     {
-      var _methodsVirtualizerNoMatch = new AssemblyMethodsVirtualizer (_markingAttributeStrategy, new Regex ("xxxx"));
+      _selectionFactory.AddOptions (_options);
+      _options.Parse (new[] { "--regex=xxx" });
+      var _methodsVirtualizerNoMatch = new AssemblyMethodsVirtualizer (_markingAttributeStrategy, _selectionFactory);
       Assert.That (_tracker.IsModified (_assemblyDefinition), Is.False);
 
       _methodsVirtualizerNoMatch.Transform (_tracker);
@@ -54,6 +65,8 @@ namespace AssemblyMethodsVirtualizer.UnitTests.AssemblyVirtualizingTest
     [Test]
     public void OverrideMethods_SetsMatchingMethodVirtual ()
     {
+      _selectionFactory.AddOptions (_options);
+      _options.Parse (new[] { "--regex=TestMethod" });
       Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].IsVirtual, Is.False);
 
       _methodsVirtualizer.Transform (_tracker);
@@ -64,7 +77,9 @@ namespace AssemblyMethodsVirtualizer.UnitTests.AssemblyVirtualizingTest
     [Test]
     public void OverrideMethods_DoesNotSetNonMatchingMethodVirtual ()
     {
-      _methodsVirtualizer = new AssemblyMethodsVirtualizer (_markingAttributeStrategy, new Regex ("xxxx"));
+      _selectionFactory.AddOptions (_options);
+      _options.Parse (new[] { "--regex=TestMethodDoesnotMatch" });
+      _methodsVirtualizer = new AssemblyMethodsVirtualizer (_markingAttributeStrategy, _selectionFactory);
       Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].IsVirtual, Is.False);
 
       _methodsVirtualizer.Transform (_tracker);
@@ -75,6 +90,8 @@ namespace AssemblyMethodsVirtualizer.UnitTests.AssemblyVirtualizingTest
     [Test]
     public void OverrideMethods_BothMethodsMarked ()
     {
+      _selectionFactory.AddOptions (_options);
+      _options.Parse (new[] { "--regex=(.*)" });
       MethodDefinition methodMain = _assemblyDefinition.MainModule.Types[1].Methods[0];
       MethodDefinition methodModule = _assemblyDefinition.Modules[1].Types[1].Methods[0];
 
@@ -87,7 +104,9 @@ namespace AssemblyMethodsVirtualizer.UnitTests.AssemblyVirtualizingTest
     [Test]
     public void OverrideMethods_MainModule_MethodMarked()
     {
-      _methodsVirtualizer = new AssemblyMethodsVirtualizer (_markingAttributeStrategy, new Regex ("TestMethod"));
+      _selectionFactory.AddOptions (_options);
+      _options.Parse (new[] { "--regex=TestMethod" });
+      _methodsVirtualizer = new AssemblyMethodsVirtualizer (_markingAttributeStrategy, _selectionFactory);
       MethodDefinition methodMain = _assemblyDefinition.MainModule.Types[1].Methods[0];
 
       Assert.That (_assemblyDefinition.MainModule.Types[1].CustomAttributes, Is.Empty);
@@ -102,7 +121,9 @@ namespace AssemblyMethodsVirtualizer.UnitTests.AssemblyVirtualizingTest
     [Test]
     public void OverrideMethods_SecondaryModule_MethodMarked ()
     {
-      _methodsVirtualizer = new AssemblyMethodsVirtualizer (_markingAttributeStrategy, new Regex ("TestSecondMethod"));
+      _selectionFactory.AddOptions (_options);
+      _options.Parse (new[] { "--regex=TestSecondMethod" });
+      _methodsVirtualizer = new AssemblyMethodsVirtualizer (_markingAttributeStrategy, _selectionFactory);
       MethodDefinition methodModule = _assemblyDefinition.Modules[1].Types[1].Methods[0];
       Assert.That (_assemblyDefinition.MainModule.Types[1].CustomAttributes, Is.Empty);
       Assert.That (_assemblyDefinition.Modules.Count, Is.EqualTo (2));

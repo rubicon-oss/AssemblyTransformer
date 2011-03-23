@@ -61,6 +61,8 @@ namespace AssemblyMethodsVirtualizer
 
     public IAssemblyTransformation CreateTransformation ()
     {
+      if (_selectionFactory == null)
+        throw new InvalidOperationException("Initialize options first! (AssemblyMethodVirtualizer)");
       return new AssemblyMethodsVirtualizer (CreateMarkingStrategy (_mode), _selectionFactory);
     }
 
