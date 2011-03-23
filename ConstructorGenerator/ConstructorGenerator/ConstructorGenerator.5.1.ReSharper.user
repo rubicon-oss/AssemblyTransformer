@@ -1,0 +1,505 @@
+<Configuration>
+  <SettingsComponent>
+    <string />
+    <integer />
+    <boolean>
+      <setting name="livetemplates.csharp.usevar">True</setting>
+      <setting name="SolutionAnalysisEnabled">False</setting>
+    </boolean>
+  </SettingsComponent>
+  <RecentFiles>
+    <RecentFiles>
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:CodeGenerator/f:ICodeGenerator.cs" caret="405" fromTop="12" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:IReferenceGenerator.cs" caret="0" fromTop="0" />
+      <File id="7EA0D5A0-B1C9-4F38-8007-25DEF0EDFCA2/d:MixinCheckerTest/f:StringAndReflectionBasedMixinCheckerTest.cs" caret="246" fromTop="7" />
+      <File id="7EA0D5A0-B1C9-4F38-8007-25DEF0EDFCA2/d:ConstructorGeneratorTest/f:ConstructorGeneratorFactoryTest.cs" caret="1232" fromTop="18" />
+      <File id="7EA0D5A0-B1C9-4F38-8007-25DEF0EDFCA2/d:ConstructorGeneratorTest/f:ConstructorGeneratorTest.cs" caret="667" fromTop="11" />
+      <File id="7EA0D5A0-B1C9-4F38-8007-25DEF0EDFCA2/f:MethodReferenceObjectMother.cs" caret="999" fromTop="23" />
+      <File id="7EA0D5A0-B1C9-4F38-8007-25DEF0EDFCA2/f:AssemblyDefinitionObjectMother.cs" caret="4339" fromTop="26" />
+      <File id="7EA0D5A0-B1C9-4F38-8007-25DEF0EDFCA2/d:CodeGeneratorTest/f:CodeGeneratorTest.cs" caret="1315" fromTop="34" />
+      <File id="7EA0D5A0-B1C9-4F38-8007-25DEF0EDFCA2/d:MethodReferenceGeneratorTest/f:MethodReferenceGeneratorTest.cs" caret="3587" fromTop="79" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/f:ConstructorGeneratorFactory.cs" caret="1820" fromTop="39" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:CodeGenerator/f:ILCodeGenerator.cs" caret="3762" fromTop="77" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGenerator.cs" caret="2609" fromTop="21" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:MixinChecker/f:IsolatedStringAndReflectionBasedMixinChecker.cs" caret="2248" fromTop="41" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:MixinChecker/f:IMixinChecker.cs" caret="0" fromTop="0" />
+      <File id="7EA0D5A0-B1C9-4F38-8007-25DEF0EDFCA2/f:IntegrationTest.cs" caret="2649" fromTop="1" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:MixinChecker/f:StringAndReflectionBasedMixinChecker.cs" caret="825" fromTop="22" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/f:ConstructorGenerator.cs" caret="2100" fromTop="24" />
+    </RecentFiles>
+    <RecentEdits>
+      <File id="7EA0D5A0-B1C9-4F38-8007-25DEF0EDFCA2/d:MethodReferenceGeneratorTest/f:MethodReferenceGeneratorTest.cs" caret="540" fromTop="11" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGenerator.cs" caret="1228" fromTop="15" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGenerator.cs" caret="1100" fromTop="19" />
+      <File id="7EA0D5A0-B1C9-4F38-8007-25DEF0EDFCA2/d:MethodReferenceGeneratorTest/f:MethodReferenceGeneratorTest.cs" caret="754" fromTop="17" />
+      <File id="7EA0D5A0-B1C9-4F38-8007-25DEF0EDFCA2/d:MethodReferenceGeneratorTest/f:MethodReferenceGeneratorTest.cs" caret="1397" fromTop="32" />
+      <File id="7EA0D5A0-B1C9-4F38-8007-25DEF0EDFCA2/d:MethodReferenceGeneratorTest/f:MethodReferenceGeneratorTest.cs" caret="1940" fromTop="22" />
+      <File id="7EA0D5A0-B1C9-4F38-8007-25DEF0EDFCA2/d:MethodReferenceGeneratorTest/f:MethodReferenceGeneratorTest.cs" caret="2925" fromTop="42" />
+      <File id="7EA0D5A0-B1C9-4F38-8007-25DEF0EDFCA2/d:MethodReferenceGeneratorTest/f:MethodReferenceGeneratorTest.cs" caret="2164" fromTop="26" />
+      <File id="7EA0D5A0-B1C9-4F38-8007-25DEF0EDFCA2/d:MethodReferenceGeneratorTest/f:MethodReferenceGeneratorTest.cs" caret="3123" fromTop="31" />
+      <File id="7EA0D5A0-B1C9-4F38-8007-25DEF0EDFCA2/d:MethodReferenceGeneratorTest/f:MethodReferenceGeneratorTest.cs" caret="4415" fromTop="38" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/f:ConstructorGeneratorFactory.cs" caret="1191" fromTop="15" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/f:ConstructorGeneratorFactory.cs" caret="1820" fromTop="27" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:MixinChecker/f:IsolatedStringAndReflectionBasedMixinChecker.cs" caret="2248" fromTop="29" />
+      <File id="7EA0D5A0-B1C9-4F38-8007-25DEF0EDFCA2/f:IntegrationTest.cs" caret="2145" fromTop="24" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:CodeGenerator/f:ILCodeGenerator.cs" caret="4401" fromTop="40" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGenerator.cs" caret="472" fromTop="4" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGenerator.cs" caret="2636" fromTop="27" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGenerator.cs" caret="2636" fromTop="26" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGenerator.cs" caret="2636" fromTop="31" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGenerator.cs" caret="3788" fromTop="18" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:CodeGenerator/f:ILCodeGenerator.cs" caret="1054" fromTop="12" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:CodeGenerator/f:ILCodeGenerator.cs" caret="1272" fromTop="18" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:CodeGenerator/f:ILCodeGenerator.cs" caret="2439" fromTop="32" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGenerator.cs" caret="3788" fromTop="15" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGenerator.cs" caret="4197" fromTop="35" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGenerator.cs" caret="2403" fromTop="13" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:CodeGenerator/f:ILCodeGenerator.cs" caret="3162" fromTop="20" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:CodeGenerator/f:ILCodeGenerator.cs" caret="3889" fromTop="27" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGenerator.cs" caret="2555" fromTop="20" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/f:ConstructorGenerator.cs" caret="2100" fromTop="24" />
+    </RecentEdits>
+  </RecentFiles>
+  <NAntValidationSettings>
+    <NAntPath value="" />
+  </NAntValidationSettings>
+  <UnitTestRunner>
+    <Providers />
+  </UnitTestRunner>
+  <UnitTestRunnerNUnit>
+    <NUnitInstallDir>C:\Program Files (x86)\NUnit 2.5.7\bin\net-2.0\</NUnitInstallDir>
+    <UseAddins>Never</UseAddins>
+  </UnitTestRunnerNUnit>
+  <CompletionStatisticsManager>
+    <ItemStatistics item="Qualified:@System.Diagnostics.Debugger">
+      <Item value="Break`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Default">
+      <Item value="false" priority="1" />
+      <Item value="Default" priority="0" />
+      <Item value="null" priority="7" />
+      <Item value="new" priority="34" />
+      <Item value="string" priority="7" />
+      <Item value="var" priority="29" />
+      <Item value="Assembly`0" priority="1" />
+      <Item value="_remotionInterfacesFullName" priority="0" />
+      <Item value="remotionInterfacesAssembly" priority="0" />
+      <Item value="FrameworkVersion`0" priority="0" />
+      <Item value="Remotion" priority="2" />
+      <Item value="ServiceLocation" priority="0" />
+      <Item value="Reflection" priority="0" />
+      <Item value="Implementation" priority="0" />
+      <Item value="TypeNameTemplateResolver`0" priority="0" />
+      <Item value="mixinConfigurationType" priority="0" />
+      <Item value="Static" priority="0" />
+      <Item value="BindingFlags`0" priority="2" />
+      <Item value="mixinConfiguration" priority="0" />
+      <Item value="typeof" priority="1" />
+      <Item value="FuncInvoker" priority="0" />
+      <Item value="MethodCaller`0" priority="0" />
+      <Item value="return" priority="11" />
+      <Item value="_mixinConfiguration" priority="0" />
+      <Item value="BindingFlags" priority="0" />
+      <Item value="typeDef" priority="5" />
+      <Item value="_workingDir" priority="5" />
+      <Item value="MethodReference`0" priority="4" />
+      <Item value="MethodReference" priority="0" />
+      <Item value="TypeReference`0" priority="7" />
+      <Item value="TypeReference" priority="0" />
+      <Item value="GenericInstanceType`0" priority="0" />
+      <Item value="GenericParameter`0" priority="1" />
+      <Item value="ObjectFactory" priority="0" />
+      <Item value="foreach" priority="6" />
+      <Item value="throw" priority="2" />
+      <Item value="if" priority="6" />
+      <Item value="existingAttributeType" priority="0" />
+      <Item value="break" priority="0" />
+      <Item value="TypeDefinition`0" priority="2" />
+      <Item value="createMethod" priority="6" />
+      <Item value="ArgumentException" priority="0" />
+      <Item value="ModuleDefinition`0" priority="1" />
+      <Item value="createMethodDefinition" priority="0" />
+      <Item value="VariableDefinition`0" priority="3" />
+      <Item value="createMethodType" priority="0" />
+      <Item value="MethodDefinition`0" priority="3" />
+      <Item value="private" priority="5" />
+      <Item value="readonly" priority="1" />
+      <Item value="workingDir" priority="0" />
+      <Item value="_remotionInterfaces" priority="2" />
+      <Item value="AssemblyPath" priority="2" />
+      <Item value="AssemblyDefinition`0" priority="5" />
+      <Item value="assemblyName" priority="1" />
+      <Item value="try" priority="1" />
+      <Item value="fileName" priority="1" />
+      <Item value="catch" priority="2" />
+      <Item value="InvalidOperationException`0" priority="1" />
+      <Item value="remotion" priority="0" />
+      <Item value="AssemblyNameReference" priority="0" />
+      <Item value="AssemblyName" priority="0" />
+      <Item value="AssemblyNameReference`0" priority="5" />
+      <Item value="MemberReference`0" priority="0" />
+      <Item value="Mono" priority="0" />
+      <Item value="Cecil" priority="0" />
+      <Item value="GenericInstanceMethod`0" priority="1" />
+      <Item value="createReference" priority="7" />
+      <Item value="createTypeParam" priority="3" />
+      <Item value="ParameterDefinition" priority="1" />
+      <Item value="TypeSystem`0" priority="0" />
+      <Item value="module" priority="1" />
+      <Item value="ArrayType`0" priority="1" />
+      <Item value="remotionReference" priority="4" />
+      <Item value="paramListReference" priority="2" />
+      <Item value="File`0" priority="0" />
+      <Item value="AppDomain`0" priority="0" />
+      <Item value="Path`0" priority="2" />
+      <Item value="TempPath" priority="5" />
+      <Item value="assemblyFileName" priority="0" />
+      <Item value="integrationTestAssemblies" priority="0" />
+      <Item value="_teardown" priority="0" />
+      <Item value="Directory`0" priority="2" />
+      <Item value="true" priority="4" />
+      <Item value="int" priority="1" />
+      <Item value="i" priority="4" />
+      <Item value="numOfParams" priority="0" />
+      <Item value="mixinTargetType" priority="2" />
+      <Item value="objectFactory" priority="4" />
+      <Item value="while" priority="0" />
+      <Item value="ThreadRunner`0" priority="0" />
+      <Item value="Development" priority="0" />
+      <Item value="UnitTesting" priority="0" />
+      <Item value="IO" priority="0" />
+      <Item value="Instruction`0" priority="4" />
+      <Item value="OpCode`0" priority="0" />
+      <Item value="instructions" priority="5" />
+      <Item value="Thread`0" priority="0" />
+      <Item value="ctorParameters" priority="0" />
+      <Item value="OpCodes`0" priority="5" />
+      <Item value="callInstructions" priority="1" />
+      <Item value="Length" priority="0" />
+      <Item value="j" priority="1" />
+      <Item value="GetCallableParamListCreateMethod`0" priority="0" />
+      <Item value="ctor" priority="6" />
+      <Item value="param" priority="0" />
+      <Item value="GetObjectFactoryCreateInstructions`0" priority="0" />
+      <Item value="paramListCreateReference" priority="0" />
+      <Item value="instruction" priority="1" />
+      <Item value="targetMethod" priority="2" />
+      <Item value="VariableDefinition" priority="0" />
+      <Item value="paramListLocal" priority="2" />
+      <Item value="Exception`0" priority="0" />
+      <Item value="Thread" priority="0" />
+      <Item value="ReferenceGenerator`0" priority="2" />
+      <Item value="remotionInterfaces" priority="0" />
+      <Item value="objectFactoryReference" priority="0" />
+      <Item value="moduleDefinition" priority="4" />
+      <Item value="instantiatedType" priority="0" />
+      <Item value="_referenceGenerator" priority="12" />
+      <Item value="constructor" priority="0" />
+      <Item value="ArgumentEmptyException" priority="0" />
+      <Item value="OptionException`0" priority="0" />
+      <Item value="class" priority="0" />
+      <Item value="namespace" priority="0" />
+      <Item value="_ilCodeGenerator" priority="0" />
+      <Item value="void" priority="1" />
+      <Item value="ICodeGenerator`0" priority="1" />
+      <Item value="IReferenceGenerator`0" priority="2" />
+      <Item value="tracker" priority="3" />
+      <Item value="assembly" priority="6" />
+      <Item value="isModified" priority="1" />
+      <Item value="ReferenceGenerator" priority="1" />
+      <Item value="object" priority="0" />
+      <Item value="objectFactoryFullName" priority="3" />
+      <Item value="_objectFactoryNamespace" priority="1" />
+      <Item value="_paramListNamespace" priority="0" />
+      <Item value="_paramListName" priority="0" />
+      <Item value="_objectFactoryName" priority="0" />
+      <Item value="templateMethod" priority="2" />
+      <Item value="ConstructorGenerator" priority="1" />
+      <Item value="_objectFactory" priority="0" />
+      <Item value="_paramList" priority="0" />
+      <Item value="in" priority="0" />
+      <Item value="ExpectedExceptionAttribute`0" priority="1" />
+      <Item value="StringAndReflectionBasedMixinChecker`0" priority="0" />
+      <Item value="ExpectedException" priority="0" />
+      <Item value="TargetInvocationException`0" priority="0" />
+      <Item value="_checker" priority="2" />
+      <Item value="_codeGenerator" priority="4" />
+      <Item value="MockRepository`0" priority="4" />
+      <Item value="IMixinChecker`0" priority="0" />
+      <Item value="mock" priority="1" />
+      <Item value="Arg`0" priority="0" />
+      <Item value="_test" priority="7" />
+      <Item value="_tracker" priority="3" />
+      <Item value="IAssemblyTracker`0" priority="0" />
+      <Item value="List`0" priority="0" />
+      <Item value="_generator" priority="0" />
+      <Item value="generator" priority="0" />
+      <Item value="_assemblyDefinition1" priority="11" />
+      <Item value="cw" priority="8" />
+      <Item value="public" priority="1" />
+      <Item value="static" priority="1" />
+      <Item value="CreateMultiModuleAssemblyDefinition`0" priority="0" />
+      <Item value="MethodDefinition" priority="0" />
+      <Item value="il" priority="0" />
+      <Item value="body" priority="1" />
+      <Item value="ParameterDefinition`0" priority="0" />
+      <Item value="_method" priority="2" />
+      <Item value="Assert`0" priority="15" />
+      <Item value="Is`0" priority="0" />
+      <Item value="ILCodeGenerator`0" priority="0" />
+      <Item value="r" priority="2" />
+      <Item value="method" priority="1" />
+      <Item value="MethodReferenceObjectMother`0" priority="3" />
+      <Item value="Instruction" priority="0" />
+      <Item value="_setup" priority="0" />
+      <Item value="MethodReferenceGenerator`0" priority="2" />
+      <Item value="ToString`0" priority="1" />
+      <Item value="UnicodeEncoding`0" priority="2" />
+      <Item value="result" priority="1" />
+      <Item value="TypeDefinitionCache" priority="0" />
+      <Item value="_remotionInterfacesReference" priority="9" />
+      <Item value="newObjectMethod" priority="0" />
+      <Item value="tempRef" priority="4" />
+      <Item value="else" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.Reflection.BindingFlags">
+      <Item value="Public" priority="1" />
+      <Item value="GetProperty" priority="0" />
+      <Item value="Instance" priority="0" />
+      <Item value="PutRefDispProperty" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.Reflection.Assembly">
+      <Item value="Load`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Reflection.Assembly">
+      <Item value="GetName`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Reflection.AssemblyName">
+      <Item value="Version" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Remotion.Implementation.TypeNameTemplateResolver">
+      <Item value="ResolveToType`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Type">
+      <Item value="InvokeMember`0" priority="0" />
+      <Item value="GetMethod`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Object">
+      <Item value="GetType`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Remotion.Reflection.MethodCaller">
+      <Item value="CallAction`0" priority="0" />
+      <Item value="CallFunc`1" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Reflection.MethodInfo">
+      <Item value="Invoke`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Mono.Cecil.TypeDefinition">
+      <Item value="Module" priority="7" />
+      <Item value="Methods" priority="5" />
+      <Item value="FullName" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Mono.Cecil.ModuleDefinition">
+      <Item value="AssemblyReferences" priority="4" />
+      <Item value="TypeSystem" priority="8" />
+      <Item value="Types" priority="5" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Mono.Cecil.AssemblyDefinition">
+      <Item value="MainModule" priority="11" />
+      <Item value="Modules" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.Tuple">
+      <Item value="Create`2" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Tuple`2">
+      <Item value="Item1" priority="0" />
+      <Item value="Item2" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.String">
+      <Item value="Substring`0" priority="2" />
+      <Item value="IndexOf`0" priority="0" />
+      <Item value="LastIndexOf`0" priority="1" />
+      <Item value="Length" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Mono.Collections.Generic.Collection`1">
+      <Item value="Add`0" priority="7" />
+      <Item value="Insert`0" priority="0" />
+      <Item value="Contains`0" priority="2" />
+      <Item value="Count" priority="3" />
+      <Item value="FirstOrDefault`1" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Mono.Cecil.AssemblyNameReference">
+      <Item value="Parse`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Mono.Cecil.MethodReference">
+      <Item value="ReturnType" priority="3" />
+      <Item value="GenericParameters" priority="2" />
+      <Item value="Parameters" priority="4" />
+      <Item value="DeclaringType" priority="3" />
+      <Item value="Name" priority="0" />
+      <Item value="IsGenericInstance" priority="0" />
+      <Item value="GetEventRaiser`1" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Mono.Cecil.TypeSystem">
+      <Item value="Boolean" priority="0" />
+      <Item value="Void" priority="1" />
+      <Item value="Object" priority="1" />
+      <Item value="String" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.IO.File">
+      <Item value="Copy`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.AppDomain">
+      <Item value="CurrentDomain" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.AppDomain">
+      <Item value="BaseDirectory" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.IO.Path">
+      <Item value="Combine`0" priority="2" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.IO.Directory">
+      <Item value="Exists`0" priority="1" />
+      <Item value="Delete`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Mono.Cecil.AssemblyNameReference">
+      <Item value="Culture" priority="2" />
+      <Item value="Name" priority="0" />
+      <Item value="Version" priority="1" />
+      <Item value="PublicKeyToken" priority="0" />
+      <Item value="FullName" priority="5" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Mono.Cecil.TypeReference">
+      <Item value="Scope" priority="0" />
+      <Item value="GetElementType`0" priority="0" />
+      <Item value="Name" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Mono.Cecil.Cil.Instruction">
+      <Item value="Create`0" priority="5" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Mono.Cecil.Cil.Instruction">
+      <Item value="OpCode" priority="1" />
+      <Item value="Operand" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Mono.Cecil.Cil.OpCodes">
+      <Item value="Nop" priority="0" />
+      <Item value="Stloc" priority="0" />
+      <Item value="Ldc_I4_1" priority="0" />
+      <Item value="Newobj" priority="1" />
+      <Item value="Call" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Mono.Cecil.MethodDefinition">
+      <Item value="Parameters" priority="4" />
+      <Item value="Body" priority="3" />
+      <Item value="DeclaringType" priority="2" />
+      <Item value="IsFamilyOrAssembly" priority="0" />
+      <Item value="FullName" priority="1" />
+      <Item value="Module" priority="0" />
+      <Item value="Name" priority="0" />
+      <Item value="IsHideBySig" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Mono.Cecil.Cil.MethodBody">
+      <Item value="InitLocals" priority="0" />
+      <Item value="Variables" priority="0" />
+      <Item value="Instructions" priority="2" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Remotion.Utilities.FileUtility">
+      <Item value="DeleteAndWaitForCompletion`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.Threading.Thread">
+      <Item value="Sleep`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:ConstructorGenerator.IReferenceGenerator">
+      <Item value="GetOrCreateObjectFactory`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:AssemblyTransformer.AssemblyTracking.IAssemblyTracker">
+      <Item value="MarkModified`0" priority="1" />
+      <Item value="GetAssemblies`0" priority="1" />
+      <Item value="Expect`2" priority="1" />
+      <Item value="VerifyAllExpectations`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:ConstructorGenerator.ConstructorGenerator">
+      <Item value="Checker" priority="0" />
+      <Item value="CodeGenerator" priority="0" />
+      <Item value="Transform`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:ConstructorGenerator.ReferenceGenerator.MethodReferenceGenerator">
+      <Item value="ObjectFactoryName" priority="1" />
+      <Item value="ObjectFactoryNamespace" priority="0" />
+      <Item value="ParamListNamespace" priority="1" />
+      <Item value="ParamListName" priority="2" />
+      <Item value="RemotionInterfacesReference" priority="2" />
+      <Item value="GetCallableParamListCreateMethod`0" priority="0" />
+      <Item value="GetOrCreateParamList`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:ConstructorGenerator.CodeGenerator.ILCodeGenerator">
+      <Item value="ReferenceGenerator" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Rhino.Mocks.Expect">
+      <Item value="Call`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Rhino.Mocks.Interfaces.IMethodOptions`1">
+      <Item value="Expect`2" priority="0" />
+      <Item value="Return`0" priority="5" />
+      <Item value="IgnoreArguments`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Rhino.Mocks.MockRepository">
+      <Item value="GenerateStub`1" priority="0" />
+      <Item value="GenerateMock`1" priority="0" />
+      <Item value="GenerateStrictMock`1" priority="2" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:ConstructorGenerator.MixinChecker.IMixinChecker">
+      <Item value="CanBeMixed`0" priority="3" />
+      <Item value="Expect`1" priority="0" />
+      <Item value="Stub`2" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Rhino.Mocks.Arg">
+      <Item value="Is`1" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Rhino.Mocks.Arg`1">
+      <Item value="Is" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Rhino.Mocks.Constraints.IsArg`1">
+      <Item value="Anything" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:ConstructorGenerator.CodeGenerator.ICodeGenerator">
+      <Item value="Expect`2" priority="0" />
+      <Item value="CreateNewObjectMethod`0" priority="1" />
+      <Item value="ReplaceNewStatements`0" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Mono.Cecil.Cil.ILProcessor">
+      <Item value="Emit`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@AssemblyMethodsVirtualizer.UnitTests.AssemblyDefinitionObjectMother">
+      <Item value="CreateMultiModuleAssemblyWithCtorsAndMethodBody`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@NUnit.Framework.Assert">
+      <Item value="That`0" priority="16" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@NUnit.Framework.Is">
+      <Item value="True" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:ConstructorGenerator.ReferenceGenerator.IReferenceGenerator">
+      <Item value="Expect`2" priority="0" />
+      <Item value="GetCallableParamListCreateMethod`0" priority="0" />
+      <Item value="GetCallableObjectFactoryCreateMethod`0" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@ConstructorGeneratorUnitTests.MethodReferenceObjectMother">
+      <Item value="GetObjectFactoryMethodRef`0" priority="0" />
+      <Item value="GetParamListMethodRef`0" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Version">
+      <Item value="ToString`0" priority="0" />
+      <Item value="Revision" priority="0" />
+      <Item value="Major" priority="0" />
+      <Item value="Minor" priority="0" />
+      <Item value="Build" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Text.ASCIIEncoding">
+      <Item value="GetString`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Mono.Cecil.ParameterDefinition">
+      <Item value="ParameterType" priority="0" />
+    </ItemStatistics>
+  </CompletionStatisticsManager>
+</Configuration>
