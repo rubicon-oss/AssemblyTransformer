@@ -39,6 +39,9 @@
     <Reference Include="Mono.Cecil">
       <HintPath>..\..\prereq\Assemblies\Mono.Cecil.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Cecil.Rocks">
+      <HintPath>..\..\prereq\Assemblies\Mono.Cecil.Rocks.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -56,6 +59,15 @@
     <Compile Include="MarkingStrategies\MarkingAttributeStrategy.cs" />
     <Compile Include="MarkingStrategies\NoneMarkingAttributeStrategy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TargetSelection\SelectionStrategies\AttributeNameSelectionStrategy.cs" />
+    <Compile Include="TargetSelection\SelectionStrategies\ClassHierarchyVisitorStrategy.cs" />
+    <Compile Include="TargetSelection\SelectionStrategies\ClassNameSelectionStrategy.cs" />
+    <Compile Include="TargetSelection\ITargetSelectionStrategy.cs" />
+    <Compile Include="TargetSelection\ITargetSelectionFactory.cs" />
+    <Compile Include="TargetSelection\SelectionStrategies\IVisitorTargetSelectionStrategy.cs" />
+    <Compile Include="TargetSelection\TargetSelector.cs" />
+    <Compile Include="TargetSelection\TargetSelectorFactory.cs" />
+    <Compile Include="TargetSelection\SelectionStrategies\RegularExpressionSelectionStrategy.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

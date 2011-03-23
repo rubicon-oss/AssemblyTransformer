@@ -80,6 +80,7 @@
     <Compile Include="AssemblyVirtualizingTest\DefaultMarkingAttributeStrategyTest.cs" />
     <Compile Include="AssemblyVirtualizingTest\NoneMarkingAttributeStrategyTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TargetSelectionTest\TargetSelectorFactoryTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AssemblyMethodsVirtualizer\AssemblyMethodsVirtualizer.csproj">

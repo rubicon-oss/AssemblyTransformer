@@ -40,7 +40,7 @@ namespace AssemblyMethodsVirtualizer.UnitTests.AssemblyVirtualizingTest
     {
       var optionSet = new OptionSet ();
       _factory.AddOptions (optionSet);
-      optionSet.Parse (new[] { "-r:regex", "-a:Generated", "-n:attNS", "-t:attName", "-f:attFile" });
+      optionSet.Parse (new[] { "--regex:regex", "--att:Generated", "--attNS:attNS", "--attType:attName", "--attFile:attFile" });
 
       var result = _factory.CreateTransformation ();
       
@@ -54,7 +54,7 @@ namespace AssemblyMethodsVirtualizer.UnitTests.AssemblyVirtualizingTest
     {
       var optionSet = new OptionSet ();
       _factory.AddOptions (optionSet);
-      optionSet.Parse (new[] { "-r:regex", "-a:Custom", "-n:TestSpace", "-t:TestType", "-f:attFile" });
+      optionSet.Parse (new[] { "--regex:regex", "--att:Custom", "--attNS:TestSpace", "--attType:TestType", "--attFile:attFile" });
       _fileSystemMock
           .Expect (mock => mock.ReadAssembly("attFile"))
           .Return (_assemblyDefinition1);
@@ -76,7 +76,7 @@ namespace AssemblyMethodsVirtualizer.UnitTests.AssemblyVirtualizingTest
     {
       var optionSet = new OptionSet ();
       _factory.AddOptions (optionSet);
-      optionSet.Parse (new[] { "-r:regex", "-a:None", "-n:attNS", "-t:attName", "-f:attFile" });
+      optionSet.Parse (new[] { "--regex:regex", "--att:None", "--attNS:attNS", "--attType:attName", "--attFile:attFile" });
 
       var result = _factory.CreateTransformation ();
 
@@ -90,7 +90,7 @@ namespace AssemblyMethodsVirtualizer.UnitTests.AssemblyVirtualizingTest
     {
       var optionSet = new OptionSet ();
       _factory.AddOptions (optionSet);
-      optionSet.Parse (new[] { "-r:regex" });
+      optionSet.Parse (new[] { "-regex:regex" });
 
       var result = _factory.CreateTransformation ();
 

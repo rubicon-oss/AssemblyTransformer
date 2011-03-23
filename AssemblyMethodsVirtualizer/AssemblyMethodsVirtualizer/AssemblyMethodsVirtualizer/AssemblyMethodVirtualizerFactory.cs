@@ -2,8 +2,8 @@
 // All rights reserved.
 //
 using System;
-using System.Text.RegularExpressions;
 using AssemblyMethodsVirtualizer.MarkingStrategies;
+using AssemblyMethodsVirtualizer.TargetSelection;
 using AssemblyTransformer;
 using AssemblyTransformer.AssemblyTransformations;
 using AssemblyTransformer.FileSystem;
@@ -21,11 +21,11 @@ namespace AssemblyMethodsVirtualizer
     public enum AttributeMode { None, Custom, Generated }
 
     private readonly IFileSystem _fileSystem;
-    private Regex _regex;
     private AttributeMode _mode;
     private string _attName = "NonVirtualAttribute";
     private string _attNamespace = "NonVirtualAttribute";
     private string _attributeAssembly;
+    private ITargetSelectionFactory _selectionFactory;
 
     public AssemblyMethodVirtualizerFactory (IFileSystem fileSystem)
     {
@@ -39,42 +39,38 @@ namespace AssemblyMethodsVirtualizer
       ArgumentUtility.CheckNotNull ("options", options);
 
       options.Add (
-             "r|regex|methods=",
-             "The regular expression matching the targeted methods full name.",
-             r => _regex = new Regex (r));
-      options.Add (
-            "a|att|attribute=",         
-            "Mark affected methods with Attribute [None | Generated | Custom] (standard = None)",  
+            "att|attribute=",         
+            "Mark affected methods with Attribute [None | Generated | Custom] (default = Generated)",  
             att => _mode = (AttributeMode) Enum.Parse (typeof (AttributeMode), att));
       options.Add (
-            "n|atNS|namespace=",
+            "attNS|namespace=",
             "The namespace of the attribute (default value: NonVirtualAttribute). This is used for both the Generated and Custom attribute!",  
             ns => _attNamespace = ns);
       options.Add (
-            "t|attType|attName=",
+            "attType|attName=",
             "The name of the attribute type (default value: NonVirtualAttribute). This is used for both the Generated and Custom attribute!",  
             at => _attName = at);
       options.Add (
-            "f|attFile|attributeFile=",
+            "attFile|attributeFile=",
             "Custom attribute to be used to mark methods (dll or exe containing the type). ONLY applicable on Custom attribute mode!", 
             custAtt => _attributeAssembly = custAtt);
+
+      _selectionFactory = new TargetSelectorFactory ();
+      _selectionFactory.AddOptions (options);
     }
 
     public IAssemblyTransformation CreateTransformation ()
     {
-      if (_regex == null || _mode == null)
-        throw new InvalidOperationException ("Initialize options first.");
-
-      return new AssemblyMethodsVirtualizer (CreateMarkingStrategy (_mode), _regex);
+      return new AssemblyMethodsVirtualizer (CreateMarkingStrategy (_mode), _selectionFactory);
     }
 
     private IMarkingAttributeStrategy CreateMarkingStrategy (AttributeMode attributeMode)
     {
       switch (attributeMode)
       {
-        case AttributeMode.Generated:
-          Console.WriteLine ("Using default attribute mechanism, generating attribute: " + _attNamespace + "." + _attName + " in main module.");
-          return new GeneratedMarkingAttributeStrategy (_attNamespace, _attName);
+        case AttributeMode.None:
+          Console.WriteLine ("Using no marking attribute!");
+          return new NoneMarkingAttributeStrategy ();
 
         case AttributeMode.Custom:
           ModuleDefinition customAttributeModule = null;
@@ -99,8 +95,9 @@ namespace AssemblyMethodsVirtualizer
           return new CustomMarkingAttributeStrategy (_attNamespace, _attName, customAttributeModule);
 
         default:
-          Console.WriteLine ("Using no marking attribute!");
-          return new NoneMarkingAttributeStrategy ();
+          Console.WriteLine ("Using default attribute mechanism, generating attribute: " + _attNamespace + "." + _attName + " in main module.");
+          return new GeneratedMarkingAttributeStrategy (_attNamespace, _attName);
+          
       }
     }
   }
