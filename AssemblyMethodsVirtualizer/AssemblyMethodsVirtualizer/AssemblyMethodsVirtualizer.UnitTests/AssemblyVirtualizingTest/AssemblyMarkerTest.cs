@@ -1,7 +1,6 @@
 // Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
 // All rights reserved.
 //
-using System.Text.RegularExpressions;
 using AssemblyMethodsVirtualizer.MarkingStrategies;
 using AssemblyMethodsVirtualizer.TargetSelection;
 using AssemblyTransformer;
