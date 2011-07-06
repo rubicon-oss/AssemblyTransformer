@@ -29,9 +29,9 @@ namespace AssemblyTransformer.FileSystem
       return File.Exists (fileName);
     }
 
-    public AssemblyDefinition ReadAssembly (string fileName)
+    public AssemblyDefinition ReadAssembly (string fileName, ReaderParameters readerParameters)
     {
-      return AssemblyDefinition.ReadAssembly (fileName);
+      return AssemblyDefinition.ReadAssembly (fileName, readerParameters);
     }
 
     public void WriteModuleDefinition (ModuleDefinition moduleDefinition, string fileName, WriterParameters writerParameters)

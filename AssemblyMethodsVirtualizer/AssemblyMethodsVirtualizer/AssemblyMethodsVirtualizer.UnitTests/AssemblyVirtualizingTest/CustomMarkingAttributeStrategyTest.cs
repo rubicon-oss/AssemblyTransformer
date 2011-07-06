@@ -12,7 +12,7 @@ namespace AssemblyMethodsVirtualizer.UnitTests.AssemblyVirtualizingTest
   [TestFixture]
   public class CustomMarkingAttributeStrategyTest
   {
-    private readonly string _assemblyPath = Path.Combine (AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\prereq\testing\CecilUser.exe");
+    private readonly string _assemblyPath = Path.Combine (AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\prereq\testing\DummyGenericAttribute.dll");
     private AssemblyDefinition _assemblyDefinition;
     private IMarkingAttributeStrategy _markerCustomMarkingStrategy;
 
@@ -21,8 +21,8 @@ namespace AssemblyMethodsVirtualizer.UnitTests.AssemblyVirtualizingTest
     {
       _assemblyDefinition = AssemblyDefinitionObjectMother.CreateMultiModuleAssemblyDefinition ();
       _markerCustomMarkingStrategy = new CustomMarkingAttributeStrategy (
-          "CustomNonVirtualAttribute", "CustomNonVirtualAttribute", 
-          ModuleDefinition.ReadModule (_assemblyPath)
+          "DummyGenericAttribute", "GenericAttribute", 
+          ModuleDefinition.ReadModule (_assemblyPath), "<>unspeakable_"
         );
     }
 
@@ -40,7 +40,9 @@ namespace AssemblyMethodsVirtualizer.UnitTests.AssemblyVirtualizingTest
 
       Assert.That (_assemblyDefinition.MainModule.Types.Count, Is.EqualTo (2));
       Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].CustomAttributes.Count, Is.EqualTo (1));
-      Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].CustomAttributes[0].AttributeType.Name, Is.EqualTo ("CustomNonVirtualAttribute"));
+      Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].CustomAttributes[0].AttributeType.Name, Is.EqualTo ("GenericAttribute"));
+      Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].CustomAttributes[0].ConstructorArguments[0].Value,
+        Is.EqualTo ("<>unspeakable_TestMethod"));
 
       Assert.That (_assemblyDefinition.Modules[1].ModuleReferences.Count, Is.EqualTo (0));
       Assert.That (_assemblyDefinition.Modules[1].Types[1].Methods[0].CustomAttributes.Count, Is.EqualTo (0));
@@ -66,7 +68,9 @@ namespace AssemblyMethodsVirtualizer.UnitTests.AssemblyVirtualizingTest
       Assert.That (_assemblyDefinition.Modules[1].ModuleReferences.Count, Is.EqualTo (1));
       Assert.That (_assemblyDefinition.Modules[1].ModuleReferences[0].Name, Is.EqualTo (attributeModule.Name));
       Assert.That (_assemblyDefinition.Modules[1].Types[1].Methods[0].CustomAttributes.Count, Is.EqualTo (1));
-      Assert.That (_assemblyDefinition.Modules[1].Types[1].Methods[0].CustomAttributes[0].AttributeType.Name, Is.EqualTo ("CustomNonVirtualAttribute"));
+      Assert.That (_assemblyDefinition.Modules[1].Types[1].Methods[0].CustomAttributes[0].AttributeType.Name, Is.EqualTo ("GenericAttribute"));
+      Assert.That (_assemblyDefinition.Modules[1].Types[1].Methods[0].CustomAttributes[0].ConstructorArguments[0].Value,
+        Is.EqualTo ("<>unspeakable_TestSecondMethod"));
 
       TypeReference attributeType = attributeModule.Types[1];
       Assert.That (attributeType.Scope.MetadataScopeType, Is.EqualTo (MetadataScopeType.ModuleDefinition));
@@ -89,12 +93,16 @@ namespace AssemblyMethodsVirtualizer.UnitTests.AssemblyVirtualizingTest
       _markerCustomMarkingStrategy.AddCustomAttribute (secondModuleMethod, _assemblyDefinition);
 
       Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].CustomAttributes.Count, Is.EqualTo (1));
-      Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].CustomAttributes[0].AttributeType.Name, Is.EqualTo ("CustomNonVirtualAttribute"));
+      Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].CustomAttributes[0].AttributeType.Name, Is.EqualTo ("GenericAttribute"));
+      Assert.That (_assemblyDefinition.MainModule.Types[1].Methods[0].CustomAttributes[0].ConstructorArguments[0].Value,
+        Is.EqualTo ("<>unspeakable_TestMethod"));
 
       Assert.That (_assemblyDefinition.Modules[1].ModuleReferences.Count, Is.EqualTo (1));
       Assert.That (_assemblyDefinition.Modules[1].ModuleReferences[0].Name, Is.EqualTo (attributeModule.Name));
       Assert.That (_assemblyDefinition.Modules[1].Types[1].Methods[0].CustomAttributes.Count, Is.EqualTo (1));
-      Assert.That (_assemblyDefinition.Modules[1].Types[1].Methods[0].CustomAttributes[0].AttributeType.Name, Is.EqualTo ("CustomNonVirtualAttribute"));
+      Assert.That (_assemblyDefinition.Modules[1].Types[1].Methods[0].CustomAttributes[0].AttributeType.Name, Is.EqualTo ("GenericAttribute"));
+      Assert.That (_assemblyDefinition.Modules[1].Types[1].Methods[0].CustomAttributes[0].ConstructorArguments[0].Value,
+        Is.EqualTo ("<>unspeakable_TestSecondMethod"));
 
       TypeReference attributeType = attributeModule.Types[1];
       Assert.That (attributeType.Scope.MetadataScopeType, Is.EqualTo (MetadataScopeType.ModuleDefinition));
@@ -106,7 +114,7 @@ namespace AssemblyMethodsVirtualizer.UnitTests.AssemblyVirtualizingTest
     public void OverrideMethods_AttributeTypeNotFound_Exception ()
     {
       _markerCustomMarkingStrategy = new CustomMarkingAttributeStrategy (
-          "NotFoundAttribute", "NotFoundAttribute", ModuleDefinition.ReadModule (_assemblyPath)
+          "NotFoundAttribute", "NotFoundAttribute", ModuleDefinition.ReadModule (_assemblyPath), "<>unspeakable_"
         );
       MethodDefinition methodMain = _assemblyDefinition.MainModule.Types[1].Methods[0];
       ModuleDefinition attributeModule = ModuleDefinition.ReadModule (_assemblyPath);

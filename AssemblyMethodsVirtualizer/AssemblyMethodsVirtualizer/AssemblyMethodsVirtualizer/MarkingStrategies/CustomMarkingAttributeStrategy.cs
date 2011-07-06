@@ -11,19 +11,22 @@ namespace AssemblyMethodsVirtualizer.MarkingStrategies
   public class CustomMarkingAttributeStrategy : MarkingAttributeStrategy
   {
     private readonly ModuleDefinition _moduleContainingAttribute;
+    private readonly string _unspeakablePrefix;
 
     public ModuleDefinition ModuleContainingAttribute
     {
       get { return _moduleContainingAttribute; }
     }
 
-    public CustomMarkingAttributeStrategy (string attributeNameSpace, string attributeName, ModuleDefinition moduleContainingAttribute) 
+    public CustomMarkingAttributeStrategy (string attributeNameSpace, string attributeName, 
+      ModuleDefinition moduleContainingAttribute, string unspeakablePrefix) 
             : base (attributeNameSpace, attributeName)
     {
       ArgumentUtility.CheckNotNull ("attributeNameSpace", attributeNameSpace);
       ArgumentUtility.CheckNotNull ("attributeName", attributeName);
       ArgumentUtility.CheckNotNull ("moduleContainingAttribute", moduleContainingAttribute);
 
+      _unspeakablePrefix = unspeakablePrefix;
       _moduleContainingAttribute = moduleContainingAttribute;
     }
 
@@ -32,7 +35,9 @@ namespace AssemblyMethodsVirtualizer.MarkingStrategies
       ArgumentUtility.CheckNotNull ("methodDefinition", methodDefinition);
       ArgumentUtility.CheckNotNull ("assemblyOfMethod", assemblyOfMethod);
 
-      AddCustomAttribute (methodDefinition, _moduleContainingAttribute);
+      AddCustomAttribute (methodDefinition, _moduleContainingAttribute, 
+        new CustomAttributeArgument(methodDefinition.Module.TypeSystem.String, _unspeakablePrefix + methodDefinition.Name)
+        );
     }
 
     protected override TypeDefinition CreateCustomAttributeType (ModuleDefinition targetModule)

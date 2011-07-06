@@ -20,16 +20,22 @@ namespace AssemblyTransformer.AssemblyTracking
   public class DirectoryBasedAssemblyTrackerFactory : IAssemblyTrackerFactory
   {
     private readonly IFileSystem _fileSystem;
-    private readonly List<string> _whiteList;
+    private List<string> _whiteList;
     private readonly List<string> _blackList;
-    private string _workingDirectory;
+    private readonly string _workingDirectory;
+    private SearchOption _includeSubDirs = SearchOption.TopDirectoryOnly;
 
-    public DirectoryBasedAssemblyTrackerFactory (IFileSystem fileSystem)
+    public List<string> IncludeFiles { 
+      get { return _whiteList; } 
+      set { _whiteList = value; } 
+    }
+
+      public DirectoryBasedAssemblyTrackerFactory (IFileSystem fileSystem, string workingDirectory)
     {
       ArgumentUtility.CheckNotNull ("fileSystem", fileSystem);
 
+      _workingDirectory = workingDirectory;
       _fileSystem = fileSystem;
-      _whiteList = new List<string> ();
       _blackList = new List<string> ();
     }
 
@@ -37,26 +43,28 @@ namespace AssemblyTransformer.AssemblyTracking
     {
       ArgumentUtility.CheckNotNull ("options", options);
 
+      //options.Add (
+      //    "i|include=",
+      //    "The target assemblies. At least use: '-w=*.dll -w=*.exe'! (eg: '-w=Remotion.*.dll -w=AnotherLibrary.*.dll -w=*.exe')",
+      //    w => _whiteList.Add (w) );
       options.Add (
-          "d|dir=",
-          "The (root) directory containing the targeted assemblies.",
-          dir => _workingDirectory = dir);
-      options.Add (
-          "w|whitelist=",
-          "The target assemblies. At least use: '-w=*.dll -w=*.exe'! (eg: '-w=Remotion.*.dll -w=ActaNova.*.dll -w=*.exe')",
-          w => _whiteList.Add (w) );
-      options.Add (
-          "b|blacklist=",
-          "The targeted assemblies (eg: -b=Remotion.Interfaces.dll -b=ActaNova.*.dll)",
+          "e|exclude=",
+          "The targeted assemblies (eg: -b=Remotion.Interfaces.dll -b=SomeLibrary.*.dll)",
           b => _blackList.Add (b));
+      options.Add (
+          "s|subdirs",
+          "Include subdirectories of the workingdir.",
+          b => _includeSubDirs = (b != null ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly));
     }
 
     public IAssemblyTracker CreateTracker ()
     {
-      if (_workingDirectory == null || _whiteList.Count == 0)
-        throw new InvalidOperationException 
-          ("Initialize options first. (AssemblyTracker: workingDirectory AND a whitelist of files has to be present!)");
+      if (_whiteList == null || _whiteList.Count == 0)
+        throw new InvalidOperationException
+          ("Initialize options first. (AssemblyTracker: inclusion rules have to be present!)");
 
+      var readPDB = new ReaderParameters { ReadSymbols = true };
+      var ignorePDB = new ReaderParameters { ReadSymbols = false };
       var allFiles = BuildTargetFilesList();
 
       List<AssemblyDefinition> assemblies = new List<AssemblyDefinition> ();
@@ -67,7 +75,11 @@ namespace AssemblyTransformer.AssemblyTracking
 #endif
          try
          {
-            assemblies.Add (_fileSystem.ReadAssembly (doc));
+           if (_fileSystem.FileExists (doc.Substring (0, doc.Length-3) + "pdb"))
+             assemblies.Add (_fileSystem.ReadAssembly (doc, readPDB));
+           else
+             assemblies.Add (_fileSystem.ReadAssembly (doc, ignorePDB));
+
          }
          catch (BadImageFormatException e)
          {
@@ -86,10 +98,10 @@ namespace AssemblyTransformer.AssemblyTracking
       var tmpBlackList = new List<string> ();
 
       foreach (var target in _whiteList)
-        tmpList.AddRange (_fileSystem.EnumerateFiles (_workingDirectory, target, SearchOption.AllDirectories));
+        tmpList.AddRange (_fileSystem.EnumerateFiles (_workingDirectory, target, _includeSubDirs));
 
       foreach (var nonTarget in _blackList)
-        tmpBlackList.AddRange (_fileSystem.EnumerateFiles (_workingDirectory, nonTarget, SearchOption.AllDirectories));
+        tmpBlackList.AddRange (_fileSystem.EnumerateFiles (_workingDirectory, nonTarget, _includeSubDirs));
 
       return tmpList.Except (tmpBlackList);
     }

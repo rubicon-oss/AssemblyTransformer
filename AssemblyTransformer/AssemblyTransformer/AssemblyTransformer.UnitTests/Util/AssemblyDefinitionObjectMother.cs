@@ -58,8 +58,8 @@ namespace AssemblyTransformer.UnitTests
       secondMethod.DeclaringType = secondType;
       assemblyDefinition.Modules.Add (secondModule);
       assemblyDefinition.MainModule.ModuleReferences.Add (secondModule);
-      
-      ExportedType e = new ExportedType ("TestSpace", "TestSecondType", new ModuleReference (secondModule.Name));
+
+      ExportedType e = new ExportedType ("TestSpace", "TestSecondType", secondModule, secondModule);
       assemblyDefinition.MainModule.ExportedTypes.Add (e);
 
       var testingDirectory = Path.Combine (AppDomain.CurrentDomain.BaseDirectory, @"temp\testing");

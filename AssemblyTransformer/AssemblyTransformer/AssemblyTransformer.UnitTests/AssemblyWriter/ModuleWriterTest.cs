@@ -41,12 +41,12 @@ namespace AssemblyTransformer.UnitTests.AssemblyWriter
     [Test]
     public void WriteModuleDefinition_WriterHasDefaultKey ()
     {
-      _fileSystemMock
-           .Expect (mock => mock.FileExists (_assemblyDefinition1.MainModule.FullyQualifiedName)).Return (true);
-      _fileSystemMock
-           .Expect (mock => mock.FileExists (_assemblyDefinition1.MainModule.FullyQualifiedName + ".bak0")).Return (false);
-      _fileSystemMock
-          .Expect (mock => mock.Move(_assemblyDefinition1.MainModule.FullyQualifiedName, _assemblyDefinition1.MainModule.FullyQualifiedName+".bak0"));
+      //_fileSystemMock
+      //     .Expect (mock => mock.FileExists (_assemblyDefinition1.MainModule.FullyQualifiedName)).Return (true);
+      //_fileSystemMock
+      //     .Expect (mock => mock.FileExists (_assemblyDefinition1.MainModule.FullyQualifiedName + ".bak0")).Return (false);
+      //_fileSystemMock
+      //    .Expect (mock => mock.Move(_assemblyDefinition1.MainModule.FullyQualifiedName, _assemblyDefinition1.MainModule.FullyQualifiedName+".bak0"));
       _fileSystemMock
           .Expect (mock => mock.WriteModuleDefinition (
             Arg<ModuleDefinition>.Is.Same (_assemblyDefinition1.MainModule),
@@ -66,12 +66,12 @@ namespace AssemblyTransformer.UnitTests.AssemblyWriter
           _fileSystemMock,
           null,
           new List<StrongNameKeyPair> { });
-      _fileSystemMock
-           .Expect (mock => mock.FileExists (_assemblyDefinition1.MainModule.FullyQualifiedName)).Return (true);
-      _fileSystemMock
-           .Expect (mock => mock.FileExists (_assemblyDefinition1.MainModule.FullyQualifiedName + ".bak0")).Return (false);
-      _fileSystemMock
-          .Expect (mock => mock.Move (_assemblyDefinition1.MainModule.FullyQualifiedName, _assemblyDefinition1.MainModule.FullyQualifiedName + ".bak0"));
+      //_fileSystemMock
+      //     .Expect (mock => mock.FileExists (_assemblyDefinition1.MainModule.FullyQualifiedName)).Return (true);
+      //_fileSystemMock
+      //     .Expect (mock => mock.FileExists (_assemblyDefinition1.MainModule.FullyQualifiedName + ".bak0")).Return (false);
+      //_fileSystemMock
+      //    .Expect (mock => mock.Move (_assemblyDefinition1.MainModule.FullyQualifiedName, _assemblyDefinition1.MainModule.FullyQualifiedName + ".bak0"));
       _fileSystemMock
           .Expect (mock => mock.WriteModuleDefinition (
             Arg<ModuleDefinition>.Is.Same (_assemblyDefinition1.MainModule),
@@ -91,12 +91,12 @@ namespace AssemblyTransformer.UnitTests.AssemblyWriter
           _fileSystemMock,
           null,
           new List<StrongNameKeyPair> { AssemblyNameReferenceObjectMother.RealKeyPair() });
-      _fileSystemMock
-           .Expect (mock => mock.FileExists (_signedAssemblyDefinition.MainModule.FullyQualifiedName)).Return (true);
-      _fileSystemMock
-           .Expect (mock => mock.FileExists (_signedAssemblyDefinition.MainModule.FullyQualifiedName + ".bak0")).Return (false);
-      _fileSystemMock
-          .Expect (mock => mock.Move (_signedAssemblyDefinition.MainModule.FullyQualifiedName, _signedAssemblyDefinition.MainModule.FullyQualifiedName + ".bak0"));
+      //_fileSystemMock
+      //     .Expect (mock => mock.FileExists (_signedAssemblyDefinition.MainModule.FullyQualifiedName)).Return (true);
+      //_fileSystemMock
+      //     .Expect (mock => mock.FileExists (_signedAssemblyDefinition.MainModule.FullyQualifiedName + ".bak0")).Return (false);
+      //_fileSystemMock
+      //    .Expect (mock => mock.Move (_signedAssemblyDefinition.MainModule.FullyQualifiedName, _signedAssemblyDefinition.MainModule.FullyQualifiedName + ".bak0"));
       _fileSystemMock
           .Expect (mock => mock.WriteModuleDefinition (
             Arg<ModuleDefinition>.Is.Same (_signedAssemblyDefinition.MainModule),
@@ -112,12 +112,12 @@ namespace AssemblyTransformer.UnitTests.AssemblyWriter
     [Test]
     public void WriteModuleDefinition_SignedAssembly_WriterHasDefaultKey ()
     {
-      _fileSystemMock
-           .Expect (mock => mock.FileExists (_signedAssemblyDefinition.MainModule.FullyQualifiedName)).Return (true);
-      _fileSystemMock
-           .Expect (mock => mock.FileExists (_signedAssemblyDefinition.MainModule.FullyQualifiedName + ".bak0")).Return (false);
-      _fileSystemMock
-          .Expect (mock => mock.Move (_signedAssemblyDefinition.MainModule.FullyQualifiedName, _assemblyDefinition1.MainModule.FullyQualifiedName + ".bak0"));
+      //_fileSystemMock
+      //     .Expect (mock => mock.FileExists (_signedAssemblyDefinition.MainModule.FullyQualifiedName)).Return (true);
+      //_fileSystemMock
+      //     .Expect (mock => mock.FileExists (_signedAssemblyDefinition.MainModule.FullyQualifiedName + ".bak0")).Return (false);
+      //_fileSystemMock
+      //    .Expect (mock => mock.Move (_signedAssemblyDefinition.MainModule.FullyQualifiedName, _assemblyDefinition1.MainModule.FullyQualifiedName + ".bak0"));
       _fileSystemMock
           .Expect (mock => mock.WriteModuleDefinition (
             Arg<ModuleDefinition>.Is.Same (_signedAssemblyDefinition.MainModule),
@@ -137,12 +137,12 @@ namespace AssemblyTransformer.UnitTests.AssemblyWriter
           _fileSystemMock,
           null,
           new List<StrongNameKeyPair> { });
-      _fileSystemMock
-           .Expect (mock => mock.FileExists (_signedAssemblyDefinition.MainModule.FullyQualifiedName)).Return (true);
-      _fileSystemMock
-           .Expect (mock => mock.FileExists (_signedAssemblyDefinition.MainModule.FullyQualifiedName + ".bak0")).Return (false);
-      _fileSystemMock
-          .Expect (mock => mock.Move (_signedAssemblyDefinition.MainModule.FullyQualifiedName, _assemblyDefinition1.MainModule.FullyQualifiedName + ".bak0"));
+      //_fileSystemMock
+      //     .Expect (mock => mock.FileExists (_signedAssemblyDefinition.MainModule.FullyQualifiedName)).Return (true);
+      //_fileSystemMock
+      //     .Expect (mock => mock.FileExists (_signedAssemblyDefinition.MainModule.FullyQualifiedName + ".bak0")).Return (false);
+      //_fileSystemMock
+      //    .Expect (mock => mock.Move (_signedAssemblyDefinition.MainModule.FullyQualifiedName, _assemblyDefinition1.MainModule.FullyQualifiedName + ".bak0"));
       _fileSystemMock
           .Expect (mock => mock.WriteModuleDefinition (
             Arg<ModuleDefinition>.Is.Same (_signedAssemblyDefinition.MainModule),
@@ -158,12 +158,12 @@ namespace AssemblyTransformer.UnitTests.AssemblyWriter
     [Test]
     public void WriteModuleDefinition_SignedAssembly_SecondaryModule_WriterHasDefaultKey ()
     {
-      _fileSystemMock
-           .Expect (mock => mock.FileExists (_signedAssemblyDefinition.Modules[1].FullyQualifiedName)).Return (true);
-      _fileSystemMock
-           .Expect (mock => mock.FileExists (_signedAssemblyDefinition.Modules[1].FullyQualifiedName + ".bak0")).Return (false);
-      _fileSystemMock
-          .Expect (mock => mock.Move (_signedAssemblyDefinition.Modules[1].FullyQualifiedName, _assemblyDefinition1.Modules[1].FullyQualifiedName + ".bak0"));
+      //_fileSystemMock
+      //     .Expect (mock => mock.FileExists (_signedAssemblyDefinition.Modules[1].FullyQualifiedName)).Return (true);
+      //_fileSystemMock
+      //     .Expect (mock => mock.FileExists (_signedAssemblyDefinition.Modules[1].FullyQualifiedName + ".bak0")).Return (false);
+      //_fileSystemMock
+      //    .Expect (mock => mock.Move (_signedAssemblyDefinition.Modules[1].FullyQualifiedName, _assemblyDefinition1.Modules[1].FullyQualifiedName + ".bak0"));
       _fileSystemMock
           .Expect (mock => mock.WriteModuleDefinition (
             Arg<ModuleDefinition>.Is.Same (_signedAssemblyDefinition.Modules[1]),
@@ -179,12 +179,12 @@ namespace AssemblyTransformer.UnitTests.AssemblyWriter
     [Test]
     public void WriteModuleDefinition_SecondaryModule_WriterHasDefaultKey ()
     {
-      _fileSystemMock
-           .Expect (mock => mock.FileExists (_assemblyDefinition1.Modules[1].FullyQualifiedName)).Return (true);
-      _fileSystemMock
-           .Expect (mock => mock.FileExists (_assemblyDefinition1.Modules[1].FullyQualifiedName + ".bak0")).Return (false);
-      _fileSystemMock
-          .Expect (mock => mock.Move (_assemblyDefinition1.Modules[1].FullyQualifiedName, _assemblyDefinition1.Modules[1].FullyQualifiedName + ".bak0"));
+      //_fileSystemMock
+      //     .Expect (mock => mock.FileExists (_assemblyDefinition1.Modules[1].FullyQualifiedName)).Return (true);
+      //_fileSystemMock
+      //     .Expect (mock => mock.FileExists (_assemblyDefinition1.Modules[1].FullyQualifiedName + ".bak0")).Return (false);
+      //_fileSystemMock
+      //    .Expect (mock => mock.Move (_assemblyDefinition1.Modules[1].FullyQualifiedName, _assemblyDefinition1.Modules[1].FullyQualifiedName + ".bak0"));
       _fileSystemMock
           .Expect (mock => mock.WriteModuleDefinition (
             Arg<ModuleDefinition>.Is.Same (_assemblyDefinition1.Modules[1]),

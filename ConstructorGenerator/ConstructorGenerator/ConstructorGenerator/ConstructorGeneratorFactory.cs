@@ -20,22 +20,19 @@ namespace ConstructorGenerator
     private string _objectFactory = "Remotion.Mixins.ObjectFactory";
     private string _paramList = "Remotion.Reflection.ParamList";
     private string _remotionInterfaces = null;
-    private string _workingDir = null;
+    private readonly string _workingDir = null;
 
-    public ConstructorGeneratorFactory (IFileSystem fileSystem)
+    public ConstructorGeneratorFactory (IFileSystem fileSystem, string workingDirectory)
     {
       ArgumentUtility.CheckNotNull ("fileSystem", fileSystem);
       _fileSystem = fileSystem;
+      _workingDir = workingDirectory;
     }
 
     public void AddOptions (OptionSet options)
     {
       ArgumentUtility.CheckNotNull ("options", options);
 
-      options.Add (
-            "workingDir=",
-            "Path to the targeted Assemblies. (Needed for the AppDomain of MixinConfiguration)",
-            dir => _workingDir = dir);
       options.Add (
             "fac|objectFactory=",
             "The FullName of the objectFactory providing the 'Create' method. default: 'Remotion.Mixins.ObjectFactory'",
@@ -53,24 +50,35 @@ namespace ConstructorGenerator
 
     public IAssemblyTransformation CreateTransformation ()
     {
-      if (_remotionInterfaces == null || _workingDir == null)
-        throw new InvalidOperationException ("Please initialize options first! (ConstructorGenerator)");
+      if (_remotionInterfaces == null)
+        throw new InvalidOperationException ("Please initialize options first! (ConstructorGenerator) : Remotion interfaces must be specified");
+      if (_workingDir == null)
+        throw new InvalidOperationException ("Please initialize options first! (ConstructorGenerator) : Working directory must be specified");
+
 #if PERFORMANCE_OUTPUT
       Stopwatch s = new Stopwatch ();
       s.Start ();
 #endif
-      var checker = new StringAndReflectionBasedMixinChecker (_workingDir, _remotionInterfaces);
+      try
+      {
+        var checker = new StringAndReflectionBasedMixinChecker (_workingDir, _remotionInterfaces);
+
+        return new ConstructorGenerator (
+            checker,
+            new ILCodeGenerator (
+                new MethodReferenceGenerator (_remotionInterfaces, _objectFactory, _paramList),
+                checker)
+          );
+      }
+      finally 
+      {
 #if PERFORMANCE_OUTPUT
-      s.Stop();
-      Console.WriteLine ("time for mixinconfiguration initialization : " + s.Elapsed);
-      s.Restart();
+        s.Stop ();
+        Console.WriteLine ("time for mixinconfiguration initialization : " + s.Elapsed);
+        s.Restart ();
 #endif
-      return new ConstructorGenerator (
-          checker, 
-          new ILCodeGenerator (
-              new MethodReferenceGenerator (_remotionInterfaces, _objectFactory, _paramList),
-              checker)
-        );
+      }
+
     }
   }
 }

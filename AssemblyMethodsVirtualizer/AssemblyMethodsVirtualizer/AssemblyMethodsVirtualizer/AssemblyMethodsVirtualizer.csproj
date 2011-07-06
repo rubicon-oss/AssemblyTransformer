@@ -36,10 +36,15 @@
       <ExecutableExtension>.exe</ExecutableExtension>
       <HintPath>..\..\prereq\Assemblies\AssemblyTransformer.exe</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil">
+    <Reference Include="Mono.Cecil, Version=0.9.4.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\prereq\Assemblies\Mono.Cecil.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil.Rocks">
+    <Reference Include="Mono.Cecil.Pdb">
+      <HintPath>..\..\prereq\Assemblies\Mono.Cecil.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks, Version=0.9.4.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\prereq\Assemblies\Mono.Cecil.Rocks.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -53,6 +58,8 @@
   <ItemGroup>
     <Compile Include="AssemblyMethodsVirtualizer.cs" />
     <Compile Include="AssemblyMethodVirtualizerFactory.cs" />
+    <Compile Include="ILCodeGeneration\ICodeGenerator.cs" />
+    <Compile Include="ILCodeGeneration\ILCodeGenerator.cs" />
     <Compile Include="MarkingStrategies\CustomMarkingAttributeStrategy.cs" />
     <Compile Include="MarkingStrategies\GeneratedMarkingAttributeStrategy.cs" />
     <Compile Include="MarkingStrategies\IMarkingAttributeStrategy.cs" />

@@ -1,6 +1,7 @@
 // Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
 // All rights reserved.
 //
+using System;
 using AssemblyMethodsVirtualizer.MarkingStrategies;
 using Mono.Cecil;
 using NUnit.Framework;
@@ -86,8 +87,8 @@ namespace AssemblyMethodsVirtualizer.UnitTests.AssemblyVirtualizingTest
       Assert.That (_assemblyDefinition.Modules[1].ModuleReferences[0].Name, Is.EqualTo (_assemblyDefinition.MainModule.Name));
       Assert.That (_assemblyDefinition.Modules[1].ModuleReferences[0].MetadataScopeType, Is.EqualTo (MetadataScopeType.ModuleReference));
       Assert.That (secondModuleMethod.CustomAttributes.Count, Is.EqualTo (1));
-      Assert.That (secondModuleMethod.CustomAttributes[0].AttributeType.Name, Is.EqualTo ("NonVirtualAttribute"));
-      Assert.That (secondModuleMethod.CustomAttributes[0].AttributeType.Scope, Is.SameAs (_assemblyDefinition.Modules[1].ModuleReferences[0]));
+      Assert.That (secondModuleMethod.CustomAttributes[0].AttributeType.Name, Is.EqualTo ("NonVirtualAttribute"));       // ModuleReferences!!
+      Assert.That (secondModuleMethod.CustomAttributes[0].AttributeType.Scope, Is.SameAs (_assemblyDefinition.Modules[1].AssemblyReferences[1]));
 
       TypeReference attributeType = _assemblyDefinition.MainModule.Types[2];
       Assert.That (attributeType.Scope.MetadataScopeType, Is.EqualTo (MetadataScopeType.ModuleDefinition));

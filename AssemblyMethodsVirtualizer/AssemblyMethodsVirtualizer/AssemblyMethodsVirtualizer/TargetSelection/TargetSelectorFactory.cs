@@ -27,11 +27,11 @@ namespace AssemblyMethodsVirtualizer.TargetSelection
        r => _regex = r);
       options.Add (
        "selectionAttribute=",
-       "The fullname of the attribute marking the classes (their subclasses are included) or methods that should be made virtual.",
+       "The fullname of the attribute marking the classes or methods that should be made virtual. Subclasses are included.",
        atName => _attributeName = atName);
       options.Add (
-       "scn|selectionClassName=",
-       "The fullname(s) of the classes (their subclasses are included) that should be made virtual.",
+       "selectionClassName=",
+       "The fullname(s) of the classes whose methods should be made virtual. Subclasses are included.",
        name => _classNames.Add (name));
     }
 

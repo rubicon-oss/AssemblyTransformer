@@ -48,8 +48,8 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
       _factory.AddOptions (_options);
 
       Assert.That (_options.Contains ("k"));
-      Assert.That (_options.Contains ("key"));
-      Assert.That (_options.Contains ("s"));
+      Assert.That (_options.Contains ("defaultKey"));
+      Assert.That (_options.Contains ("y"));
       Assert.That (_options.Contains ("keyDir"));
     }
 
@@ -72,7 +72,7 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
       var keyPair = AssemblyNameReferenceObjectMother.RealKeyPair ();
 
       _factory.AddOptions (_options);
-      _options.Parse (new[] { "-k:someKey", "-s:someDir" });
+      _options.Parse (new[] { "-k:someKey", "-y:someDir" });
       
       _fileSystemMock
           .Expect (mock => mock.Open ("someKey", FileMode.Open))
@@ -115,7 +115,7 @@ namespace AssemblyTransformer.UnitTests.AssemblySigning
     public void CreateSigner_WithKeySet ()
     {
       _factory.AddOptions (_options);
-      _options.Parse (new[] { "-s:someDir" });
+      _options.Parse (new[] { "-y:someDir" });
 
       _fileSystemMock
           .Expect (mock => mock.EnumerateFiles ("someDir", "*.snk", SearchOption.AllDirectories))

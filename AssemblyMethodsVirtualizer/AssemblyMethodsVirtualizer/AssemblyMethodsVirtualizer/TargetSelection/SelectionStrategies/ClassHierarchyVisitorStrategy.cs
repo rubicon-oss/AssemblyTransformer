@@ -30,24 +30,29 @@ namespace AssemblyMethodsVirtualizer.TargetSelection.SelectionStrategies
 
     private void InitTargetTypes (IAssemblyTracker tracker)
     {
-      foreach (var assembly in tracker.GetAssemblies())
+      foreach (var assembly in tracker.GetAssemblies ())
         foreach (var module in assembly.Modules)
           foreach (var typ in module.Types)
             if (_visitorStrategies.Any (strategy => strategy.AreAllMethodsOfTypeTarget (typ)))
               _targetTypes.Add (Tuple.Create (typ, assembly), true);
 
-      foreach (var target in _targetTypes.Keys)
-        _targetTypes[target] = IsTargetRecursive (target);
+      foreach (var assembly in tracker.GetAssemblies ())
+        foreach (var module in assembly.Modules)
+          foreach (var typ in module.Types)
+            _targetTypes[Tuple.Create (typ, assembly)] = IsTargetRecursive (Tuple.Create (typ, assembly));
     }
 
     private bool IsTargetRecursive (Tuple<TypeDefinition, AssemblyDefinition> typeAndAssembly)
     {
-      if (typeAndAssembly == null || typeAndAssembly.Item1.FullName == "System.Object")
+      if (typeAndAssembly == null || typeAndAssembly.Item1.FullName == "<Module>" || typeAndAssembly.Item1.FullName == "System.Object")
         return false;
+
       if (!_targetTypes.ContainsKey (typeAndAssembly))
-        _targetTypes[typeAndAssembly] = IsTargetRecursive (_tracker.TypeDefinitionCache[typeAndAssembly.Item1, typeAndAssembly.Item2]);
+        _targetTypes[typeAndAssembly] = IsTargetRecursive (_tracker.TypeDefinitionCache[typeAndAssembly.Item1.BaseType, typeAndAssembly.Item2.Name]);
+
       return _targetTypes[typeAndAssembly];
     }
+
 
     public bool IsTarget (MethodDefinition method, AssemblyDefinition containingAssembly)
     {

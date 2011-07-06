@@ -41,8 +41,8 @@ namespace ConstructorGenerator.ReferenceGenerator
     {
       var tempRef = GetOrCreateRemotionInterfacesReference (assemblyDef, moduleDefinition, tracker);
 
-      var objectFactoryReference = new TypeReference (_objectFactoryNamespace, _objectFactoryName, tempRef);
-      var paramListReference = new TypeReference (_paramListNamespace, _paramListName, tempRef);
+      var objectFactoryReference = new TypeReference (_objectFactoryNamespace, _objectFactoryName, moduleDefinition, tempRef);
+      var paramListReference = new TypeReference (_paramListNamespace, _paramListName, moduleDefinition, tempRef);
 
       var createReference = new MethodReference ("Create", moduleDefinition.TypeSystem.Void, objectFactoryReference);
       var createTypeParam = new GenericParameter ("T", createReference);
@@ -62,7 +62,7 @@ namespace ConstructorGenerator.ReferenceGenerator
     public MethodReference GetCallableParamListCreateMethod (AssemblyDefinition assemblyDef, MethodReference ctor, IAssemblyTracker tracker)
     {
       var tempRef = GetOrCreateRemotionInterfacesReference (assemblyDef, ctor.DeclaringType.Module, tracker);
-      var paramListCreateReference = GetOrCreateParamList (ctor.Parameters.Count, tempRef);
+      var paramListCreateReference = GetOrCreateParamList (ctor.Parameters.Count, ctor.DeclaringType.Module, tempRef);
 
       if (ctor.Parameters.Count > 0)
       {
@@ -87,12 +87,13 @@ namespace ConstructorGenerator.ReferenceGenerator
       return tempRef;
     }
 
-    private MethodReference GetOrCreateParamList (int numOfParams, AssemblyNameReference assmRef)
+    private MethodReference GetOrCreateParamList (int numOfParams, ModuleDefinition module, AssemblyNameReference assmRef)
     {
       if (numOfParams > 19)
         throw new NotSupportedException ("ParamList with more than 19 arguments does not exist.");
 
-      var paramListReference = new TypeReference (_paramListNamespace, _paramListName, assmRef);
+      var paramListReference = new TypeReference (_paramListNamespace, _paramListName, module, assmRef);
+      module.Import (paramListReference);
       var createReference = new MethodReference ("Create", paramListReference, paramListReference);
 
       for (int i = 0; i < numOfParams; ++i)

@@ -42,13 +42,15 @@
     <Reference Include="Microsoft.Practices.ServiceLocation">
       <HintPath>..\..\prereq\Assemblies\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil">
+    <Reference Include="Mono.Cecil, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\prereq\Assemblies\Mono.Cecil.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil.Rocks">
+    <Reference Include="Mono.Cecil.Rocks, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\prereq\Assemblies\Mono.Cecil.Rocks.dll</HintPath>
     </Reference>
-    <Reference Include="Remotion.Interfaces, Version=1.13.90.1, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+    <Reference Include="Remotion.Interfaces, Version=1.13.90.2, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\prereq\Assemblies\Remotion.Interfaces.dll</HintPath>
     </Reference>
@@ -72,6 +74,9 @@
     <Compile Include="MixinChecker\StringAndReflectionBasedMixinChecker.cs" />
     <Compile Include="ReferenceGenerator\MethodReferenceGenerator.cs" />
     <Compile Include="ReferenceGenerator\MethodReferenceGeneratorWithImport.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

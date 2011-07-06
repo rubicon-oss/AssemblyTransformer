@@ -23,7 +23,7 @@ namespace AssemblyMethodsVirtualizer.UnitTests.AssemblyVirtualizingTest
     public void SetUp ()
     {
       _fileSystemMock = MockRepository.GenerateStrictMock<IFileSystem> ();
-      _factory = new AssemblyMethodVirtualizerFactory (_fileSystemMock);
+      _factory = new AssemblyMethodVirtualizerFactory (_fileSystemMock, "");
 
       _assemblyDefinition1 = AssemblyDefinitionObjectMother.CreateMultiModuleAssemblyDefinition();
     }
@@ -54,9 +54,9 @@ namespace AssemblyMethodsVirtualizer.UnitTests.AssemblyVirtualizingTest
     {
       var optionSet = new OptionSet ();
       _factory.AddOptions (optionSet);
-      optionSet.Parse (new[] { "--regex:regex", "--att:Custom", "--attNS:TestSpace", "--attType:TestType", "--attFile:attFile" });
+      optionSet.Parse (new[] { "--regex:regex", "--att:Custom", "--attFullName:TestSpace.TestType", "--attFile:attFile" });
       _fileSystemMock
-          .Expect (mock => mock.ReadAssembly("attFile"))
+          .Expect (mock => mock.ReadAssembly(Arg.Is ("attFile"), Arg<ReaderParameters>.Matches (arg => arg.ReadSymbols==false) ))
           .Return (_assemblyDefinition1);
       _fileSystemMock.Replay();
 

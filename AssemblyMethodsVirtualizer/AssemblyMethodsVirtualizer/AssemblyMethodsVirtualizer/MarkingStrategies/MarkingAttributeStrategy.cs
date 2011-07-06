@@ -1,6 +1,8 @@
 // Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
 // All rights reserved.
 //
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using AssemblyTransformer;
 using Mono.Cecil;
@@ -45,8 +47,26 @@ namespace AssemblyMethodsVirtualizer.MarkingStrategies
       ArgumentUtility.CheckNotNull ("methodDefinition", methodDefinition);
       ArgumentUtility.CheckNotNull ("moduleWithAttributeType", moduleWithAttributeType);
 
-      var attributeCtor = MakeCtorAndReference ( methodDefinition.Module, moduleWithAttributeType);
+      var attributeCtor = MakeCtorAndReference (methodDefinition.Module, moduleWithAttributeType);
       var customAttribute = new CustomAttribute (attributeCtor);
+
+      if (!methodDefinition.CustomAttributes.Any (att => att.Constructor.FullName == attributeCtor.FullName))
+        methodDefinition.CustomAttributes.Add (customAttribute);
+    }
+
+    protected void AddCustomAttribute (MethodDefinition methodDefinition, ModuleDefinition moduleWithAttributeType, 
+      CustomAttributeArgument ctorArgument)
+    {
+      ArgumentUtility.CheckNotNull ("methodDefinition", methodDefinition);
+      ArgumentUtility.CheckNotNull ("moduleWithAttributeType", moduleWithAttributeType);
+
+      var attributeCtor = MakeCtorAndReference ( methodDefinition.DeclaringType.Module, moduleWithAttributeType);
+      if (attributeCtor.Parameters.Count != 1)
+        throw new InvalidOperationException ("There is no custom attribute ctor available that takes one parameter!");
+      
+      var customAttribute = new CustomAttribute (attributeCtor);
+      customAttribute.ConstructorArguments.Add (ctorArgument);
+
       if (!methodDefinition.CustomAttributes.Any (att => att.Constructor.FullName == attributeCtor.FullName))
         methodDefinition.CustomAttributes.Add (customAttribute);
     }
@@ -67,15 +87,7 @@ namespace AssemblyMethodsVirtualizer.MarkingStrategies
       if (!targetModule.ModuleReferences.Contains (moduleReference))
         targetModule.ModuleReferences.Add (moduleReference);
 
-      var typeReference = new TypeReference (
-          attributeCtorDefinition.DeclaringType.Namespace,
-          attributeCtorDefinition.DeclaringType.Name,
-          moduleReference);
-      var ctorReference = new MethodReference (
-          attributeCtorDefinition.Name,
-          targetModule.Import (attributeCtorDefinition.ReturnType),
-          typeReference);
-      ctorReference.HasThis = true;
+      var ctorReference = targetModule.Import (attributeCtorDefinition);
 
       return ctorReference;
     }

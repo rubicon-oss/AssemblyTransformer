@@ -115,6 +115,7 @@ namespace ConstructorGeneratorUnitTests
         foreach (var typ in def.MainModule.Types)
         {
           Assert.That (typ.Methods.Select (m => m.Name == "NewObject").Count(), Is.EqualTo (3));
+          Assert.That (typ.Methods.Select (m => { return m.IsConstructor && m.IsPublic;  }).Count (), Is.EqualTo (3));
         }
       }
       foreach (var file in Directory.EnumerateFiles (TempPath, "*", SearchOption.AllDirectories))

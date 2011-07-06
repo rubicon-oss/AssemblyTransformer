@@ -17,7 +17,7 @@ namespace AssemblyMethodsVirtualizer.MarkingStrategies
   {
 
     public GeneratedMarkingAttributeStrategy (string defAttributeNamespace, string defAttributeName)
-            : base (defAttributeNamespace, defAttributeName) {}
+      : base (defAttributeNamespace, defAttributeName){ }
 
     protected override TypeDefinition CreateCustomAttributeType (ModuleDefinition targetModule)
     {
@@ -27,6 +27,7 @@ namespace AssemblyMethodsVirtualizer.MarkingStrategies
                                            _attributeName,
                                            TypeAttributes.Public | TypeAttributes.Class,
                                            targetModule.Import (typeof (Attribute)));
+
       var ctor = new MethodDefinition (
           ".ctor",
           MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName,
@@ -41,7 +42,6 @@ namespace AssemblyMethodsVirtualizer.MarkingStrategies
       il.Emit (OpCodes.Ret);
 
       customType.Methods.Add (ctor);
-
       return customType;
     }
 

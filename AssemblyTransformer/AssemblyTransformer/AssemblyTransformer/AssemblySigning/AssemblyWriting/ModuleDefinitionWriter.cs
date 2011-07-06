@@ -44,7 +44,7 @@ namespace AssemblyTransformer.AssemblySigning.AssemblyWriting
     public void WriteModule (ModuleDefinition moduleDefinition)
     {
       ArgumentUtility.CheckNotNull ("moduleDefinition", moduleDefinition);
-
+      var writerParameters = new WriterParameters { WriteSymbols = moduleDefinition.HasSymbols };
       StrongNameKeyPair signKey = null;
       if (moduleDefinition.IsMain && 
         (moduleDefinition.Attributes & ModuleAttributes.StrongNameSigned) == ModuleAttributes.StrongNameSigned)
@@ -61,20 +61,23 @@ namespace AssemblyTransformer.AssemblySigning.AssemblyWriting
           }
         }
       }
-      Write (moduleDefinition, signKey);
+      //if (signKey != null)
+        writerParameters.StrongNameKeyPair = signKey;
+      Write (moduleDefinition, writerParameters);
     }
 
-    private void Write (ModuleDefinition moduleDefinition, StrongNameKeyPair signKey)
+    private void Write (ModuleDefinition moduleDefinition, WriterParameters writerParameters)
     {
-      if (_fileSystem.FileExists (moduleDefinition.FullyQualifiedName))
-      {
-        int suffixCnt = 0;
-        while (_fileSystem.FileExists (moduleDefinition.FullyQualifiedName + ".bak" + suffixCnt))
-          ++suffixCnt;
-        _fileSystem.Move (moduleDefinition.FullyQualifiedName, moduleDefinition.FullyQualifiedName + ".bak" + suffixCnt);
-      }
+      // uncomment to get backup files. (original files get .bak0, .bak1, etc. ending
+      //if (_fileSystem.FileExists (moduleDefinition.FullyQualifiedName))
+      //{
+      //  int suffixCnt = 0;
+      //  while (_fileSystem.FileExists (moduleDefinition.FullyQualifiedName + ".bak" + suffixCnt))
+      //    ++suffixCnt;
+      //  _fileSystem.Move (moduleDefinition.FullyQualifiedName, moduleDefinition.FullyQualifiedName + ".bak" + suffixCnt);
+      //}
       // During building the assembly, an already existing sign key is replaced with the newly specified one!
-      _fileSystem.WriteModuleDefinition (moduleDefinition, moduleDefinition.FullyQualifiedName, new WriterParameters { StrongNameKeyPair = signKey });
+      _fileSystem.WriteModuleDefinition (moduleDefinition, moduleDefinition.FullyQualifiedName, writerParameters);
     }
 
     private StrongNameKeyPair FindMatchingKeyPair (byte[] publicKey)

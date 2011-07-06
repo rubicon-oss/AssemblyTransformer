@@ -50,7 +50,7 @@ namespace ConstructorGenerator.MixinChecker
       }
       catch (Exception e)
       {
-        Console.WriteLine ("failed lookup " + e);
+        Console.WriteLine ("failed Type.GetType() lookup :\n" + e);
         throw;
       }
       return _getContextMethod.Invoke (_mixinConfiguration, new[] { type }) != null;

@@ -16,7 +16,7 @@ namespace AssemblyTransformer.FileSystem
     FileStream Open (string path, FileMode mode);
     bool FileExists (string fileName);
 
-    AssemblyDefinition ReadAssembly (string fileName);
+    AssemblyDefinition ReadAssembly (string fileName, ReaderParameters readerParameters);
     void WriteModuleDefinition (ModuleDefinition moduleDefinition, string fileName, WriterParameters writerParameters);
 
     Assembly LoadAssemblyFrom (string fileName);

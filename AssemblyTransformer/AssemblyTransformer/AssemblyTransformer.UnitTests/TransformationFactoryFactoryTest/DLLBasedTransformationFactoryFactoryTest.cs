@@ -26,7 +26,7 @@ namespace AssemblyTransformer.UnitTests.TransformationFactoryFactoryTest
     public void SetUp ()
     {
       _fileSystemMock = MockRepository.GenerateStrictMock<IFileSystem> ();
-      _factory = new DLLBasedTransformationFactoryFactory (_fileSystemMock);
+      _factory = new DLLBasedTransformationFactoryFactory (_fileSystemMock, ".");
 
       
     }
@@ -43,7 +43,7 @@ namespace AssemblyTransformer.UnitTests.TransformationFactoryFactoryTest
     {
       var optionSet = new OptionSet ();
       _factory.AddOptions (optionSet);
-      _factory.WorkingDirectory = ".";
+      _factory.TransformationsDirectory = ".";
       optionSet.Parse (new []{"-t=testcase"});
 
       _fileSystemMock.Expect (mock => mock.LoadAssemblyFrom (@".\testcase.dll")).Return (_assembly1);
@@ -59,7 +59,7 @@ namespace AssemblyTransformer.UnitTests.TransformationFactoryFactoryTest
     {
       var optionSet = new OptionSet ();
       _factory.AddOptions (optionSet);
-      _factory.WorkingDirectory = ".";
+      _factory.TransformationsDirectory = ".";
       optionSet.Parse (new[] { "-t=testcase"});
 
       _fileSystemMock.Expect (mock => mock.LoadAssemblyFrom (@".\testcase.dll")).

@@ -56,6 +56,7 @@ namespace ConstructorGenerator.CodeGenerator
               var objectFactory = _referenceGenerator.GetCallableObjectFactoryCreateMethod (containingAssembly, containingType.Module, constructor.DeclaringType, tracker);
               var paramListCreateReference = _referenceGenerator.GetCallableParamListCreateMethod (containingAssembly, constructor, tracker);
 
+
               if (paramListLocal == null)
               {
                 targetMethod.Body.InitLocals = true;
@@ -133,9 +134,6 @@ namespace ConstructorGenerator.CodeGenerator
       instructions.Add (Instruction.Create (OpCodes.Ret));
       newObjectMethod.Body.OptimizeMacros ();
 
-      templateMethod.IsPrivate = false;
-      templateMethod.IsPublic = false;
-      templateMethod.IsFamily = true;
       newObjectMethod.IsHideBySig = true;
       templateMethod.DeclaringType.Methods.Add (newObjectMethod);
     }

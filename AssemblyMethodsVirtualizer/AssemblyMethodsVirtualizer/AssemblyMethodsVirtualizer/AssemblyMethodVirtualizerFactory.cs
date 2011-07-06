@@ -2,6 +2,7 @@
 // All rights reserved.
 //
 using System;
+using AssemblyMethodsVirtualizer.ILCodeGeneration;
 using AssemblyMethodsVirtualizer.MarkingStrategies;
 using AssemblyMethodsVirtualizer.TargetSelection;
 using AssemblyTransformer;
@@ -24,10 +25,11 @@ namespace AssemblyMethodsVirtualizer
     private AttributeMode _mode;
     private string _attName = "NonVirtualAttribute";
     private string _attNamespace = "NonVirtualAttribute";
+    private string _unspeakablePrefix = "<>virtualized_";
     private string _attributeAssembly;
     private ITargetSelectionFactory _selectionFactory;
 
-    public AssemblyMethodVirtualizerFactory (IFileSystem fileSystem)
+    public AssemblyMethodVirtualizerFactory (IFileSystem fileSystem, string workingDirectory)
     {
       ArgumentUtility.CheckNotNull ("fileSystem", fileSystem);
 
@@ -40,19 +42,22 @@ namespace AssemblyMethodsVirtualizer
 
       options.Add (
             "att|attribute=",         
-            "Mark affected methods with Attribute [None | Generated | Custom] (default = Generated)",  
+            "Mark affected methods with custom attribute [None | Generated | Custom] (default = Generated)",  
             att => _mode = (AttributeMode) Enum.Parse (typeof (AttributeMode), att));
       options.Add (
-            "attNS|namespace=",
-            "The namespace of the attribute (default value: NonVirtualAttribute). This is used for both the Generated and Custom attribute!",  
-            ns => _attNamespace = ns);
+            "attPrefix=",
+            "The unspeakable prefix for the virtual method. (default value: '<>virtualized_')",
+            prefix => _unspeakablePrefix = prefix);
       options.Add (
-            "attType|attName=",
-            "The name of the attribute type (default value: NonVirtualAttribute). This is used for both the Generated and Custom attribute!",  
-            at => _attName = at);
+            "attFullName=",
+            "Fullname of the attribute type (default value: 'NonVirtualAttributeNonVirtualAttribute').",
+              at => {
+                _attName = at.Substring (at.LastIndexOf (".") + 1, at.Length - at.LastIndexOf (".") - 1);
+                _attNamespace = at.Substring (0, at.LastIndexOf ("."));
+              } );
       options.Add (
             "attFile|attributeFile=",
-            "Custom attribute to be used to mark methods (dll or exe containing the type). ONLY applicable on Custom attribute mode!", 
+            "Assembly containing the custom attribute (dll or exe). ONLY applicable in 'Custom' attribute mode!", 
             custAtt => _attributeAssembly = custAtt);
 
       _selectionFactory = new TargetSelectorFactory ();
@@ -63,7 +68,7 @@ namespace AssemblyMethodsVirtualizer
     {
       if (_selectionFactory == null)
         throw new InvalidOperationException("Initialize options first! (AssemblyMethodVirtualizer)");
-      return new AssemblyMethodsVirtualizer (CreateMarkingStrategy (_mode), _selectionFactory);
+      return new AssemblyMethodsVirtualizer (CreateMarkingStrategy (_mode), _selectionFactory, new ILCodeGenerator(_unspeakablePrefix));
     }
 
     private IMarkingAttributeStrategy CreateMarkingStrategy (AttributeMode attributeMode)
@@ -71,14 +76,14 @@ namespace AssemblyMethodsVirtualizer
       switch (attributeMode)
       {
         case AttributeMode.None:
-          Console.WriteLine ("Using no marking attribute!");
+          Console.WriteLine ("MethodVirtualizer: Using no marking attribute!");
           return new NoneMarkingAttributeStrategy ();
 
         case AttributeMode.Custom:
           ModuleDefinition customAttributeModule = null;
           try
           {
-            foreach (var module in _fileSystem.ReadAssembly (_attributeAssembly).Modules)
+            foreach (var module in _fileSystem.ReadAssembly (_attributeAssembly, new ReaderParameters {ReadSymbols = false}).Modules)
             {
               foreach (var attType in module.Types)
               {
@@ -87,17 +92,17 @@ namespace AssemblyMethodsVirtualizer
               }
             }
             if (customAttributeModule == null)
-              throw new ProgramArgumentException ("The given custom attribute is not available in the given assembly!");
+              throw new ProgramArgumentException ("MethodVirtualizer: The given custom attribute is not available in the given assembly!");
           }
           catch (BadImageFormatException e)
           {
-            throw new ArgumentException ("The given custom attribute file could not be opened!", e);
+            throw new ArgumentException ("MethodVirtualizer: The given custom attribute file could not be opened!", e);
           }
-          Console.WriteLine ("Using the custom attribute: " + _attNamespace + "." + _attName + " in " + _attributeAssembly + ".");
-          return new CustomMarkingAttributeStrategy (_attNamespace, _attName, customAttributeModule);
+          Console.WriteLine ("MethodVirtualizer: Using the custom attribute: " + _attNamespace + "." + _attName + " in " + _attributeAssembly + ".");
+          return new CustomMarkingAttributeStrategy (_attNamespace, _attName, customAttributeModule, _unspeakablePrefix);
 
         default:
-          Console.WriteLine ("Using default attribute mechanism, generating attribute: " + _attNamespace + "." + _attName + " in main module.");
+          Console.WriteLine ("MethodVirtualizer: Using default attribute mechanism, generating attribute: " + _attNamespace + "." + _attName + " in main module.");
           return new GeneratedMarkingAttributeStrategy (_attNamespace, _attName);
           
       }
