@@ -39,7 +39,6 @@ namespace ConstructorGenerator.ReferenceGenerator
 
     public MethodReferenceGenerator (string remotionInterfacesAssemblyName, string objectFactoryFullName, string paramListFullName)
     {
-      //"Remotion.Interfaces, Version=1.13.110.2, Culture=neutral, PublicKeyToken=fee00910d6e5f53b";//
       _remotionInterfacesAssemblyName = remotionInterfacesAssemblyName;
 
       _objectFactoryName = objectFactoryFullName.Substring (

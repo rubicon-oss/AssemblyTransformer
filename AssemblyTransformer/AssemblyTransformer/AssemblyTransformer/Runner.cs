@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using AssemblyTransformer.AppDomainBroker;
 using AssemblyTransformer.AssemblySigning;
 using AssemblyTransformer.AssemblyTracking;
 using AssemblyTransformer.AssemblyTransformations;
@@ -23,7 +24,8 @@ namespace AssemblyTransformer
   {
     public void Run (IAssemblyTrackerFactory trackerFactory,
                       IEnumerable<IAssemblyTransformationFactory> transformationFactories, 
-                      IAssemblySignerFactory signerFactory)
+                      IAssemblySignerFactory signerFactory,
+                      IAppDomainInfoBroker infoBroker)
     {
       ArgumentUtility.CheckNotNull ("trackerFactory", trackerFactory);
       ArgumentUtility.CheckNotNull ("transformationFactories", transformationFactories);
@@ -54,9 +56,9 @@ namespace AssemblyTransformer
       foreach (var factory in transformationFactories)
       {
         Console.WriteLine ("Transforming assemblies according to " + factory.GetType().Name);
-        factory.CreateTransformation().Transform (tracker);
+        factory.CreateTransformation(infoBroker).Transform (tracker);
       }
-
+      infoBroker.Unload();
 #if PERFORMANCE_TEST
       total.Stop ();
       procObj = Process.GetCurrentProcess ();

@@ -53,6 +53,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppDomainBroker\AppDomainInfoBroker.cs" />
+    <Compile Include="AppDomainBroker\AssemblyReferenceResolver.cs" />
+    <Compile Include="AppDomainBroker\CecilResolver.cs" />
+    <Compile Include="AppDomainBroker\IAppDomainInfoBroker.cs" />
+    <Compile Include="AppDomainBroker\MemberID.cs" />
     <Compile Include="ArgumentUtility.cs" />
     <Compile Include="AssemblySigning\AssemblySignerFactory.cs" />
     <Compile Include="AssemblySigning\IAssemblySignerFactory.cs" />
@@ -85,8 +90,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>$(TargetDir)\..\generatex86.cmd $(TargetDir)\..\ $(TargetFileName)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

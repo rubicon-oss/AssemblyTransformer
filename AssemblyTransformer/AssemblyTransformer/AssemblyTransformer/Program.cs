@@ -5,12 +5,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using AssemblyTransformer.AppDomainBroker;
 using AssemblyTransformer.AssemblySigning;
 using AssemblyTransformer.AssemblyTracking;
 using AssemblyTransformer.AssemblyTransformations;
 using System.Linq;
 using AssemblyTransformer.AssemblyTransformations.AssemblyTransformationFactoryFactory;
-
+using Mono.Cecil;
 
 
 namespace AssemblyTransformer
@@ -26,6 +27,7 @@ namespace AssemblyTransformer
     private static ICollection<IAssemblyTransformationFactory> _transformationFactories;
     private static AssemblySignerFactory _signerFactory;
     private static DirectoryBasedAssemblyTrackerFactory _trackerFactory;
+    private static IAppDomainInfoBroker _infoBroker;
     private static string _workingDirectory = ".";
 
     static int Main (string[] args)
@@ -37,16 +39,18 @@ namespace AssemblyTransformer
       try
       {
         var runner = new Runner();
-        runner.Run (_trackerFactory, _transformationFactories, _signerFactory);
+        runner.Run (_trackerFactory, _transformationFactories, _signerFactory, _infoBroker);
       }
       catch (ArgumentException e)
       {
+        throw;
         Console.WriteLine ("\n" + e.Message + "\n");
         InitializeTransformer (arguments.Concat (new [] {"-h"}));
         return -2;
       }
       catch (InvalidOperationException e)
       {
+        throw;
         Console.WriteLine ("\n" + e.Message + "\n");
         InitializeTransformer (arguments.Concat (new[] { "-h" }));
         return -2;
@@ -92,6 +96,13 @@ namespace AssemblyTransformer
       Dictionary<string, OptionSet> options = new Dictionary<string, OptionSet>();
       globalOptions.Parse (args);
 
+      // -- create AppDomainInfoBroker
+      Console.WriteLine (_workingDirectory = _workingDirectory.Replace ("\"", ""));
+      _infoBroker = new AppDomainInfoBroker (_workingDirectory);
+
+      ((DefaultAssemblyResolver) GlobalAssemblyResolver.Instance).RemoveSearchDirectory (".");
+      ((DefaultAssemblyResolver) GlobalAssemblyResolver.Instance).RemoveSearchDirectory ("bin");
+      ((DefaultAssemblyResolver) GlobalAssemblyResolver.Instance).AddSearchDirectory (_workingDirectory);
 
       // -- create all the transformations
       var transformationFactoryFactory = new DLLBasedTransformationFactoryFactory (fileSystem, _workingDirectory);
@@ -129,7 +140,7 @@ namespace AssemblyTransformer
 
         leftOver = allOptions.Parse (args);
         trackerFactory.IncludeFiles = leftOver.Where (s => (!s.StartsWith ("-") || !s.StartsWith ("\\"))).ToList();
-        leftOver.RemoveAll (s => (s.StartsWith ("-") || s.StartsWith ("\\")));
+        leftOver.RemoveAll (s => (!s.StartsWith ("-") || !s.StartsWith ("\\")));
 
         if (showHelp || leftOver.Count != 0)
           ShowHelp (globalOptions, options, leftOver);

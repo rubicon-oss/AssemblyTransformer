@@ -2,6 +2,7 @@
 // All rights reserved.
 //
 using System;
+using AssemblyTransformer.AppDomainBroker;
 
 namespace AssemblyTransformer.AssemblyTransformations
 {
@@ -13,6 +14,6 @@ namespace AssemblyTransformer.AssemblyTransformations
   public interface IAssemblyTransformationFactory
   {
     void AddOptions (OptionSet options);
-    IAssemblyTransformation CreateTransformation ();
+    IAssemblyTransformation CreateTransformation (IAppDomainInfoBroker broker);
   }
 }

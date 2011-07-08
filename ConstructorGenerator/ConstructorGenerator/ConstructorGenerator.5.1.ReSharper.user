@@ -10,25 +10,17 @@
   <RecentFiles>
     <RecentFiles>
       <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:IReferenceGenerator.cs" caret="0" fromTop="0" />
-      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/f:ConstructorGeneratorFactory.cs" caret="2056" fromTop="24" />
-      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:MixinChecker/f:IMixinChecker.cs" caret="213" fromTop="9" />
-      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGeneratorWithImport.cs" caret="4870" fromTop="44" />
       <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:CodeGenerator/f:ICodeGenerator.cs" caret="339" fromTop="10" />
-      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:CodeGenerator/f:ILCodeGenerator.cs" caret="2287" fromTop="0" />
-      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/f:ConstructorGenerator.cs" caret="1607" fromTop="20" />
-      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGenerator.cs" caret="342" fromTop="12" />
-      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:MixinChecker/f:StringAndReflectionBasedMixinChecker.cs" caret="542" fromTop="15" />
-      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:MixinChecker/f:IsolatedStringAndReflectionBasedMixinChecker.cs" caret="574" fromTop="4" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGeneratorWithImport.cs" caret="4870" fromTop="44" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:MixinChecker/f:IMixinChecker.cs" caret="0" fromTop="0" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/f:ConstructorGenerator.cs" caret="2688" fromTop="27" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/f:ConstructorGeneratorFactory.cs" caret="1705" fromTop="34" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:MixinChecker/f:StringAndReflectionBasedMixinChecker.cs" caret="799" fromTop="20" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGenerator.cs" caret="5291" fromTop="12" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:CodeGenerator/f:ILCodeGenerator.cs" caret="5486" fromTop="45" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:MixinChecker/f:IsolatedStringAndReflectionBasedMixinChecker.cs" caret="2573" fromTop="55" />
     </RecentFiles>
     <RecentEdits>
-      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/f:ConstructorGenerator.cs" caret="2543" fromTop="19" />
-      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:CodeGenerator/f:ILCodeGenerator.cs" caret="2961" fromTop="32" />
-      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:CodeGenerator/f:ILCodeGenerator.cs" caret="5595" fromTop="29" />
-      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGeneratorWithImport.cs" caret="2212" fromTop="10" />
-      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGenerator.cs" caret="2901" fromTop="11" />
-      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGenerator.cs" caret="4297" fromTop="11" />
-      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGenerator.cs" caret="5487" fromTop="9" />
-      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGeneratorWithImport.cs" caret="3392" fromTop="11" />
       <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGeneratorWithImport.cs" caret="4552" fromTop="7" />
       <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/f:ConstructorGeneratorFactory.cs" caret="1052" fromTop="16" />
       <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/f:ConstructorGeneratorFactory.cs" caret="1176" fromTop="22" />
@@ -41,16 +33,16 @@
       <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/f:ConstructorGeneratorFactory.cs" caret="2530" fromTop="21" />
       <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/f:ConstructorGeneratorFactory.cs" caret="2056" fromTop="21" />
       <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:MixinChecker/f:IsolatedStringAndReflectionBasedMixinChecker.cs" caret="675" fromTop="12" />
-      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:MixinChecker/f:IsolatedStringAndReflectionBasedMixinChecker.cs" caret="1502" fromTop="28" />
       <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGeneratorWithImport.cs" caret="4211" fromTop="21" />
       <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGeneratorWithImport.cs" caret="4870" fromTop="32" />
-      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGenerator.cs" caret="5804" fromTop="33" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGenerator.cs" caret="5700" fromTop="33" />
       <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:CodeGenerator/f:ILCodeGenerator.cs" caret="2287" fromTop="30" />
-      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGenerator.cs" caret="5066" fromTop="16" />
-      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGenerator.cs" caret="1388" fromTop="26" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGenerator.cs" caret="4962" fromTop="16" />
       <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:MixinChecker/f:IsolatedStringAndReflectionBasedMixinChecker.cs" caret="2248" fromTop="23" />
       <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:MixinChecker/f:IsolatedStringAndReflectionBasedMixinChecker.cs" caret="2472" fromTop="33" />
       <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:MixinChecker/f:IsolatedStringAndReflectionBasedMixinChecker.cs" caret="2149" fromTop="28" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:ReferenceGenerator/f:MethodReferenceGenerator.cs" caret="1284" fromTop="25" />
+      <File id="5F90AB79-859D-4BB2-B2CA-568BD06EA0BF/d:MixinChecker/f:IsolatedStringAndReflectionBasedMixinChecker.cs" caret="1437" fromTop="23" />
     </RecentEdits>
   </RecentFiles>
   <NAntValidationSettings>
@@ -70,10 +62,10 @@
     <ItemStatistics item="Default">
       <Item value="false" priority="5" />
       <Item value="Default" priority="0" />
-      <Item value="null" priority="13" />
+      <Item value="null" priority="15" />
       <Item value="new" priority="41" />
-      <Item value="string" priority="14" />
-      <Item value="var" priority="37" />
+      <Item value="string" priority="17" />
+      <Item value="var" priority="38" />
       <Item value="Assembly`0" priority="2" />
       <Item value="_remotionInterfacesFullName" priority="0" />
       <Item value="remotionInterfacesAssembly" priority="0" />
@@ -90,12 +82,12 @@
       <Item value="typeof" priority="1" />
       <Item value="FuncInvoker" priority="0" />
       <Item value="MethodCaller`0" priority="0" />
-      <Item value="return" priority="24" />
+      <Item value="return" priority="26" />
       <Item value="_mixinConfiguration" priority="0" />
       <Item value="BindingFlags" priority="0" />
       <Item value="typeDef" priority="5" />
       <Item value="_workingDir" priority="10" />
-      <Item value="MethodReference`0" priority="9" />
+      <Item value="MethodReference`0" priority="11" />
       <Item value="MethodReference" priority="0" />
       <Item value="TypeReference`0" priority="10" />
       <Item value="TypeReference" priority="0" />
@@ -103,7 +95,7 @@
       <Item value="GenericParameter`0" priority="1" />
       <Item value="ObjectFactory" priority="0" />
       <Item value="foreach" priority="12" />
-      <Item value="throw" priority="3" />
+      <Item value="throw" priority="4" />
       <Item value="if" priority="29" />
       <Item value="existingAttributeType" priority="0" />
       <Item value="break" priority="0" />
@@ -115,16 +107,16 @@
       <Item value="VariableDefinition`0" priority="3" />
       <Item value="createMethodType" priority="0" />
       <Item value="MethodDefinition`0" priority="7" />
-      <Item value="private" priority="12" />
-      <Item value="readonly" priority="4" />
+      <Item value="private" priority="13" />
+      <Item value="readonly" priority="5" />
       <Item value="workingDir" priority="1" />
       <Item value="_remotionInterfaces" priority="2" />
       <Item value="AssemblyPath" priority="2" />
       <Item value="AssemblyDefinition`0" priority="8" />
       <Item value="assemblyName" priority="1" />
-      <Item value="try" priority="2" />
+      <Item value="try" priority="3" />
       <Item value="fileName" priority="1" />
-      <Item value="catch" priority="2" />
+      <Item value="catch" priority="3" />
       <Item value="InvalidOperationException`0" priority="1" />
       <Item value="remotion" priority="0" />
       <Item value="AssemblyNameReference" priority="0" />
@@ -179,7 +171,7 @@
       <Item value="targetMethod" priority="7" />
       <Item value="VariableDefinition" priority="0" />
       <Item value="paramListLocal" priority="2" />
-      <Item value="Exception`0" priority="0" />
+      <Item value="Exception`0" priority="1" />
       <Item value="Thread" priority="0" />
       <Item value="ReferenceGenerator`0" priority="2" />
       <Item value="remotionInterfaces" priority="0" />
@@ -228,8 +220,8 @@
       <Item value="_generator" priority="0" />
       <Item value="generator" priority="0" />
       <Item value="_assemblyDefinition1" priority="21" />
-      <Item value="cw" priority="28" />
-      <Item value="public" priority="1" />
+      <Item value="cw" priority="29" />
+      <Item value="public" priority="2" />
       <Item value="static" priority="1" />
       <Item value="CreateMultiModuleAssemblyDefinition`0" priority="0" />
       <Item value="MethodDefinition" priority="0" />
@@ -269,7 +261,7 @@
       <Item value="s" priority="3" />
       <Item value="Stopwatch`0" priority="0" />
       <Item value="GetType`0" priority="0" />
-      <Item value="Type`0" priority="0" />
+      <Item value="Type`0" priority="2" />
       <Item value="AssemblyDefaultAliasAttribute`0" priority="0" />
       <Item value="AssemblyDefinitionObjectMother`0" priority="0" />
       <Item value="_assemblyDefinition" priority="3" />
@@ -301,6 +293,13 @@
       <Item value="workingDirectory" priority="0" />
       <Item value="finally" priority="0" />
       <Item value="fullName" priority="0" />
+      <Item value="INewTransformerInfo`0" priority="0" />
+      <Item value="MarshalByRefObject`0" priority="0" />
+      <Item value="infoProviderName" priority="2" />
+      <Item value="Func" priority="1" />
+      <Item value="ConstructorInfo`0" priority="1" />
+      <Item value="infoProviderAssembly" priority="1" />
+      <Item value="_infoProvider" priority="1" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.Reflection.BindingFlags">
       <Item value="Public" priority="1" />
@@ -314,6 +313,7 @@
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Reflection.Assembly">
       <Item value="GetName`0" priority="0" />
+      <Item value="GetType`0" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Reflection.AssemblyName">
       <Item value="Version" priority="0" />
@@ -594,7 +594,7 @@
       <Item value="Restart`0" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.Type">
-      <Item value="GetType`0" priority="0" />
+      <Item value="GetType`0" priority="1" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Mono.Cecil.GenericInstanceType">
       <Item value="GenericArguments" priority="2" />
