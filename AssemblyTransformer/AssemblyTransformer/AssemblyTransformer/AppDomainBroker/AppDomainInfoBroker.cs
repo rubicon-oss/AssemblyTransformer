@@ -3,9 +3,7 @@
 //
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reflection;
-using Mono.Cecil;
 
 namespace AssemblyTransformer.AppDomainBroker
 {
@@ -30,7 +28,6 @@ namespace AssemblyTransformer.AppDomainBroker
 
     public T CreateInfoProviderWrapper<T> (params object[] args)
     {
-      //Debugger.Break();
       if (!_infoWrappers.ContainsKey (typeof (T)))
         _infoWrappers[typeof (T)] = (T) _appDomain.CreateInstanceFromAndUnwrap (
             typeof (T).Assembly.CodeBase,

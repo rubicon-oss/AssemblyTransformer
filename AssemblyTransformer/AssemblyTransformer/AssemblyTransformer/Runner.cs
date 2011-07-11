@@ -1,12 +1,13 @@
 // Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
 // All rights reserved.
 //
-//#define PERFORMANCE_TEST
 
+// activate to print information about performance and memory usage
+// #define PERFORMANCE_TEST
+// using System.Diagnostics;
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using AssemblyTransformer.AppDomainBroker;
 using AssemblyTransformer.AssemblySigning;
 using AssemblyTransformer.AssemblyTracking;
@@ -48,7 +49,6 @@ namespace AssemblyTransformer
       "  Working Set Size: {2:N0}", procObj.PrivateMemorySize64, procObj.VirtualMemorySize64, procObj.WorkingSet64);
       Console.WriteLine (Environment.NewLine + "  Initialization:   " + s.Elapsed);
       Console.WriteLine (Environment.NewLine + "  press key to continue with transformations");
-      Console.ReadLine();
       total.Start ();
       s.Restart ();
 #endif
@@ -59,6 +59,7 @@ namespace AssemblyTransformer
         factory.CreateTransformation(infoBroker).Transform (tracker);
       }
       infoBroker.Unload();
+
 #if PERFORMANCE_TEST
       total.Stop ();
       procObj = Process.GetCurrentProcess ();
@@ -67,7 +68,6 @@ namespace AssemblyTransformer
       "  Working Set Size: {2:N0}", procObj.PrivateMemorySize64, procObj.VirtualMemorySize64, procObj.WorkingSet64);
       Console.WriteLine (Environment.NewLine + "  Transformation:   " + s.Elapsed);
       Console.WriteLine (Environment.NewLine + "  press key to continue with sign and save");
-      Console.ReadLine();
       total.Start ();
       s.Restart ();
 #endif

@@ -60,7 +60,7 @@ namespace AssemblyTransformer.AssemblySigning
         }
         catch (IOException e)
         {
-          throw new ProgramArgumentException ("The defaultKey file could not be opened! (" + e.Message +")", e);
+          throw new ProgramArgumentException ("The defaultKey file could not be opened! [" + defaultKey + "]", e);
         }
       }
       if (keysDirectory != null)
@@ -72,7 +72,7 @@ namespace AssemblyTransformer.AssemblySigning
         }
         catch (IOException e) 
         {
-          throw new ProgramArgumentException ("Reading keys from the key directory caused an error! (" + e.Message + ")", e);
+          throw new ProgramArgumentException ("Reading keys from the key directory caused an error! [" + keysDirectory + "]", e);
         }
       }
 

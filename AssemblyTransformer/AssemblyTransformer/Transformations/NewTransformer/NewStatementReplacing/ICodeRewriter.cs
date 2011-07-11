@@ -17,7 +17,7 @@ namespace NewTransformer.NewStatementReplacing
         INewTransformerInfoWrapper infoWrapper);
 
 
-    void CreateNewObjectMethod (
+    bool CreateNewObjectMethod (
         AssemblyDefinition assembly, 
         MethodDefinition method, 
         IAssemblyTracker tracker, 

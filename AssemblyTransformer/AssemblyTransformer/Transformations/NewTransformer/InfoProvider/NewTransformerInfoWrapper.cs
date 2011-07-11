@@ -20,12 +20,8 @@ namespace NewTransformer.InfoProvider
       _factoryMethods = new Dictionary<MethodReference, MethodDefinition> ();
     }
 
-    /*
-     * RESOLVE!! sonst metadata token unterschiedlich.
-     */
     public MethodDefinition GetFactoryMethod (MethodReference ctor, AssemblyDefinition assembly, IAssemblyTracker tracker)
     {
-      Console.WriteLine ("Enter GetFactoryMethod " + ctor.FullName);
       if (!_factoryMethods.ContainsKey (ctor))
       {
         var memberId = CecilResolver.CreateMemberID (ctor.Resolve());
@@ -33,7 +29,6 @@ namespace NewTransformer.InfoProvider
         _factoryMethods[ctor] = CecilResolver.ResolveToMethodDefinition (_infoProvider.GetFactoryMethodFunc (memberId), tracker, out containingTrackedAssembly);
         if (containingTrackedAssembly != null)
           tracker.TrackNewReference (assembly, containingTrackedAssembly);
-        Console.WriteLine ("was not in dict.");
       }
       return _factoryMethods[ctor];
     }

@@ -61,14 +61,17 @@ namespace NewTransformer
     private void GenerateNewObjectMethods (AssemblyDefinition assembly, TypeDefinition targetType)
     {
       foreach (var method in targetType.Methods.ToList ())
-        if (method.IsConstructor && !targetType.Methods.Any (m => (m.Name == "NewObject" && HaveSameParameters (method, m))))
+        if (method.IsConstructor 
+              && !targetType.Methods.Any (m => (m.Name == _infoWrapper.GetWrapperMethodName(method) 
+                  && HaveSameParameters (method, m))))
         {
-          // set ctor protected
-          method.IsPublic = false;
-          method.IsPrivate = false;
-          method.IsFamily = true;
-          _replacer.CreateNewObjectMethod (assembly, method, _tracker, _infoWrapper);
-          _tracker.MarkModified (assembly);
+          if (_replacer.CreateNewObjectMethod (assembly, method, _tracker, _infoWrapper))
+          {
+            method.IsPublic = false;
+            method.IsPrivate = false;
+            method.IsFamily = true;
+            _tracker.MarkModified (assembly);
+          }
         }
     }
 

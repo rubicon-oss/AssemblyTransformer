@@ -13,8 +13,6 @@ namespace NewTransformer.NewStatementReplacing
 {
   public class ILCodeRewriter : ICodeRewriter
   {
-    
-    
     public bool ReplaceNewStatements (AssemblyDefinition containingAssembly,
                                       TypeDefinition containingType,
                                       MethodDefinition targetMethod,
@@ -50,7 +48,7 @@ namespace NewTransformer.NewStatementReplacing
               var importedParamListCreateMethod = containingType.Module.Import (SearchParamListFactoryMethod (paramlistDef, constructor));
 
               if (importedParamListCreateMethod == null)
-                throw new ArgumentException ("Factory method: no corresponding 'create' method could have been found. [argument count]");
+                throw new ArgumentException ("Factory method: no corresponding 'Create' method could have been found. [argument count]");
 
               #region ILsample
 
@@ -80,27 +78,27 @@ namespace NewTransformer.NewStatementReplacing
       return isModified;
     }
 
-    public void CreateNewObjectMethod (AssemblyDefinition assembly, 
+    public bool CreateNewObjectMethod (AssemblyDefinition assembly, 
                                         MethodDefinition templateMethod, 
                                         IAssemblyTracker tracker, 
                                         INewTransformerInfoWrapper infoWrapper)
     {
-      TypeReference returnType = templateMethod.DeclaringType;
-      if (templateMethod.DeclaringType.HasGenericParameters)
-      {
-        returnType = new GenericInstanceType (templateMethod.DeclaringType);
-        foreach (var a in templateMethod.DeclaringType.GenericParameters.ToArray ())
-        {
-          returnType.GenericParameters.Add (a);
-          ((GenericInstanceType) returnType).GenericArguments.Add (a);
-        }
-      }
-
-      MethodDefinition factoryMethod = null;
+     MethodDefinition factoryMethod = null;
       if ((factoryMethod = infoWrapper.GetFactoryMethod (templateMethod, assembly, tracker)) != null)
       {
         if (factoryMethod.GenericParameters.Count != 1 || factoryMethod.Parameters.Count != 1 || !factoryMethod.IsStatic)
           throw new ArgumentException ("Factory method to create object does not have correct signature [public static T Create<T> (ParamList)]");
+
+        TypeReference returnType = templateMethod.DeclaringType;
+        if (templateMethod.DeclaringType.HasGenericParameters)
+        {
+          returnType = new GenericInstanceType (templateMethod.DeclaringType);
+          foreach (var a in templateMethod.DeclaringType.GenericParameters.ToArray ())
+          {
+            returnType.GenericParameters.Add (a);
+            ((GenericInstanceType) returnType).GenericArguments.Add (a);
+          }
+        }
 
         var importedFactoryMethod = templateMethod.Module.Import (factoryMethod);
         var genericInstanceMethod = new GenericInstanceMethod (importedFactoryMethod);
@@ -133,7 +131,9 @@ namespace NewTransformer.NewStatementReplacing
 
         newObjectMethod.IsHideBySig = true;
         templateMethod.DeclaringType.Methods.Add (newObjectMethod);
+        return true;
       }
+      return false;
     }
 
 

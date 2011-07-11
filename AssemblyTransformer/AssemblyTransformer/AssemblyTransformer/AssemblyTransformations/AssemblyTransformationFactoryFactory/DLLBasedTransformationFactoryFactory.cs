@@ -52,9 +52,8 @@ namespace AssemblyTransformer.AssemblyTransformations.AssemblyTransformationFact
     public ICollection<IAssemblyTransformationFactory> CreateTrackerFactories ()
     {
       if (_transformationsDirectory == null)
-        throw new InvalidOperationException ("Initialize options first. (workingdir on DLLBasedTransformationFactoryFactory)");
+        throw new InvalidOperationException ("Initialize options first. (workingdir for DLLBasedTransformationFactoryFactory)");
 
-      //var allFiles = _fileSystem.EnumerateFiles (_transformationsDirectory, "*.dll", SearchOption.AllDirectories);
       var factoryInterface = typeof (IAssemblyTransformationFactory);
       ICollection<IAssemblyTransformationFactory> transformationFactories = new List<IAssemblyTransformationFactory> ();
 
@@ -74,7 +73,7 @@ namespace AssemblyTransformer.AssemblyTransformations.AssemblyTransformationFact
         }
         catch (Exception e)
         {
-          Console.WriteLine ("Could not load " + file + " " + e);
+          Console.WriteLine ("   WARNING :: Could not load '" + file + "' as transformation! [is ignored]");
         }
       }
       return transformationFactories;

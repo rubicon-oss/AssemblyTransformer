@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using AssemblyTransformer.AppDomainBroker;
 using AssemblyTransformer.AssemblySigning;
 using AssemblyTransformer.AssemblyTracking;
@@ -29,13 +26,14 @@ namespace AssemblyTransformer
     private static DirectoryBasedAssemblyTrackerFactory _trackerFactory;
     private static IAppDomainInfoBroker _infoBroker;
     private static string _workingDirectory = ".";
+    private static List<string> _targetFiles;
 
     static int Main (string[] args)
     {
       var arguments = GetArgumentsFromFileOrCL (args);
       InitializeTransformer (arguments);
 
-      Console.WriteLine ("AssemblyTransformer starting up ...");
+      Console.WriteLine ("\nAssemblyTransformer starting up ...");
       try
       {
         var runner = new Runner();
@@ -43,27 +41,37 @@ namespace AssemblyTransformer
       }
       catch (ArgumentException e)
       {
-        throw;
         Console.WriteLine ("\n" + e.Message + "\n");
         InitializeTransformer (arguments.Concat (new [] {"-h"}));
         return -2;
       }
       catch (InvalidOperationException e)
       {
-        throw;
         Console.WriteLine ("\n" + e.Message + "\n");
         InitializeTransformer (arguments.Concat (new[] { "-h" }));
         return -2;
       }
 
-      Console.WriteLine ("Assemblies successfully loaded, transformed, signed and saved!");
+      if (_targetFiles.Count < 1)
+        return 0;
+
+      Console.Write ("Processed: \n" + _targetFiles[0]);
+
+      for (int i = 1; i < _targetFiles.Count; i++)
+      {
+        Console.Write (_targetFiles[i] + "   ");
+        if (i % 3 == 0)
+          Console.WriteLine ();
+      }
+      Console.WriteLine ();
+
       return 0;
     }
 
     private static IEnumerable<string> GetArgumentsFromFileOrCL (IEnumerable<string> args)
     {
-      if (args == null || args.Count() == 0)   // if no arguments given, set help parameter
-        return new [] { "-h" };
+      if (args == null || args.Count() == 0)
+        return new[] { "-h" }; // if no arguments given, set help parameter to show help in CL
 
       string optionsFile;
       if ((optionsFile = args.FirstOrDefault (a => a.StartsWith ("@"))) == null)
@@ -89,15 +97,15 @@ namespace AssemblyTransformer
     {
       var showHelp = false;
       var globalOptions = new OptionSet { { "h|?", "Show this help message and exit.", v => showHelp = v != null } };
-      globalOptions.Add ( "d|dir=", "The (root) directory containing the targeted assemblies.", dir => _workingDirectory = dir);
+      globalOptions.Add ("d|targetDir=", "The (root) directory containing the targeted assemblies.", dir => _workingDirectory = dir);
 
-      var fileSystem = new FileSystem.FileSystem ();
-      List<string> leftOver;
+      var fileSystem = new FileSystem.FileSystem();
       Dictionary<string, OptionSet> options = new Dictionary<string, OptionSet>();
       globalOptions.Parse (args);
 
       // -- create AppDomainInfoBroker
-      Console.WriteLine (_workingDirectory = _workingDirectory.Replace ("\"", ""));
+      _workingDirectory = _workingDirectory.Replace ("\"", "");
+      _workingDirectory = _workingDirectory.TrimEnd (new[] { '\\' });
       _infoBroker = new AppDomainInfoBroker (_workingDirectory);
 
       ((DefaultAssemblyResolver) GlobalAssemblyResolver.Instance).RemoveSearchDirectory (".");
@@ -106,7 +114,7 @@ namespace AssemblyTransformer
 
       // -- create all the transformations
       var transformationFactoryFactory = new DLLBasedTransformationFactoryFactory (fileSystem, _workingDirectory);
-      transformationFactoryFactory.TransformationsDirectory = ".";
+      transformationFactoryFactory.TransformationsDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
       transformationFactoryFactory.AddOptions (globalOptions);
 
       // -- add the assembly tracker   
@@ -138,8 +146,9 @@ namespace AssemblyTransformer
           foreach (var option in set)
             allOptions.Add (option);
 
-        leftOver = allOptions.Parse (args);
+        var leftOver = allOptions.Parse (args);
         trackerFactory.IncludeFiles = leftOver.Where (s => (!s.StartsWith ("-") || !s.StartsWith ("\\"))).ToList();
+        _targetFiles = trackerFactory.IncludeFiles;
         leftOver.RemoveAll (s => (!s.StartsWith ("-") || !s.StartsWith ("\\")));
 
         if (showHelp || leftOver.Count != 0)
@@ -164,16 +173,15 @@ namespace AssemblyTransformer
           Console.WriteLine (par);
       }
       Console.WriteLine ("\n\n  USAGE:");
-      Console.WriteLine ("  'AssemblyTransformer.exe ( [OPTIONS]+ | option file in this folder {'@filename.extension'} )' \n");
+      Console.WriteLine ("  'AssemblyTransformer.exe ( [OPTIONS]+ | option file {'@filename.extension'} )' \n");
       Console.WriteLine ("  Loads the transformations that are given using the '-t' switch ");
       Console.WriteLine ("  The transformations are then instantiated and according to the ");
       Console.WriteLine ("  factories, the options are added and parsed. ");
-      Console.WriteLine ("  All the Assemblies in the given target folder (including subfolders) ");
-      Console.WriteLine ("  are loaded and passed to the transformations. ");
+      Console.WriteLine ("  The target assemblies have to be pased as unnamed arguments. ");
       Console.WriteLine ("  The assemblies will be resigned and saved after all transformations ");
       Console.WriteLine ("  have been conducted. ");
       Console.WriteLine ("  Tries to use the correct keys (given in the [optional] keys folder), ");
-      Console.WriteLine ("  but default behaviour is resigning all assemblies with [optional] given ");
+      Console.WriteLine ("  but the default behaviour is resigning all assemblies with the [optional] given ");
       Console.WriteLine ("  default key. ");
       Console.WriteLine ("  If no key is given, the assemblies will be UNSIGNED!");
       Console.WriteLine ();

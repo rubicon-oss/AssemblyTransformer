@@ -14,10 +14,7 @@ namespace AssemblyTransformer.AppDomainBroker
     public string ModuleName;
     public int Token;
 
-    public MemberID ()
-    {
-      Console.WriteLine ("Instantiated in " + this.GetType().Assembly.CodeBase + " in AppDomain " + AppDomain.CurrentDomain.FriendlyName);
-    }
+    public MemberID () { }
 
     public MemberID (string assemblyName, string moduleName, MetadataToken token)
     {

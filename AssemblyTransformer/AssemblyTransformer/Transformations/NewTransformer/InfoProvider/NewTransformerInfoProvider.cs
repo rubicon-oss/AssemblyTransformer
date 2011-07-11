@@ -2,7 +2,6 @@
 // All rights reserved.
 //
 using System;
-using System.Diagnostics;
 using System.Reflection;
 using System.Linq;
 using AssemblyTransformer.AppDomainBroker;

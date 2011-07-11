@@ -32,7 +32,6 @@ namespace MethodVirtualizer
     {
       ArgumentUtility.CheckNotNull ("tracker", tracker);
       MethodDefinition customAttributeCtor;
-      string virtualMethodName;
 
       var modifiedMethods = from assemblyDefinition in tracker.GetAssemblies ()
                             from typeDefinition in assemblyDefinition.LoadAllTypes ()
@@ -51,8 +50,7 @@ namespace MethodVirtualizer
           tracker.MarkModified (modifiedMethodDefinition.Assembly);
 
           var virtualMethod = _codeGenerator.GenerateMethodAndMoveBody (
-            modifiedMethodDefinition.Method, 
-            (virtualMethodName = _wrapper.GetUnspeakableMethodName (modifiedMethodDefinition.Method))
+            modifiedMethodDefinition.Method, _wrapper.GetUnspeakableMethodName (modifiedMethodDefinition.Method)
             );
           modifiedMethodDefinition.Method.DeclaringType.Methods.Add (virtualMethod);
 

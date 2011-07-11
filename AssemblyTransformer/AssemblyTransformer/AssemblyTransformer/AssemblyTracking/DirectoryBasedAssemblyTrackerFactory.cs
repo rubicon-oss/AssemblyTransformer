@@ -43,10 +43,6 @@ namespace AssemblyTransformer.AssemblyTracking
     {
       ArgumentUtility.CheckNotNull ("options", options);
 
-      //options.Add (
-      //    "i|include=",
-      //    "The target assemblies. At least use: '-w=*.dll -w=*.exe'! (eg: '-w=Remotion.*.dll -w=AnotherLibrary.*.dll -w=*.exe')",
-      //    w => _whiteList.Add (w) );
       options.Add (
           "e|exclude=",
           "The targeted assemblies (eg: -b=Remotion.Interfaces.dll -b=SomeLibrary.*.dll)",
@@ -61,7 +57,7 @@ namespace AssemblyTransformer.AssemblyTracking
     {
       if (_whiteList == null || _whiteList.Count == 0)
         throw new InvalidOperationException
-          ("Initialize options first. (AssemblyTracker: inclusion rules have to be present!)");
+          ("Initialize options first. (AssemblyTracker: target files have to be set!)");
 
       var readPDB = new ReaderParameters { ReadSymbols = true };
       var ignorePDB = new ReaderParameters { ReadSymbols = false };
@@ -70,10 +66,7 @@ namespace AssemblyTransformer.AssemblyTracking
       List<AssemblyDefinition> assemblies = new List<AssemblyDefinition> ();
       foreach (var doc in allFiles)
       {
-#if WRITE_OUTPUT
-         Console.WriteLine ("  processing " + doc + " ...");
-#endif
-         try
+        try
          {
            if (_fileSystem.FileExists (doc.Substring (0, doc.Length-3) + "pdb"))
              assemblies.Add (_fileSystem.ReadAssembly (doc, readPDB));
@@ -83,10 +76,8 @@ namespace AssemblyTransformer.AssemblyTracking
          }
          catch (BadImageFormatException e)
          {
-#if WRITE_OUTPUT
-           Console.WriteLine ("    WARNING :: " + doc + " is not a .NET assembly! (" + e.Message + ")");
-#endif
-        }
+           Console.WriteLine ("   WARNING :: '" + doc + "' is not a valid .NET assembly! [is ignored]");
+         }
       }
       ((BaseAssemblyResolver) GlobalAssemblyResolver.Instance).AddSearchDirectory (_workingDirectory);
       return new AssemblyTracker (assemblies, new TypeDefinitionCache());

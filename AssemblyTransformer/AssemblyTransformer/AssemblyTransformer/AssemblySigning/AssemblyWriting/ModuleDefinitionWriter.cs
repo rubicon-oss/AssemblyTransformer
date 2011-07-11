@@ -61,8 +61,8 @@ namespace AssemblyTransformer.AssemblySigning.AssemblyWriting
           }
         }
       }
-      //if (signKey != null)
-        writerParameters.StrongNameKeyPair = signKey;
+
+      writerParameters.StrongNameKeyPair = signKey;
       Write (moduleDefinition, writerParameters);
     }
 
