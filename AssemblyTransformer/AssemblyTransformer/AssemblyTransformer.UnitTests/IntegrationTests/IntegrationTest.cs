@@ -18,7 +18,6 @@ using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using System.Collections.Generic;
 using AssemblyMethodsVirtualizer.MarkingStrategies;
-using AssemblyMethodsVirtualizer;
 
 namespace AssemblyTransformer.UnitTests.IntegrationTests
 {
@@ -42,21 +41,20 @@ namespace AssemblyTransformer.UnitTests.IntegrationTests
     {
       _verifier = PEVerifier.CreateDefault ();
       Directory.CreateDirectory (TempPath);
-      foreach (var file in Directory.EnumerateFiles (AssemblyPath, "*.dll", SearchOption.TopDirectoryOnly))
+      foreach (var file in Directory.EnumerateFiles (@AssemblyPath, "*.dll", SearchOption.TopDirectoryOnly))
       {
-        Console.WriteLine (TempPath + file.Substring (file.IndexOf ("integration") +11));
-        File.Copy (file, TempPath + file.Substring (file.IndexOf ("integration") +11), true);
+        Console.WriteLine (@TempPath + file.Substring (file.IndexOf ("integration") +11));
+        File.Copy (file, @TempPath + file.Substring (file.IndexOf ("integration") +11), true);
       }
 
       var allFiles =
-          Directory.EnumerateFiles (TempPath, "*.dll", SearchOption.AllDirectories)
-              .Concat (Directory.EnumerateFiles (TempPath, "*.exe", SearchOption.AllDirectories));
+          Directory.EnumerateFiles (@TempPath, "*.dll", SearchOption.AllDirectories)
+              .Concat (Directory.EnumerateFiles (@TempPath, "*.exe", SearchOption.AllDirectories));
 
       List<AssemblyDefinition> assemblies = allFiles.Select (AssemblyDefinition.ReadAssembly).ToList();
 
       _tracker = new AssemblyTracker (assemblies, new TypeDefinitionCache());
 
-      var strategy = new GeneratedMarkingAttributeStrategy (_defAttributeNamespace, _defAttributeName);
       var options = new OptionSet();
       var selectorFactory = new TargetSelectorFactory();
       selectorFactory.AddOptions (options);
@@ -116,11 +114,14 @@ namespace AssemblyTransformer.UnitTests.IntegrationTests
     [TearDown]
     public void TearDown ()
     {
-      foreach (var file in Directory.EnumerateFiles (TempPath, "*.dll", SearchOption.AllDirectories))
-        _verifier.VerifyPEFile (file);
+      foreach (var file in Directory.EnumerateFiles (@TempPath, "*.dll", SearchOption.AllDirectories))
+      {
+        Console.WriteLine (file);
+        _verifier.VerifyPEFile (@file);
+      }
 
-      foreach (var file in Directory.EnumerateFiles (TempPath, "*", SearchOption.AllDirectories))
-        File.Delete (file);
+      foreach (var file in Directory.EnumerateFiles (@TempPath, "*", SearchOption.AllDirectories))
+        File.Delete (@file);
       //Directory.Delete (TempPath, true);
     }
   }
