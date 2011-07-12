@@ -3,6 +3,7 @@
 //
 using System;
 using System.Linq;
+using AssemblyTransformer.AppDomainBroker;
 using AssemblyTransformer.AssemblySigning;
 using AssemblyTransformer.AssemblyTracking;
 using AssemblyTransformer.AssemblyTransformations;
@@ -24,6 +25,7 @@ namespace AssemblyTransformer.UnitTests
     private IAssemblyTransformationFactory _transformationFactoryMock2;
     private IAssemblySigner _signerMock;
     private IAssemblySignerFactory _signerFactoryMock;
+    private IAppDomainInfoBroker _infoBroker;
 
     [SetUp]
     public void SetUp ()
@@ -36,20 +38,21 @@ namespace AssemblyTransformer.UnitTests
       _transformationFactoryMock2 = MockRepository.GenerateStrictMock<IAssemblyTransformationFactory> ();
       _signerMock = MockRepository.GenerateStrictMock<IAssemblySigner>();
       _signerFactoryMock = MockRepository.GenerateStrictMock<IAssemblySignerFactory>();
+      _infoBroker = MockRepository.GenerateStub<IAppDomainInfoBroker>();
     }
 
     [Test]
     [ExpectedException (typeof(ArgumentNullException))]
     public void Runner_NullParameters ()
     {
-      _runner.Run (null, null, null);
+      _runner.Run (null, null, null, null);
     }
 
     [Test]
     public void Runner_InstantiatesAndRuns ()
     {
       _trackerFactoryMock.Expect (mock => mock.CreateTracker()).Return (_trackerMock);
-      _transformationFactoryMock.Expect (mock => mock.CreateTransformation()).Return (_transformerMock);
+      _transformationFactoryMock.Expect (mock => mock.CreateTransformation (_infoBroker)).Return (_transformerMock);
       _transformerMock.Expect (mock => mock.Transform (_trackerMock));
       _signerFactoryMock.Expect (mock => mock.CreateSigner()).Return (_signerMock);
       _signerMock.Expect (mock => mock.SignAndSave (_trackerMock));
@@ -60,7 +63,7 @@ namespace AssemblyTransformer.UnitTests
       _transformerMock.Replay();
       _signerFactoryMock.Replay();
       _signerMock.Replay();
-      _runner.Run (_trackerFactoryMock, new [] { _transformationFactoryMock }, _signerFactoryMock);
+      _runner.Run (_trackerFactoryMock, new[] { _transformationFactoryMock }, _signerFactoryMock, _infoBroker);
 
       _trackerFactoryMock.VerifyAllExpectations();
       _trackerMock.VerifyAllExpectations();
@@ -76,9 +79,9 @@ namespace AssemblyTransformer.UnitTests
     public void Runner_InstantiatesAndRuns_MultipleTransformations ()
     {
       _trackerFactoryMock.Expect (mock => mock.CreateTracker ()).Return (_trackerMock);
-      _transformationFactoryMock.Expect (mock => mock.CreateTransformation ()).Return (_transformerMock);
+      _transformationFactoryMock.Expect (mock => mock.CreateTransformation (_infoBroker)).Return (_transformerMock);
       _transformerMock.Expect (mock => mock.Transform (_trackerMock));
-      _transformationFactoryMock2.Expect (mock => mock.CreateTransformation ()).Return (_transformerMock2);
+      _transformationFactoryMock2.Expect (mock => mock.CreateTransformation (_infoBroker)).Return (_transformerMock2);
       _transformerMock2.Expect (mock => mock.Transform (_trackerMock));
       _signerFactoryMock.Expect (mock => mock.CreateSigner ()).Return (_signerMock);
       _signerMock.Expect (mock => mock.SignAndSave (_trackerMock));
@@ -91,7 +94,7 @@ namespace AssemblyTransformer.UnitTests
       _transformerMock2.Replay ();
       _signerFactoryMock.Replay ();
       _signerMock.Replay ();
-      _runner.Run (_trackerFactoryMock, new[] { _transformationFactoryMock, _transformationFactoryMock2 }, _signerFactoryMock);
+      _runner.Run (_trackerFactoryMock, new[] { _transformationFactoryMock, _transformationFactoryMock2 }, _signerFactoryMock, _infoBroker);
 
       _trackerFactoryMock.VerifyAllExpectations ();
       _trackerMock.VerifyAllExpectations ();
@@ -116,7 +119,7 @@ namespace AssemblyTransformer.UnitTests
       _trackerMock.Replay ();
       _signerFactoryMock.Replay ();
       _signerMock.Replay ();
-      _runner.Run (_trackerFactoryMock, Enumerable.Empty<IAssemblyTransformationFactory>(), _signerFactoryMock);
+      _runner.Run (_trackerFactoryMock, Enumerable.Empty<IAssemblyTransformationFactory> (), _signerFactoryMock, _infoBroker);
 
       _trackerFactoryMock.VerifyAllExpectations ();
       _trackerMock.VerifyAllExpectations ();
