@@ -1,3 +1,3 @@
 @ECHO OFF
-xcopy "%1\Debug" "%1\x86" /I /Y
-"C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Bin\corflags" %1\x86\%2 /32BIT+
+xcopy "%~1\Debug" "%~1\x86" /I /Y 
+"%~1\..\..\..\prereq\CorFlags.exe" "%~1\x86\%~2" /Force /32BIT+ /nologo
