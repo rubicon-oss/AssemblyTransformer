@@ -22,9 +22,9 @@ AssemblyMethodsVirtualizer
 
 This is a transformation that makes non-virtual methods virtual so that they can, e.g., be overridden by a subclass proxy. The transformation can be configured via the command line to use different "selection strategies" to determine what methods should be made virtual (based on declaring class, custom attributes, or a regular expression match). The command line can also choose a "marking strategy" to mark changed methods with a custom attribute (using an existing attribute or a newly generated attribute).
 
-NOTE: This seems to be an alternative version of AssemblyTransformer.MethodVirtualizer which uses predefined strategies rather than a user-specified class to select methods to be made virtual.
+TODO: This seems to be an alternative version of AssemblyTransformer.MethodVirtualizer which uses predefined strategies rather than a user-specified class to select methods to be made virtual. Consider removing, unless the predefined strategies are valuable. Even then, consider unifying.
 
-NOTE: This project has unit tests, whereas AssemblyTransformer.MethodVirtualizer has none.
+NOTE: This project has unit tests, whereas AssemblyTransformer.MethodVirtualizer has none. Before removing, the unit tests should probably be ported.
 
 TODO: Several tests are failing:
 
@@ -76,9 +76,9 @@ ConstructorGenerator
 
 This is a transformation that adds static factory methods to certain transformed types and replaces "new" statements instantiating those types with calls to a factory. That factory could, e.g., create subclass proxies to stand in for the objects to be created. The transformation can be configured via the command line to choose the factory method to be used.
 
-NOTE: This seems to be an alternative version of AssemblyTransformer.NewTransformation.
+TODO: This seems to be an alternative version of AssemblyTransformer.NewTransformation. Consider removing, unless this version has valuable features. Even then, consider unifying.
 
-NOTE: This project has unit tests, whereas AssemblyTransformer.NewTransformation has none.
+NOTE: This project has unit tests, whereas AssemblyTransformer.NewTransformation has none. Before removing, the unit tests should probably be ported.
 
 TODO: There are files (NewTransformerInfoWrapper\*.*) not included in the project.
 
