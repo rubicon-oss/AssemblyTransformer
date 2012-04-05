@@ -91,7 +91,7 @@ ConstructorGeneratorUnitTests\ConstructorGeneratorTest\ConstructorGeneratorFacto
 TransformerTarget
 -----------------
 
-This is a sample solution used to test the AssemblyTransformer.
+This is a sample solution used to test the AssemblyTransformer. To update the AssemblyTransformer binaries used by this project, replace the files in the prereq\transformer folder.
 
 NOTE: There is a circular dependency between ExampleLib and TransformerTargetInfo. Therefore, building the solution for the first time will fail. It must be built two times to succeeed.
 
