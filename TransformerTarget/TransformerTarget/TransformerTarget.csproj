@@ -64,9 +64,14 @@
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="potentiallyMixedNamespaces.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>C:\Development\Transformer\AssemblyTransformer.exe -t=MethodVirtualizer -t=NewTransformer --virtualizerInfo="TransformerTargetInfo.VirtualizerInfoProvider, TransformerTargetInfo, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" --newInfo="TransformerTargetInfo.NewInfoProvider, TransformerTargetInfo, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" --newWrap -d="$(TargetDir)." $(TargetFileName)</PostBuildEvent>
+    <PostBuildEvent>..\..\..\prereq\transformer\AssemblyTransformer.exe -t=MethodVirtualizer -t=NewTransformer --virtualizerInfo="TransformerTargetInfo.VirtualizerInfoProvider, TransformerTargetInfo, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" --newInfo="TransformerTargetInfo.NewInfoProvider, TransformerTargetInfo, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" --newWrap -d="$(TargetDir)." $(TargetFileName)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

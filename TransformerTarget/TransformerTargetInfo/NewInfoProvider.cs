@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Remotion.Mixins;
+using Remotion.Mixins.BridgeImplementations;
 using Remotion.Reflection;
 
 namespace TransformerTargetInfo
@@ -25,6 +26,10 @@ namespace TransformerTargetInfo
 
     public static T Create<T> (ParamList p)
     {
+      // Force Remotion.dll to be referenced. This is needed to include Remotion.dll with the TransformerTarget binaries.
+      // Otherwise, TransformerTarget will not run.
+      Type dummy = typeof (ObjectFactoryImplementation);
+      
       return ObjectFactory.Create<T> (p, new object[0]);
     }
 
