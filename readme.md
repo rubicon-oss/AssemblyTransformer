@@ -5,3 +5,5 @@ AssemblyTransformer is a tool for modifying .NET assemblies using Mono Cecil. It
 
 ## Status
 The project is currently in a prototype status, meant to be built from source code and experimented with. If you want to check it out, please read the Readme.txt file included in the source code repository. Contributions are welcome!
+
+Previously located at: https://assemblytransformer.codeplex.com/
